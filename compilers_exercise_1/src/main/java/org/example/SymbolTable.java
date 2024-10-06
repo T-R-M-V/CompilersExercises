@@ -3,6 +3,7 @@ package org.example;
 import org.w3c.dom.Attr;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SymbolTable {
 
@@ -25,6 +26,15 @@ public class SymbolTable {
             this.token_name = token_name;
             this.kind = kind;
             this.index = index;
+        }
+
+        @Override
+        public String toString() {
+            String indexToString = "null";
+            if (index != null)
+                indexToString = index.toString();
+
+            return "[" + kind + "," + indexToString + "," + token_name + "]";
         }
     }
 
@@ -56,6 +66,15 @@ public class SymbolTable {
 
     public Attribute getSymbol(String key) {
         return symbols.get(key);
+    }
+
+    @Override
+    public String toString() {
+        String stringBuffer = "";
+        for(Map.Entry<String, Attribute> entry : symbols.entrySet()) {
+            stringBuffer += entry.getKey() + "=" + entry.getValue().toString() + "\n";
+        }
+        return stringBuffer;
     }
 
     private HashMap<String, Attribute> symbols;
