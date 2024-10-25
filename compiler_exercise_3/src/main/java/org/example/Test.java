@@ -1,9 +1,12 @@
 package org.example;
 
-public class Test {
-    public static void main(String[] args) {
+import java.io.FileNotFoundException;
 
-        Lexer lexer = new Lexer();
+public class Test {
+    public static void main(String[] args) throws FileNotFoundException {
+
+        SymbolTable symbolTable = new SymbolTable();
+        Lexer lexer = new Lexer(args[0], symbolTable);
 
         Parser parser = new Parser(lexer);
 

@@ -1,6 +1,6 @@
 package org.example;
 
-import javax.xml.stream.FactoryConfigurationError;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +9,8 @@ import java.util.List;
 
 
 
+// T: TODO considerare il caso in cui venga restituito il Token Error
+// T: TODO Re-enginering della soluzione attuale
 public class Parser {
 
     enum Symbol {
@@ -39,7 +41,7 @@ public class Parser {
     }
 
     public Parser(Lexer lexer) {
-        buffer = new ArrayList<>();
+        tokens = new ArrayList<>();
         currentTokenIndex = -1;
 
         this.lexer = lexer;
@@ -114,46 +116,254 @@ public class Parser {
 
     public boolean S() {
 
-        long startingPoint = currentTokenIndex;
+        int startingPoint = currentTokenIndex;
         Token token = nextToken();
 
-        for (var production : ProgramProduction) {
+        boolean accept = true;
+
+        for (var production : SProduction) {
+
+            accept = true;
 
             for (var symbol : production) {
 
                 if (isNonTerminal(symbol)) {
-                    callProdecure(symbol);
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
                 }
-                else if ()
-
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    if (symbol != Symbol.EOF)
+                        nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
             }
+
+            if (accept)
+                return true;
         }
+
 
 
         return false;
     }
 
     public boolean Program() {
+
+        int startingPoint = currentTokenIndex;
+
+        boolean accept = true;
+
+        for (var production : ProgramProduction) {
+
+            accept = true;
+
+            for (var symbol : production) {
+
+                if (isNonTerminal(symbol)) {
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
+                }
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
+            }
+
+            if (accept)
+                return true;
+        }
+
         return false;
     }
 
     public boolean Program_1() {
+
+        int startingPoint = currentTokenIndex;
+
+        boolean accept = true;
+
+        for (var production : Program_1Production) {
+
+            accept = true;
+
+            for (var symbol : production) {
+
+                if (isNonTerminal(symbol)) {
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
+                }
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
+            }
+
+            if (accept)
+                return true;
+        }
+
         return false;
     }
 
     public boolean Stmt() {
+
+        int startingPoint = currentTokenIndex;
+
+        boolean accept = true;
+
+        for (var production : StmtProduction) {
+
+            accept = true;
+
+            for (var symbol : production) {
+
+                if (isNonTerminal(symbol)) {
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
+                }
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
+            }
+
+            if (accept)
+                return true;
+        }
+
         return false;
     }
 
     public boolean Expr() {
+        int startingPoint = currentTokenIndex;
+
+        boolean accept = true;
+
+        for (var production : ExprProduction) {
+
+            accept = true;
+
+            for (var symbol : production) {
+
+                if (isNonTerminal(symbol)) {
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
+                }
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
+            }
+
+            if (accept)
+                return true;
+        }
+
         return false;
     }
 
     public boolean Expr_1() {
+        int startingPoint = currentTokenIndex;
+
+        boolean accept = true;
+
+        for (var production : Expr_1Production) {
+
+            accept = true;
+
+            for (var symbol : production) {
+
+                if (isNonTerminal(symbol)) {
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
+                }
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
+            }
+
+            if (accept)
+                return true;
+        }
+
         return false;
     }
 
     public boolean Rest() {
+        int startingPoint = currentTokenIndex;
+
+        boolean accept = true;
+
+        for (var production : RestProduction) {
+
+            accept = true;
+
+            for (var symbol : production) {
+
+                if (isNonTerminal(symbol)) {
+                    if (callProdecure(symbol) == false) {
+                        currentTokenIndex = startingPoint;
+                        accept = false;
+                        break;
+                    }
+                }
+                else if (matchSymbolToken(symbol, tokens.get(currentTokenIndex))) {
+                    nextToken();
+                }
+                else if (symbol != Symbol.EPSILON) {
+                    currentTokenIndex = startingPoint;
+                    accept = false;
+                    break;
+                }
+            }
+
+            if (accept)
+                return true;
+        }
+
         return false;
     }
 
@@ -163,7 +373,13 @@ public class Parser {
 
     public Token nextToken() {
         if (currentTokenIndex == tokens.size() - 1) {
-            Token token = lexer.nextToken();
+            Token token = null;
+            try {
+                token = lexer.nextToken();
+                System.out.println(token);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             currentTokenIndex++;
             tokens.add(token);
             return token;
@@ -221,6 +437,10 @@ public class Parser {
             return true;
         }
 
+        if (symbol == Symbol.ELSE && token.name == Token.Kind.ELSE) {
+            return true;
+        }
+
         if (symbol == Symbol.THEN && token.name == Token.Kind.THEN) {
             return true;
         }
@@ -249,6 +469,9 @@ public class Parser {
             return true;
         }
 
+        if (symbol == Symbol.END && token.name == Token.Kind.END) {
+            return true;
+        }
 
         return false;
     }
