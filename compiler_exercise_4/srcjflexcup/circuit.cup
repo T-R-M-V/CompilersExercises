@@ -1,0 +1,137 @@
+// CUP specification for a simple expression evaluator (no actions)
+
+import java_cup.runtime.*;
+
+/* Terminals (tokens returned by the scanner). */
+terminal    PROGRAM, BEGIN, END;
+terminal    SEMI, COLON;
+terminal    INT, BOOL, DOUBLE, STRING, CHAR;
+terminal    ID;
+terminal    COMMA;
+terminal    DEF, RETURN, REF;
+terminal    LPAR, RPAR, LBRAC, RBRAC;
+terminal    IN, OUT, OUTNL;
+terminal    PLUS, MINUS, TIMES, DIV;
+terminal    INT_CONST, DOUBLE_CONST, STRING_CONST, CHAR_CONST, TRUE, FALSE;
+terminal    ASSIGN, ASSIGNDECL;
+terminal    IF, THEN, WHILE, DO, ELSE;
+terminal    GT, GE, LT, LE, EQ, NE;
+terminal    NOT, AND, OR;
+terminal    PIPE;
+
+/* Non terminals */
+non terminal Programma;
+non terminal Decls, VarDecls, VarDecl, VarsOptInit, TypeOrConstant;
+non terminal Type;
+non terminal Constant;
+non terminal DefDecl, ParDecls, ParDecl;
+non terminal PVars;
+non terminal PVar;
+non terminal OptType;
+non terminal Body;
+non terminal Statements, Stat;
+non terminal Vars;
+non terminal Exprs, Expr;
+non terminal FunCall;
+non terminal ArithOp;
+non terminal BoolOp;
+non terminal RelOp;
+
+/* Precedences */
+precedence left OR;
+precedence left AND;
+precedence nonassoc NOT;
+precedence left EQ, NE, LT, LE, GT, GE;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV;
+precedence nonassoc LPAR, RPAR;
+
+/* Grammar */
+Programma ::= PROGRAM Decls BEGIN VarDecls Statements END;
+
+Decls ::= VarDecl Decls
+      | DefDecl Decls
+      | /*eps*/ ;
+
+VarDecls ::= VarDecls VarDecl
+         | /*eps*/ ;
+
+VarDecl ::= VarsOptInit COLON TypeOrConstant SEMI;
+
+VarsOptInit ::= ID PIPE VarsOptInit
+	   | ID ASSIGNDECL Expr PIPE VarsOptInit
+	   | ID
+	   | ID ASSIGNDECL Expr ;
+
+TypeOrConstant ::= Type
+	       | Constant ;
+
+Type ::= INT  |  BOOL   |  DOUBLE   | STRING | CHAR ;
+
+Constant ::= TRUE
+          | FALSE
+          | INT_CONST
+          | DOUBLE_CONST
+          | CHAR_CONST
+          | STRING_CONST ;
+
+DefDecl ::= DEF ID LPAR ParDecls RPAR OptType Body
+        | DEF ID LPAR  RPAR OptType Body ;
+
+ParDecls  ::= ParDecl SEMI ParDecls
+          | ParDecl ;
+
+ParDecl ::= PVars COLON Type ;
+
+PVars ::= PVar COMMA PVars
+      | PVar ;
+
+PVar ::= ID | REF ID ;
+
+
+OptType ::= COLON Type
+         | /*eps*/ ;
+
+Body ::= LBRAC VarDecls Statements RBRAC ;
+
+Statements ::= Stat Statements
+	   | /*eps*/ ;
+
+
+Stat ::=  Vars IN SEMI
+        | Exprs OUT SEMI
+        | Exprs OUTNL SEMI
+	| Vars ASSIGN Exprs SEMI
+	| FunCall SEMI
+        | IF LPAR Expr RPAR THEN Body ELSE Body
+        | IF LPAR Expr RPAR THEN Body
+        | WHILE LPAR Expr RPAR DO Body
+	| RETURN Expr SEMI ;
+
+
+Vars   ::= ID PIPE Vars
+        | ID ;
+
+Exprs ::=  Expr COMMA  Exprs
+	| Expr ;
+
+
+FunCall ::= ID LPAR Exprs RPAR
+        | ID LPAR RPAR ;
+
+
+Expr   ::= Expr ArithOp Expr
+		| Expr BoolOp Expr
+	        | Expr RelOp Expr
+		| LPAR Expr RPAR
+	        | MINUS Expr
+	        | NOT Expr
+	        | ID
+                | FunCall
+		| Constant ;
+
+ArithOp ::= PLUS  |  MINUS  | TIMES  |  DIV ;
+
+BoolOp ::= AND | OR ;
+
+RelOp  ::=  GT | GE | LT | LE | EQ | NE ;
