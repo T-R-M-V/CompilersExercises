@@ -1,31 +1,10 @@
 program
 
- def saluto(): string
- {
-	return "ciao";
- }
-
-def saluto2(): string
-    {
-	    return "ciao2";
- }
+x | y = 10 : int;
 
 begin
-
-    a : 0;
-    b : 0;
-
-sommagrande | sommapiccola := 0, 0;
-
-"Questo programma permette di svolgere una serie di moltiplicazioni" !>>;
-"accumulando i risultati < 100 in sommagrande e quelli < 100 in sommapiccola" !>>;
-
-i := -1;
-while (i <= 0) do{
-	saluto : "ciao";
-	"Quante moltiplicazioni vuoi svolgere? (inserire intero > 0)">>;
-	i <<;
-	saluto !>>;
+x | y << ;
+if (x > y) then {
+"I valori di x e y sono:", x, " ", y !>> ;
 }
-
 end

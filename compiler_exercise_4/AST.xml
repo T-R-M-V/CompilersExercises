@@ -1,104 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ProgramOpNode>
-    <DefDeclOpNode>
-        <IdentifierNode identifier="saluto2"/>
-        <TypeNode Type="String"/>
-        <body>
-            <ReturnOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="String" value="ciao2"/>
-                </ExprValueNode>
-            </ReturnOpNode>
-        </body>
-    </DefDeclOpNode>
-    <DefDeclOpNode>
-        <IdentifierNode identifier="saluto"/>
-        <TypeNode Type="String"/>
-        <body>
-            <ReturnOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="String" value="ciao"/>
-                </ExprValueNode>
-            </ReturnOpNode>
-        </body>
-    </DefDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="x"/>
+        </VarOptInitOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="y"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="10"/>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <TypeNode Type="Integer"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
     <beginEndOpNode>
-        <VarDeclOpNode>
-            <VarOptInitOpNode>
-                <IdentifierNode identifier="a"/>
-            </VarOptInitOpNode>
-            <typeOrConstantNode>
-                <ConstantNode type="Integer" value="0"/>
-            </typeOrConstantNode>
-        </VarDeclOpNode>
-        <VarDeclOpNode>
-            <VarOptInitOpNode>
-                <IdentifierNode identifier="b"/>
-            </VarOptInitOpNode>
-            <typeOrConstantNode>
-                <ConstantNode type="Integer" value="0"/>
-            </typeOrConstantNode>
-        </VarDeclOpNode>
-        <WhileOpNode>
-            <BinaryOpNode type="Le">
+        <ReadOpNode>
+            <IdentifierNode identifier="x"/>
+            <IdentifierNode identifier="y"/>
+        </ReadOpNode>
+        <IfThenOpNode>
+            <BinaryOpNode type="Gt">
                 <ExprValueNode>
-                    <IdentifierNode identifier="i"/>
+                    <IdentifierNode identifier="x"/>
                 </ExprValueNode>
                 <ExprValueNode>
-                    <ConstantNode type="Integer" value="0"/>
+                    <IdentifierNode identifier="y"/>
                 </ExprValueNode>
             </BinaryOpNode>
             <body>
-                <VarDeclOpNode>
-                    <VarOptInitOpNode>
-                        <IdentifierNode identifier="saluto"/>
-                    </VarOptInitOpNode>
-                    <typeOrConstantNode>
-                        <ConstantNode type="String" value="ciao"/>
-                    </typeOrConstantNode>
-                </VarDeclOpNode>
                 <WriteOpNode newline="true">
                     <ExprValueNode>
-                        <IdentifierNode identifier="saluto"/>
+                        <ConstantNode type="String" value="I valori di x e y sono:"/>
                     </ExprValueNode>
-                </WriteOpNode>
-                <ReadOpNode>
-                    <IdentifierNode identifier="i"/>
-                </ReadOpNode>
-                <WriteOpNode newline="false">
                     <ExprValueNode>
-                        <ConstantNode type="String" value="Quante moltiplicazioni vuoi svolgere? (inserire intero &gt; 0)"/>
+                        <IdentifierNode identifier="x"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <ConstantNode type="String" value=" "/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <IdentifierNode identifier="y"/>
                     </ExprValueNode>
                 </WriteOpNode>
             </body>
-        </WhileOpNode>
-        <AssignOpNode>
-            <IdentifierNode identifier="i"/>
-            <UnaryOpNode type="Uminus">
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="1"/>
-                </ExprValueNode>
-            </UnaryOpNode>
-        </AssignOpNode>
-        <WriteOpNode newline="true">
-            <ExprValueNode>
-                <ConstantNode type="String" value="accumulando i risultati &lt; 100 in sommagrande e quelli &lt; 100 in sommapiccola"/>
-            </ExprValueNode>
-        </WriteOpNode>
-        <WriteOpNode newline="true">
-            <ExprValueNode>
-                <ConstantNode type="String" value="Questo programma permette di svolgere una serie di moltiplicazioni"/>
-            </ExprValueNode>
-        </WriteOpNode>
-        <AssignOpNode>
-            <IdentifierNode identifier="sommapiccola"/>
-            <IdentifierNode identifier="sommagrande"/>
-            <ExprValueNode>
-                <ConstantNode type="Integer" value="0"/>
-            </ExprValueNode>
-            <ExprValueNode>
-                <ConstantNode type="Integer" value="0"/>
-            </ExprValueNode>
-        </AssignOpNode>
+        </IfThenOpNode>
     </beginEndOpNode>
 </ProgramOpNode>

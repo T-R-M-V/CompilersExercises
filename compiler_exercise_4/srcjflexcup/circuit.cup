@@ -72,8 +72,8 @@ Programma ::= PROGRAM Decls:decls BEGIN VarDecls:varDecls Statements:statements 
             RESULT = new ProgramOpNode((List)decls.children, beginEndOpNode);
             :};
 
-Decls ::= VarDecl:varDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, varDecl); :}
-      | DefDecl:defDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, defDecl); :}
+Decls ::= VarDecl:varDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, varDecl, true); :}
+      | DefDecl:defDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, defDecl, true); :}
       | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
 VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varDecl); RESULT = varDecls; :}
@@ -81,8 +81,8 @@ VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varD
 
 VarDecl ::= VarsOptInit:varsOptInit COLON TypeOrConstant:typeOrConstant SEMI {: RESULT = new VarDeclOpNode((List)varsOptInit.children, typeOrConstant); :};
 
-VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier))); :}
-	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier), expr)); :}
+VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier)), true); :}
+	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier), expr), true); :}
 	   | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode(identifier))); :}
 	   | ID:identifier ASSIGNDECL Expr:expr {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode(identifier), expr)); :} ;
 
@@ -108,12 +108,12 @@ DefDecl ::= DEF ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Body:b
         | DEF ID:identifier LPAR  RPAR OptType:optType Body:body
         {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), new ArrayList<>(), optType, body); :};
 
-ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls {: RESULT = new TempNode.TempAggregateNode(parDecls, parDecl); :}
+ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls {: RESULT = new TempNode.TempAggregateNode(parDecls, parDecl, true); :}
           | ParDecl:parDecl {: RESULT = new TempNode.TempAggregateNode(parDecl); :};
 
 ParDecl ::= PVars:pVars COLON Type:type {: RESULT = new ParDeclOpNode((List)pVars.children, type); :};
 
-PVars ::= PVar:pVar COMMA PVars:pVars {: RESULT = new TempNode.TempAggregateNode(pVars, pVar); :}
+PVars ::= PVar:pVar COMMA PVars:pVars {: RESULT = new TempNode.TempAggregateNode(pVars, pVar, true); :}
       | PVar:pVar {: RESULT = new TempNode.TempAggregateNode(pVar); :};
 
 PVar ::= ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode(identifier)); :}
@@ -125,7 +125,7 @@ OptType ::= COLON Type:type {: RESULT = type; :}
 
 Body ::= LBRAC VarDecls:varDecls Statements:statements RBRAC {: RESULT = new BodyOpNode((List)varDecls.varDeclOpNodes, (List)statements.children); :};
 
-Statements ::= Stat:stat Statements:statements {: RESULT = new TempNode.TempAggregateNode(statements, stat); :}
+Statements ::= Stat:stat Statements:statements {: RESULT = new TempNode.TempAggregateNode(statements, stat, true); :}
 	   | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
 
@@ -140,10 +140,10 @@ Stat ::=  Vars:vars IN SEMI {: RESULT = new ReadOpNode((List)vars.children); :}
 	| RETURN Expr:expr SEMI {: RESULT = new ReturnOpNode(expr); :};
 
 
-Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode(identifier)); :}
+Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode(identifier), true); :}
         | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new IdentifierNode(identifier)); :};
 
-Exprs ::=  Expr:expr COMMA  Exprs:exprs {: RESULT = new TempNode.TempAggregateNode(exprs, expr); :}
+Exprs ::=  Expr:expr COMMA  Exprs:exprs {: RESULT = new TempNode.TempAggregateNode(exprs, expr, true); :}
 	| Expr:expr {: RESULT = new TempNode.TempAggregateNode(expr); :};
 
 

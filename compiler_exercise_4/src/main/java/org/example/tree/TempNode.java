@@ -18,9 +18,16 @@ public class TempNode {
             children = new ArrayList<>();
         }
 
-        public TempAggregateNode(TempAggregateNode tempAggregateNode, Node nodeToAdd) {
+        public TempAggregateNode(TempAggregateNode tempAggregateNode, Node nodeToAdd, boolean reverse) {
             children = tempAggregateNode.children;
-            children.add(nodeToAdd);
+            if(reverse == false) {
+                children.add(nodeToAdd);
+            }
+            else {
+                children.add(0, nodeToAdd);
+            }
+
+
         }
 
         @Override
