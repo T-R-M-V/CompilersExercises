@@ -146,7 +146,7 @@ Id = [A-Za-z] [A-Za-z0-9]*
 }
 
 <STRING> {
-    \"                  { yybegin(YYINITIAL); return symbol(sym.STRING_CONST,buffer); }
+    \"                  { yybegin(YYINITIAL); return symbol(sym.STRING_CONST,buffer.toString()); }
     [^\n\r\"\\]+        { buffer.append( yytext() ); }
     \\t                 { buffer.append('\t'); }
     \\n                 { buffer.append('\n'); }

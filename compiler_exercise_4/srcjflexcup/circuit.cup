@@ -1,18 +1,24 @@
 // CUP specification for a simple expression evaluator (no actions)
 
 import java_cup.runtime.*;
+import java.util.List;
+
+import org.example.tree.statements.*;
+import org.example.tree.expr.*;
+import org.example.tree.*;
 
 /* Terminals (tokens returned by the scanner). */
 terminal    PROGRAM, BEGIN, END;
 terminal    SEMI, COLON;
 terminal    INT, BOOL, DOUBLE, STRING, CHAR;
-terminal    ID;
+terminal    String  ID;
 terminal    COMMA;
 terminal    DEF, RETURN, REF;
 terminal    LPAR, RPAR, LBRAC, RBRAC;
 terminal    IN, OUT, OUTNL;
 terminal    PLUS, MINUS, TIMES, DIV;
-terminal    INT_CONST, DOUBLE_CONST, STRING_CONST, CHAR_CONST, TRUE, FALSE;
+terminal    String  INT_CONST, DOUBLE_CONST, STRING_CONST, CHAR_CONST;
+terminal    String  TRUE, FALSE;
 terminal    ASSIGN, ASSIGNDECL;
 terminal    IF, THEN, WHILE, DO, ELSE;
 terminal    GT, GE, LT, LE, EQ, NE;
@@ -20,85 +26,106 @@ terminal    NOT, AND, OR;
 terminal    PIPE;
 
 /* Non terminals */
-non terminal Programma;
-non terminal Decls, VarDecls, VarDecl, VarsOptInit, TypeOrConstant;
-non terminal Type;
-non terminal Constant;
-non terminal DefDecl, ParDecls, ParDecl;
-non terminal PVars;
-non terminal PVar;
-non terminal OptType;
-non terminal Body;
-non terminal Statements, Stat;
-non terminal Vars;
-non terminal Exprs, Expr;
-non terminal FunCall;
-non terminal ArithOp;
-non terminal BoolOp;
-non terminal RelOp;
+non terminal    ProgramOpNode               Programma;
+non terminal    TempNode.TempDeclsNode      Decls;
+non terminal    TempNode.TempDeclsNode      VarDecls;
+non terminal    VarDeclOpNode               VarDecl;
+non terminal    TempNode.TempAggregateNode  VarsOptInit;
+non terminal    TypeOrConstantNode          TypeOrConstant;
+non terminal    TypeNode                    Type;
+non terminal    ConstantNode                Constant;
+non terminal    DefDeclOpNode               DefDecl;
+non terminal    TempNode.TempAggregateNode  ParDecls;
+non terminal    ParDeclOpNode               ParDecl;
+non terminal    TempNode.TempAggregateNode  PVars;
+non terminal    PVarOpNode                  PVar;
+non terminal    TypeNode                    OptType;
+non terminal    BodyOpNode                  Body;
+non terminal    TempNode.TempAggregateNode  Statements;
+non terminal    StatOpNode                  Stat;
+non terminal    TempNode.TempAggregateNode  Vars;
+non terminal    TempNode.TempAggregateNode  Exprs;
+non terminal    ExprOpNode                  Expr;
+non terminal    CallOpNode                  FunCall;
+non terminal    BinaryOpNode.Type           ArithOp;
+non terminal    BinaryOpNode.Type           BoolOp;
+non terminal    BinaryOpNode.Type           RelOp;
 
 /* Precedences */
 precedence left OR;
 precedence left AND;
 precedence nonassoc NOT;
-precedence left EQ, NE, LT, LE, GT, GE;
+precedence nonassoc EQ, NE, LT, LE, GT, GE; /* We don't excatly know why nonassoc works, there is a conflict */
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
-precedence nonassoc LPAR, RPAR;
+
+/* precedence nonassoc LPAR, RPAR; */
 
 /* Grammar */
-Programma ::= PROGRAM Decls BEGIN VarDecls Statements END;
+Programma ::= PROGRAM Decls:decls BEGIN VarDecls:varDecls Statements:statements END
+            {:
+            BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
+            RESULT = new ProgramOpNode(decls, beginEndOpNode);
+            :};
 
-Decls ::= VarDecl Decls
-      | DefDecl Decls
-      | /*eps*/ ;
+Decls ::= VarDecl:varDecl Decls:decls {: decls.addVarDeclOpNode(varDecl); RESULT = decls; :}
+      | DefDecl:defDecl Decls:decls {: decls.addDeclOpNode(defDecl); RESULT = decls; :}
+      | /*eps*/ {: RESULT = new TempNode.TempDeclsNode(); :};
 
-VarDecls ::= VarDecls VarDecl
-         | /*eps*/ ;
+VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varDecl); RESULT = varDecls; :}
+         | /*eps*/ {: RESULT = new TempNode.TempDeclsNode(); :};
 
-VarDecl ::= VarsOptInit COLON TypeOrConstant SEMI;
+VarDecl ::= VarsOptInit:varsOptInit COLON TypeOrConstant:typeOrConstant SEMI {: RESULT = new VarDeclOpNode((List)varsOptInit.children, typeOrConstant); :};
 
-VarsOptInit ::= ID PIPE VarsOptInit
-	   | ID ASSIGNDECL Expr PIPE VarsOptInit
-	   | ID
-	   | ID ASSIGNDECL Expr ;
+VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier))); :}
+	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier), expr)); :}
+	   | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode(identifier))); :}
+	   | ID:identifier ASSIGNDECL Expr:expr {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode(identifier), expr)); :} ;
 
-TypeOrConstant ::= Type
-	       | Constant ;
+TypeOrConstant ::= Type:type {: RESULT = new TypeOrConstantNode(type); :}
+	       | Constant:constant {: RESULT = new TypeOrConstantNode(constant); :} ;
 
-Type ::= INT  |  BOOL   |  DOUBLE   | STRING | CHAR ;
+Type ::= INT {: RESULT = new TypeNode(TypeNode.Type.Integer); :}
+           |  BOOL {: RESULT = new TypeNode(TypeNode.Type.Boolean); :}
+           |  DOUBLE {: RESULT = new TypeNode(TypeNode.Type.Double); :}
+           |  STRING {: RESULT = new TypeNode(TypeNode.Type.String); :}
+           |  CHAR {: RESULT = new TypeNode(TypeNode.Type.Char); :} ;
 
-Constant ::= TRUE
-          | FALSE
-          | INT_CONST
-          | DOUBLE_CONST
-          | CHAR_CONST
-          | STRING_CONST ;
+Constant ::= TRUE {: RESULT = new ConstantNode(ConstantNode.Type.Boolean, "true"); :}
+          | FALSE {: RESULT = new ConstantNode(ConstantNode.Type.Boolean, "false"); :}
+          | INT_CONST:int_const {: RESULT = new ConstantNode(ConstantNode.Type.Integer, int_const); :}
+          | DOUBLE_CONST:double_const {: RESULT = new ConstantNode(ConstantNode.Type.Double, double_const); :}
+          | CHAR_CONST:char_const {: RESULT = new ConstantNode(ConstantNode.Type.Char, char_const); :}
+          | STRING_CONST:string_const {: RESULT = new ConstantNode(ConstantNode.Type.String, string_const); :};
 
-DefDecl ::= DEF ID LPAR ParDecls RPAR OptType Body
-        | DEF ID LPAR  RPAR OptType Body ;
+DefDecl ::= DEF ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Body:body
+        {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), (List)parDecls.children, optType, body); :} // TO BE CONTINUED
 
-ParDecls  ::= ParDecl SEMI ParDecls
-          | ParDecl ;
+        | DEF ID:identifier LPAR  RPAR OptType:optType Body:body
+        {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), null, optType, body); :};
 
-ParDecl ::= PVars COLON Type ;
+ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls {: RESULT = new TempNode.TempAggregateNode(parDecls, parDecl); :}
+          | ParDecl:parDecl {: RESULT = new TempNode.TempAggregateNode(parDecl); :};
 
-PVars ::= PVar COMMA PVars
-      | PVar ;
+ParDecl ::= PVars:pVars COLON Type:type {: RESULT = new ParDeclOpNode((List)pVars.children, type); :};
 
-PVar ::= ID | REF ID ;
+PVars ::= PVar:pVar COMMA PVars:pVars {: RESULT = new TempNode.TempAggregateNode(pVars, pVar); :}
+      | PVar:pVar {: RESULT = new TempNode.TempAggregateNode(pVar); :};
 
-
-OptType ::= COLON Type
-         | /*eps*/ ;
-
-Body ::= LBRAC VarDecls Statements RBRAC ;
-
-Statements ::= Stat Statements
-	   | /*eps*/ ;
+PVar ::= ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode(identifier)); :}
+    | REF ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode(identifier), true); :};
 
 
-Stat ::=  Vars IN SEMI
+OptType ::= COLON Type:type {: RESULT = type; :}
+         | /*eps*/ {: RESULT = new TypeNode(TypeNode.Type.Void); :} ;
+
+Body ::= LBRAC VarDecls:varDecls Statements:statements RBRAC {: RESULT = new BodyOpNode((List)varDecls.varDeclOpNodes, (List)statements.children); :};
+
+Statements ::= Stat:stat Statements:statements {: RESULT = new TempNode.TempAggregateNode(statements, stat); :}
+	   | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
+
+
+Stat ::=  Vars IN SEMI {:  :}
         | Exprs OUT SEMI
         | Exprs OUTNL SEMI
 	| Vars ASSIGN Exprs SEMI
@@ -109,29 +136,42 @@ Stat ::=  Vars IN SEMI
 	| RETURN Expr SEMI ;
 
 
-Vars   ::= ID PIPE Vars
-        | ID ;
+Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode(identifier)); :}
+        | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new IdentifierNode(identifier)); :};
 
-Exprs ::=  Expr COMMA  Exprs
-	| Expr ;
-
-
-FunCall ::= ID LPAR Exprs RPAR
-        | ID LPAR RPAR ;
+Exprs ::=  Expr:expr COMMA  Exprs:exprs {: RESULT = new TempNode.TempAggregateNode(exprs, expr); :}
+	| Expr:expr {: RESULT = new TempNode.TempAggregateNode(expr); :};
 
 
-Expr   ::= Expr ArithOp Expr
-		| Expr BoolOp Expr
-	        | Expr RelOp Expr
-		| LPAR Expr RPAR
-	        | MINUS Expr
-	        | NOT Expr
-	        | ID
-                | FunCall
-		| Constant ;
+FunCall ::= ID:identifier LPAR Exprs:exprs RPAR {: RESULT = new CallOpNode(new IdentifierNode(identifier), (List)exprs.children); :}
+        | ID:identifier LPAR RPAR {: RESULT = new CallOpNode(new IdentifierNode(identifier)); :};
 
-ArithOp ::= PLUS  |  MINUS  | TIMES  |  DIV ;
 
-BoolOp ::= AND | OR ;
+Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
+		| Expr:expr_1 BoolOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
+	        | Expr:expr_1 RelOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
+		| LPAR Expr:expr RPAR {: RESULT = expr; :}
+	        | MINUS Expr:expr {: RESULT = new UnaryOpNode(UnaryOpNode.Type.Uminus, expr); :}
+	        | NOT Expr:expr {: RESULT = new UnaryOpNode(UnaryOpNode.Type.Not, expr); :}
+	        | ID:identifier {: RESULT = new ExprValueNode(new IdentifierNode(identifier)); :}
+                | FunCall:funcall {: RESULT = new ExprValueNode(funcall); :}
+		| Constant:constant {: RESULT = new ExprValueNode(constant); :}
+		;
 
-RelOp  ::=  GT | GE | LT | LE | EQ | NE ;
+ArithOp ::= PLUS {: RESULT = BinaryOpNode.Type.Plus; :}
+        |  MINUS {: RESULT = BinaryOpNode.Type.Minus; :}
+        | TIMES  {: RESULT = BinaryOpNode.Type.Times; :}
+        |  DIV {: RESULT = BinaryOpNode.Type.Div; :}
+        ;
+
+BoolOp ::= AND {: RESULT = BinaryOpNode.Type.And; :}
+        | OR {: RESULT = BinaryOpNode.Type.Or; :}
+        ;
+
+RelOp  ::=  GT {: RESULT = BinaryOpNode.Type.Gt; :}
+        | GE {: RESULT = BinaryOpNode.Type.Ge; :}
+        | LT {: RESULT = BinaryOpNode.Type.Lt; :}
+        | LE {: RESULT = BinaryOpNode.Type.Le; :}
+        | EQ {: RESULT = BinaryOpNode.Type.Eq; :}
+        | NE {: RESULT = BinaryOpNode.Type.Ne; :}
+        ;
