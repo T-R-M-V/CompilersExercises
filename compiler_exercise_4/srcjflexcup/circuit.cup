@@ -2,6 +2,7 @@
 
 import java_cup.runtime.*;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.example.tree.statements.*;
 import org.example.tree.expr.*;
@@ -27,7 +28,7 @@ terminal    PIPE;
 
 /* Non terminals */
 non terminal    ProgramOpNode               Programma;
-non terminal    TempNode.TempDeclsNode      Decls;
+non terminal    TempNode.TempAggregateNode  Decls;
 non terminal    TempNode.TempDeclsNode      VarDecls;
 non terminal    VarDeclOpNode               VarDecl;
 non terminal    TempNode.TempAggregateNode  VarsOptInit;
@@ -58,19 +59,22 @@ precedence nonassoc NOT;
 precedence nonassoc EQ, NE, LT, LE, GT, GE; /* We don't excatly know why nonassoc works, there is a conflict */
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
-
 /* precedence nonassoc LPAR, RPAR; */
+
+
+
+
 
 /* Grammar */
 Programma ::= PROGRAM Decls:decls BEGIN VarDecls:varDecls Statements:statements END
             {:
             BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
-            RESULT = new ProgramOpNode(decls, beginEndOpNode);
+            RESULT = new ProgramOpNode((List)decls.children, beginEndOpNode);
             :};
 
-Decls ::= VarDecl:varDecl Decls:decls {: decls.addVarDeclOpNode(varDecl); RESULT = decls; :}
-      | DefDecl:defDecl Decls:decls {: decls.addDeclOpNode(defDecl); RESULT = decls; :}
-      | /*eps*/ {: RESULT = new TempNode.TempDeclsNode(); :};
+Decls ::= VarDecl:varDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, varDecl); :}
+      | DefDecl:defDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, defDecl); :}
+      | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
 VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varDecl); RESULT = varDecls; :}
          | /*eps*/ {: RESULT = new TempNode.TempDeclsNode(); :};
@@ -102,7 +106,7 @@ DefDecl ::= DEF ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Body:b
         {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), (List)parDecls.children, optType, body); :} // TO BE CONTINUED
 
         | DEF ID:identifier LPAR  RPAR OptType:optType Body:body
-        {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), null, optType, body); :};
+        {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), new ArrayList<>(), optType, body); :};
 
 ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls {: RESULT = new TempNode.TempAggregateNode(parDecls, parDecl); :}
           | ParDecl:parDecl {: RESULT = new TempNode.TempAggregateNode(parDecl); :};
@@ -125,15 +129,15 @@ Statements ::= Stat:stat Statements:statements {: RESULT = new TempNode.TempAggr
 	   | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
 
-Stat ::=  Vars IN SEMI {:  :}
-        | Exprs OUT SEMI
-        | Exprs OUTNL SEMI
-	| Vars ASSIGN Exprs SEMI
-	| FunCall SEMI
-        | IF LPAR Expr RPAR THEN Body ELSE Body
-        | IF LPAR Expr RPAR THEN Body
-        | WHILE LPAR Expr RPAR DO Body
-	| RETURN Expr SEMI ;
+Stat ::=  Vars:vars IN SEMI {: RESULT = new ReadOpNode((List)vars.children); :}
+        | Exprs:exprs OUT SEMI {: RESULT = new WriteOpNode((List)exprs.children, false); :}
+        | Exprs:exprs OUTNL SEMI {: RESULT = new WriteOpNode((List)exprs.children, true); :}
+	| Vars:vars ASSIGN Exprs:exprs SEMI {: RESULT = new AssignOpNode((List)vars.children, (List)exprs.children); :}
+	| FunCall:funcall SEMI {: RESULT = funcall; :}
+        | IF LPAR Expr:expr RPAR THEN Body:body_1 ELSE Body:body_2 {: RESULT = new IfThenElseOpNode(expr, body_1, body_2); :}
+        | IF LPAR Expr:expr RPAR THEN Body:body {: RESULT = new IfThenOpNode(expr, body); :}
+        | WHILE LPAR Expr:expr RPAR DO Body:body {: RESULT = new WhileOpNode(expr, body); :}
+	| RETURN Expr:expr SEMI {: RESULT = new ReturnOpNode(expr); :};
 
 
 Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode(identifier)); :}

@@ -24,8 +24,8 @@ public class TempNode {
         }
 
         @Override
-        public void accept(Visitor v) {
-
+        public Object accept(Visitor v) {
+            return null;
         }
 
         public List<Node> children;
@@ -47,8 +47,8 @@ public class TempNode {
         }
 
         @Override
-        public void accept(Visitor v) {
-
+        public Object accept(Visitor v) {
+            return null;
         }
 
         public List<VarDeclOpNode> varDeclOpNodes;

@@ -13,8 +13,8 @@ public class BeginEndOpNode extends Node {
     }
 
     @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
+    public Object accept(Visitor visitor) {
+        return visitor.visit(this);
     }
 
     public List<VarDeclOpNode> varDeclOpNodes;

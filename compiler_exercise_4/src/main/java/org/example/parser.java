@@ -7,6 +7,7 @@ package org.example;
 
 import java_cup.runtime.*;
 import java.util.List;
+import java.util.ArrayList;
 import org.example.tree.statements.*;
 import org.example.tree.expr.*;
 import org.example.tree.*;
@@ -420,7 +421,7 @@ class CUP$parser$actions {
               ProgramOpNode RESULT =null;
 		int declsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
 		int declsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
-		TempNode.TempDeclsNode decls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		TempNode.TempAggregateNode decls = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
 		int varDeclsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int varDeclsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		TempNode.TempDeclsNode varDecls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
@@ -429,7 +430,7 @@ class CUP$parser$actions {
 		TempNode.TempAggregateNode statements = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
             BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
-            RESULT = new ProgramOpNode(decls, beginEndOpNode);
+            RESULT = new ProgramOpNode((List)decls.children, beginEndOpNode);
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Programma",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -452,14 +453,14 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 2: // Decls ::= VarDecl Decls 
             {
-              TempNode.TempDeclsNode RESULT =null;
+              TempNode.TempAggregateNode RESULT =null;
 		int varDeclleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int varDeclright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		VarDeclOpNode varDecl = (VarDeclOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int declsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int declsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		TempNode.TempDeclsNode decls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 decls.addVarDeclOpNode(varDecl); RESULT = decls; 
+		TempNode.TempAggregateNode decls = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 RESULT = new TempNode.TempAggregateNode(decls, varDecl); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Decls",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -467,14 +468,14 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 3: // Decls ::= DefDecl Decls 
             {
-              TempNode.TempDeclsNode RESULT =null;
+              TempNode.TempAggregateNode RESULT =null;
 		int defDeclleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int defDeclright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		DefDeclOpNode defDecl = (DefDeclOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int declsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int declsright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		TempNode.TempDeclsNode decls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 decls.addDeclOpNode(defDecl); RESULT = decls; 
+		TempNode.TempAggregateNode decls = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 RESULT = new TempNode.TempAggregateNode(decls, defDecl); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Decls",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -482,8 +483,8 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 4: // Decls ::= 
             {
-              TempNode.TempDeclsNode RESULT =null;
-		 RESULT = new TempNode.TempDeclsNode(); 
+              TempNode.TempAggregateNode RESULT =null;
+		 RESULT = new TempNode.TempAggregateNode(); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Decls",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -756,7 +757,7 @@ class CUP$parser$actions {
 		int bodyleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int bodyright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		BodyOpNode body = (BodyOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = new DefDeclOpNode(new IdentifierNode(identifier), null, optType, body); 
+		 RESULT = new DefDeclOpNode(new IdentifierNode(identifier), new ArrayList<>(), optType, body); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("DefDecl",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -918,7 +919,10 @@ class CUP$parser$actions {
           case 39: // Stat ::= Vars IN SEMI 
             {
               StatOpNode RESULT =null;
-		  
+		int varsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int varsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		TempNode.TempAggregateNode vars = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		 RESULT = new ReadOpNode((List)vars.children); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -927,7 +931,10 @@ class CUP$parser$actions {
           case 40: // Stat ::= Exprs OUT SEMI 
             {
               StatOpNode RESULT =null;
-
+		int exprsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int exprsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		TempNode.TempAggregateNode exprs = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		 RESULT = new WriteOpNode((List)exprs.children, false); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -936,7 +943,10 @@ class CUP$parser$actions {
           case 41: // Stat ::= Exprs OUTNL SEMI 
             {
               StatOpNode RESULT =null;
-
+		int exprsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int exprsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		TempNode.TempAggregateNode exprs = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		 RESULT = new WriteOpNode((List)exprs.children, true); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -945,7 +955,13 @@ class CUP$parser$actions {
           case 42: // Stat ::= Vars ASSIGN Exprs SEMI 
             {
               StatOpNode RESULT =null;
-
+		int varsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int varsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		TempNode.TempAggregateNode vars = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int exprsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int exprsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		TempNode.TempAggregateNode exprs = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		 RESULT = new AssignOpNode((List)vars.children, (List)exprs.children); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -954,7 +970,10 @@ class CUP$parser$actions {
           case 43: // Stat ::= FunCall SEMI 
             {
               StatOpNode RESULT =null;
-
+		int funcallleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int funcallright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		CallOpNode funcall = (CallOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		 RESULT = funcall; 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -963,7 +982,16 @@ class CUP$parser$actions {
           case 44: // Stat ::= IF LPAR Expr RPAR THEN Body ELSE Body 
             {
               StatOpNode RESULT =null;
-
+		int exprleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).left;
+		int exprright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).right;
+		ExprOpNode expr = (ExprOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value;
+		int body_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int body_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		BodyOpNode body_1 = (BodyOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int body_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int body_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		BodyOpNode body_2 = (BodyOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 RESULT = new IfThenElseOpNode(expr, body_1, body_2); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-7)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -972,7 +1000,13 @@ class CUP$parser$actions {
           case 45: // Stat ::= IF LPAR Expr RPAR THEN Body 
             {
               StatOpNode RESULT =null;
-
+		int exprleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int exprright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		ExprOpNode expr = (ExprOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int bodyleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bodyright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		BodyOpNode body = (BodyOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 RESULT = new IfThenOpNode(expr, body); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -981,7 +1015,13 @@ class CUP$parser$actions {
           case 46: // Stat ::= WHILE LPAR Expr RPAR DO Body 
             {
               StatOpNode RESULT =null;
-
+		int exprleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int exprright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		ExprOpNode expr = (ExprOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int bodyleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bodyright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		BodyOpNode body = (BodyOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 RESULT = new WhileOpNode(expr, body); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -990,7 +1030,10 @@ class CUP$parser$actions {
           case 47: // Stat ::= RETURN Expr SEMI 
             {
               StatOpNode RESULT =null;
-
+		int exprleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int exprright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		ExprOpNode expr = (ExprOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		 RESULT = new ReturnOpNode(expr); 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

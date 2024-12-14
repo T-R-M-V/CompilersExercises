@@ -6,19 +6,16 @@ import java.util.List;
 
 public class ProgramOpNode extends Node{
 
-    public ProgramOpNode(TempNode.TempDeclsNode declsTempNode, BeginEndOpNode beginEndOpNode) {
-        varDeclOpNodes = declsTempNode.varDeclOpNodes;
-        defDeclOpNodes = declsTempNode.defDeclOpNodes;
+    public ProgramOpNode(List<Node> declsNodes, BeginEndOpNode beginEndOpNode) {
+        this.declsNodes = declsNodes;
         this.beginEndOpNode = beginEndOpNode;
     }
 
     @Override
-    public void accept(Visitor v) {
-        v.visit(this);
+    public Object accept(Visitor v) {
+        return v.visit(this);
     }
 
-
-    public List<VarDeclOpNode> varDeclOpNodes;
-    public List<DefDeclOpNode> defDeclOpNodes;
+    public List<Node> declsNodes; // T: In this list are stored either the declaration of variables and functions
     public BeginEndOpNode beginEndOpNode;
 }

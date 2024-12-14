@@ -4,7 +4,6 @@ import org.example.Visitor;
 import org.example.tree.IdentifierNode;
 import org.example.tree.expr.ExprOpNode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CallOpNode extends StatOpNode {
@@ -20,8 +19,8 @@ public class CallOpNode extends StatOpNode {
     }
 
     @Override
-    public void accept(Visitor v) {
-        v.visit(this);
+    public Object accept(Visitor v) {
+        return v.visit(this);
     }
 
     public IdentifierNode identifierNode;

@@ -2,7 +2,6 @@ package org.example.tree;
 
 import org.example.Visitor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VarDeclOpNode extends Node {
@@ -13,8 +12,8 @@ public class VarDeclOpNode extends Node {
     }
 
     @Override
-    public void accept(Visitor v) {
-        v.visit(this);
+    public Object accept(Visitor v) {
+        return v.visit(this);
     }
 
     public List<VarOptInitOpNode> varOptInitOpNodes;

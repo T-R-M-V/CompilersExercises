@@ -17,8 +17,8 @@ public class BinaryOpNode extends ExprOpNode {
     }
 
     @Override
-    public void accept(Visitor v) {
-        v.visit(this);
+    public Object accept(Visitor v) {
+        return v.visit(this);
     }
 
     public BinaryOpNode.Type type;

@@ -1,4 +1,104 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<ProgramOpNode name="Program">
-    <NewChild/>
+<ProgramOpNode>
+    <DefDeclOpNode>
+        <IdentifierNode identifier="saluto2"/>
+        <TypeNode Type="String"/>
+        <body>
+            <ReturnOpNode>
+                <ExprValueNode>
+                    <ConstantNode type="String" value="ciao2"/>
+                </ExprValueNode>
+            </ReturnOpNode>
+        </body>
+    </DefDeclOpNode>
+    <DefDeclOpNode>
+        <IdentifierNode identifier="saluto"/>
+        <TypeNode Type="String"/>
+        <body>
+            <ReturnOpNode>
+                <ExprValueNode>
+                    <ConstantNode type="String" value="ciao"/>
+                </ExprValueNode>
+            </ReturnOpNode>
+        </body>
+    </DefDeclOpNode>
+    <beginEndOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="a"/>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <ConstantNode type="Integer" value="0"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="b"/>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <ConstantNode type="Integer" value="0"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
+        <WhileOpNode>
+            <BinaryOpNode type="Le">
+                <ExprValueNode>
+                    <IdentifierNode identifier="i"/>
+                </ExprValueNode>
+                <ExprValueNode>
+                    <ConstantNode type="Integer" value="0"/>
+                </ExprValueNode>
+            </BinaryOpNode>
+            <body>
+                <VarDeclOpNode>
+                    <VarOptInitOpNode>
+                        <IdentifierNode identifier="saluto"/>
+                    </VarOptInitOpNode>
+                    <typeOrConstantNode>
+                        <ConstantNode type="String" value="ciao"/>
+                    </typeOrConstantNode>
+                </VarDeclOpNode>
+                <WriteOpNode newline="true">
+                    <ExprValueNode>
+                        <IdentifierNode identifier="saluto"/>
+                    </ExprValueNode>
+                </WriteOpNode>
+                <ReadOpNode>
+                    <IdentifierNode identifier="i"/>
+                </ReadOpNode>
+                <WriteOpNode newline="false">
+                    <ExprValueNode>
+                        <ConstantNode type="String" value="Quante moltiplicazioni vuoi svolgere? (inserire intero &gt; 0)"/>
+                    </ExprValueNode>
+                </WriteOpNode>
+            </body>
+        </WhileOpNode>
+        <AssignOpNode>
+            <IdentifierNode identifier="i"/>
+            <UnaryOpNode type="Uminus">
+                <ExprValueNode>
+                    <ConstantNode type="Integer" value="1"/>
+                </ExprValueNode>
+            </UnaryOpNode>
+        </AssignOpNode>
+        <WriteOpNode newline="true">
+            <ExprValueNode>
+                <ConstantNode type="String" value="accumulando i risultati &lt; 100 in sommagrande e quelli &lt; 100 in sommapiccola"/>
+            </ExprValueNode>
+        </WriteOpNode>
+        <WriteOpNode newline="true">
+            <ExprValueNode>
+                <ConstantNode type="String" value="Questo programma permette di svolgere una serie di moltiplicazioni"/>
+            </ExprValueNode>
+        </WriteOpNode>
+        <AssignOpNode>
+            <IdentifierNode identifier="sommapiccola"/>
+            <IdentifierNode identifier="sommagrande"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="0"/>
+            </ExprValueNode>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="0"/>
+            </ExprValueNode>
+        </AssignOpNode>
+    </beginEndOpNode>
 </ProgramOpNode>
