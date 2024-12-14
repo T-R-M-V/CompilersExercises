@@ -1,6 +1,8 @@
 package org.example.tree;
 
-public class TypeNode {
+import org.example.Visitor;
+
+public class TypeNode extends Node{
 
     public enum Type {
         Integer,
@@ -13,6 +15,11 @@ public class TypeNode {
 
     public TypeNode(TypeNode.Type type) {
         this.type = type;
+    }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public Type type;

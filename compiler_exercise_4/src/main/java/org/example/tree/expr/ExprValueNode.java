@@ -1,5 +1,6 @@
 package org.example.tree.expr;
 
+import org.example.Visitor;
 import org.example.tree.ConstantNode;
 import org.example.tree.IdentifierNode;
 import org.example.tree.statements.CallOpNode;
@@ -22,6 +23,11 @@ public class ExprValueNode extends ExprOpNode {
         this.callOpNode = callOpNode;
         this.constantNode = null;
         this.identifierNode = null;
+    }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public ConstantNode constantNode;

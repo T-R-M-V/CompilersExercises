@@ -1,5 +1,7 @@
 package org.example.tree;
 
+import org.example.Visitor;
+
 public class ConstantNode extends Node {
 
     public enum Type {
@@ -19,6 +21,12 @@ public class ConstantNode extends Node {
         this.type = type;
         this.value = value;
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
 
     public ConstantNode.Type type;
     public String value;

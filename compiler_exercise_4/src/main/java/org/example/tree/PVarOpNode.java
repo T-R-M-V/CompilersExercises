@@ -1,5 +1,7 @@
 package org.example.tree;
 
+import org.example.Visitor;
+
 public class PVarOpNode extends Node {
 
     public PVarOpNode(IdentifierNode identifierNode) {
@@ -10,6 +12,11 @@ public class PVarOpNode extends Node {
     public PVarOpNode(IdentifierNode identifierNode, boolean ref) {
         this.ref = ref;
         this.identifierNode = identifierNode;
+    }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public IdentifierNode identifierNode;

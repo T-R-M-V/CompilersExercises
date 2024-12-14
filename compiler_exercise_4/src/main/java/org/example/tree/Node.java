@@ -1,5 +1,7 @@
 package org.example.tree;
 
-public abstract class Node {
+import org.example.Visitor;
 
+public abstract class Node {
+    public abstract void accept(Visitor v);
 }

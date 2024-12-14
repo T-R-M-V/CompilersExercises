@@ -1,5 +1,7 @@
 package org.example.tree;
 
+import org.example.Visitor;
+
 public class TypeOrConstantNode extends Node {
 
     public TypeOrConstantNode(TypeNode typeNode) {
@@ -11,6 +13,12 @@ public class TypeOrConstantNode extends Node {
         this.typeNode = null;
         this.constantNode = constantNode;
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
 
     public TypeNode typeNode;
     public ConstantNode constantNode;

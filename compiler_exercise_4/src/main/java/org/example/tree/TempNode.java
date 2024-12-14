@@ -1,5 +1,7 @@
 package org.example.tree;
 
+import org.example.Visitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,11 @@ public class TempNode {
             children.add(nodeToAdd);
         }
 
+        @Override
+        public void accept(Visitor v) {
+
+        }
+
         public List<Node> children;
     }
 
@@ -37,6 +44,11 @@ public class TempNode {
 
         public void addDeclOpNode(DefDeclOpNode defDeclOpNode) {
             defDeclOpNodes.add(defDeclOpNode);
+        }
+
+        @Override
+        public void accept(Visitor v) {
+
         }
 
         public List<VarDeclOpNode> varDeclOpNodes;

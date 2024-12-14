@@ -1,5 +1,6 @@
 package org.example.tree.statements;
 
+import org.example.Visitor;
 import org.example.tree.expr.ExprOpNode;
 
 import java.util.List;
@@ -10,6 +11,12 @@ public class WriteOpNode extends StatOpNode {
         this.exprOpNodes = exprOpNodes;
         this.newLine = newLine;
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
 
     public List<ExprOpNode> exprOpNodes;
     public boolean newLine;

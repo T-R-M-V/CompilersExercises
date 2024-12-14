@@ -1,5 +1,7 @@
 package org.example.tree.expr;
 
+import org.example.Visitor;
+
 public class BinaryOpNode extends ExprOpNode {
 
     public enum Type {
@@ -12,6 +14,11 @@ public class BinaryOpNode extends ExprOpNode {
         this.type = type;
         this.left = left;
         this.right = right;
+    }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public BinaryOpNode.Type type;

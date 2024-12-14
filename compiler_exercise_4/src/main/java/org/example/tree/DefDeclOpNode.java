@@ -1,5 +1,7 @@
 package org.example.tree;
 
+import org.example.Visitor;
+
 import java.util.List;
 
 public class DefDeclOpNode extends Node {
@@ -10,6 +12,12 @@ public class DefDeclOpNode extends Node {
         this.typeNode = typeNode;
         this.bodyOpNode = bodyOpNode;
     }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
 
     public IdentifierNode identifierNode;
     public List<ParDeclOpNode> parDeclOpNodes;
