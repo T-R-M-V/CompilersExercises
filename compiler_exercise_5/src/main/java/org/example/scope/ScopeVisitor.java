@@ -287,19 +287,26 @@ public class ScopeVisitor implements Visitor {
 
 
 
+
+
         node.scope = new Scope();
         currentScope = node.scope;
         isCalledFromDefDecl = true;
 
         // T: Visit body
         node.bodyOpNode.accept(this);
-
         currentScope = node.scope; // T: now the current scope is of the body of the procedure
 
         for(var parDecl : node.parDeclOpNodes) {
             parDecl.accept(this);
             currentScope = node.scope; // T: probably useless, the scope doesn't change during the visit of this node
         }
+
+        node.identifierNode.accept(this);
+        currentScope = node.scope;
+
+        node.typeNode.accept(this);
+        currentScope = node.scope;
 
         return null;
     }
@@ -326,6 +333,15 @@ public class ScopeVisitor implements Visitor {
                 System.out.println("Variable is already defined");
                 System.exit(0);
             }
+        }
+
+
+        node.typeNode.accept(this);
+        currentScope = node.scope;
+
+        for(var varOp: node.pVarOpNodes) {
+            varOp.accept(this);
+            currentScope = node.scope;
         }
 
         return null;
@@ -406,6 +422,16 @@ public class ScopeVisitor implements Visitor {
             }
         }
         // T: retrieve the declared variables (END)
+
+
+
+        node.typeOrConstant.accept(this);
+        currentScope = node.scope;
+
+        for(var varOptInit : node.varOptInitOpNodes) {
+            varOptInit.accept(this);
+            currentScope = node.scope;
+        }
 
         return null;
     }
