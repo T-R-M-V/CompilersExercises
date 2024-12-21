@@ -1,0 +1,35 @@
+program
+
+a1 = b1*4 and c1| d1 : 'h' ;
+
+def ciao ( a,b,c : int; ref d : char ) : bool {
+	e | f = 10 | h : "";
+	return false;
+}
+
+e|f|g=1:int; 
+
+begin
+t3 : bool;
+
+t1 |t2<<;
+3 > 4 and not id4  >>;
+
+if ( 4 > ciao() ) then {
+
+	if ( t3 ) then {}
+	else {}
+
+} else {
+	orto : int;
+	while (orto * fun() and true) do {
+		id1 = "ciao" : string;
+		id2 : double;
+		
+		if(true or not bool1 and bool2) then {
+			id2 := id1;
+		}
+	}
+}
+
+end

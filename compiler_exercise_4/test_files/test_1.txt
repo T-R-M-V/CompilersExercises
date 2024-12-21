@@ -1,0 +1,49 @@
+program
+
+e : int 
+; x : 1;
+ y = 3 + 4 : int
+; z = 4 / 2 : double
+; w = not(x and y or z) and (3 < 4) : bool
+; k = w : bool
+; j : 'a'
+; l : "i_hope_it_work"
+; n :string
+; a | b | c : int;
+
+def add( a,b,c : int; x : double; y : double; ref res : double) : int
+ {
+	e : int 
+	; g : 1
+	; h = 3 + 4 : int
+	; j = 4 / 2 : double; // Only for testing
+
+	if (x < 100) then { h := j; } else {i <<; i !>>;}
+	if (y >= 2000) then {}
+	while((x + y) >= (y - x) and true and false == true) do { e := x - y; }
+
+	return x - y; // This sum is weird
+ }
+
+def sub()
+ {
+
+ }
+
+begin
+
+e : int 
+; x : 1;
+ y = 3 + 4 : int
+; z = 4 / 2 : double
+; w = not(x and y or z) and (3 < 4) : bool
+; k = w : bool
+; j : 'a'
+; l : "i_hope_it_work"
+; n :string
+; a | b | c : int;
+g = add(x,y,z) : int;
+
+ff := sub();
+
+end

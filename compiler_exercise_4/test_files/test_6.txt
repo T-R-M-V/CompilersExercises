@@ -1,0 +1,52 @@
+program
+
+totale | prezzo | pagamento | resto : double;
+numProdotti | i : int;
+nomeProdotto : string;
+
+begin
+
+"Benvenuto alla cassa, Inserisci il numero di prodotti che hai acquistato." !>>;
+
+numProdotti := -1;
+
+while (numProdotti <= 0) do {
+    "Il numero di prodotti deve essere maggiore di 0: " !>>;
+    numProdotti <<;
+}
+
+totale := 0;
+i := 0;
+
+while (i < numProdotti) do {
+    "Inserisci il nome del prodotto ", i + 1, ":" !>>;
+    nomeProdotto <<;
+
+    "Inserisci il prezzo del prodotto ", i + 1, ":" !>>;
+    prezzo <<;
+
+    while (prezzo < 0) do {
+        "Il prezzo non può essere negativo. Reinserisci il prezzo: " !>>;
+        prezzo <<;
+    }
+
+    totale := totale + prezzo;
+    i := i + 1;
+}
+
+"Il totale da pagare è: ", totale !>>;
+
+pagamento := -1;
+
+while (pagamento < totale) do {
+    "Inserisci il pagamento (deve essere almeno uguale al totale): " !>>;
+    pagamento <<;
+}
+
+resto := pagamento - totale;
+
+"Grazie per l'acquisto! Il resto è: €", resto !>>;
+
+end
+
+

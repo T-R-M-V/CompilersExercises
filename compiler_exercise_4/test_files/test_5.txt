@@ -1,0 +1,62 @@
+program
+
+n | fibonacci : int;
+a | b | temp : int;
+
+def calcoloFibonacci( n: int; ref fibonacci : int)
+{
+    a | b := 0, 1;
+
+    if (n == 0) then {
+        fibonacci := a;
+    }
+    else {
+        if (n == 1) then {
+            fibonacci := b;
+        }
+        else {
+            while (n > 1) do {
+                temp := b;
+                b := a + b;
+                a := temp;
+                n := n - 1;
+            }
+            fibonacci := b;
+        }
+    }
+
+
+
+    if (n == 1) then {
+        fibonacci := b;
+    }
+    else {
+        while (n > 1) do {
+            temp := b;
+            b := a + b;
+            a := temp;
+            n := n - 1;
+        }
+        fibonacci := b;
+    }
+}
+
+begin
+
+"Questo programma calcola il termine n-esimo della sequenza di Fibonacci" !>>;
+"Per favore, inserisci un valore intero positivo per n: " !>>;
+
+n := -1;
+
+while (n < 0) do {
+    "n deve essere un intero >= 0" !>>;
+    n <<;
+}
+
+calcoloFibonacci(n, fibonacci);
+
+"Il termine ", n, " della sequenza di Fibonacci è: ", fibonacci !>>;
+
+end
+
+
