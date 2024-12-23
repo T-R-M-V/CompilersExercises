@@ -409,9 +409,28 @@ public class ScopeVisitor implements Visitor {
     }
 
     @Override
+    // T: For now we add variables to the scope even if there are errors in declaration
     public Object visit(VarDeclOpNode node) {
 
         node.scope = currentScope;
+
+        // T: Check if the VarDeclOp respect some rules (START)
+        if(node.typeOrConstant.constantNode != null) {
+            int numberOfVariables = node.varOptInitOpNodes.size();
+
+            if(numberOfVariables > 1) {
+                System.out.println("Can't define multiple variables when you use constant");
+            }
+
+            for(var varOptInit: node.varOptInitOpNodes) {
+                if(varOptInit.exprOpNode != null) {
+                    System.out.println("Can't define an initial value for variables defined with a constant");
+                }
+            }
+        }
+        // T: Check if the VarDeclOp respect some rules (END)
+
+
 
         // T: type inference (START)
         Type type;

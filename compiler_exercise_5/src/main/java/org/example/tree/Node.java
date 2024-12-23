@@ -1,5 +1,6 @@
 package org.example.tree;
 
+import org.example.Type;
 import org.example.Visitor;
 import org.example.scope.Scope;
 
@@ -7,6 +8,8 @@ public abstract class Node {
     public abstract Object accept(Visitor v);
 
     public Scope scope;
+
+    public Type type; // T: type of node, is used during Type Checking
 
     // T: are used to specify the line and column where the code referred to this line start
     public int line;

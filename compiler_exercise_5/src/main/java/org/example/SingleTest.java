@@ -1,6 +1,8 @@
 package org.example;
 
 import java_cup.runtime.Symbol;
+import org.example.scope.Scope;
+import org.example.scope.ScopeVisitor;
 import org.example.tree.ProgramOpNode;
 import org.w3c.dom.Document;
 
@@ -32,6 +34,11 @@ public class SingleTest {
             DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(new File("AST.xml"));
             transformer.transform(source, result);
+
+
+            
+            ScopeVisitor scopeVisitor = new ScopeVisitor();
+            Scope scope = (Scope)scopeVisitor.visit(programOpNode);
         }
         catch(Exception e) {
             res = "errata!!";
