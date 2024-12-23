@@ -450,7 +450,7 @@ class CUP$parser$actions {
 		LexerInfo begin = (LexerInfo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
 		int varDeclsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int varDeclsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		TempNode.TempDeclsNode varDecls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		TempNode.TempAggregateNode varDecls = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int statementsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int statementsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		TempNode.TempAggregateNode statements = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
@@ -458,7 +458,7 @@ class CUP$parser$actions {
 		int endright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		LexerInfo end = (LexerInfo)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-            BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
+            BeginEndOpNode beginEndOpNode = new BeginEndOpNode((List)varDecls.children, (List)statements.children);
             beginEndOpNode.setStartPos(begin.line, begin.column);
             ProgramOpNode programOpNode = new ProgramOpNode((List)decls.children, beginEndOpNode);
             programOpNode.setStartPos(program.line, program.column);
@@ -525,14 +525,16 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 5: // VarDecls ::= VarDecls VarDecl 
             {
-              TempNode.TempDeclsNode RESULT =null;
+              TempNode.TempAggregateNode RESULT =null;
 		int varDeclsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int varDeclsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		TempNode.TempDeclsNode varDecls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		TempNode.TempAggregateNode varDecls = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int varDeclleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int varDeclright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		VarDeclOpNode varDecl = (VarDeclOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 varDecls.addVarDeclOpNode(varDecl); RESULT = varDecls; 
+		
+                    RESULT = new TempNode.TempAggregateNode(varDecls, varDecl, false);
+                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("VarDecls",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -540,8 +542,10 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 6: // VarDecls ::= 
             {
-              TempNode.TempDeclsNode RESULT =null;
-		 RESULT = new TempNode.TempDeclsNode(); 
+              TempNode.TempAggregateNode RESULT =null;
+		
+                RESULT = new TempNode.TempAggregateNode();
+            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("VarDecls",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1097,12 +1101,12 @@ class CUP$parser$actions {
 		LexerInfo lbrac = (LexerInfo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
 		int varDeclsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int varDeclsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		TempNode.TempDeclsNode varDecls = (TempNode.TempDeclsNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		TempNode.TempAggregateNode varDecls = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int statementsleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int statementsright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		TempNode.TempAggregateNode statements = (TempNode.TempAggregateNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-                BodyOpNode bodyOpNode = new BodyOpNode((List)varDecls.varDeclOpNodes, (List)statements.children);
+                BodyOpNode bodyOpNode = new BodyOpNode((List)varDecls.children, (List)statements.children);
                 bodyOpNode.setStartPos(lbrac.line, lbrac.column);
                 RESULT = bodyOpNode;
             

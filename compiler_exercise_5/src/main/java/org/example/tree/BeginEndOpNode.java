@@ -7,8 +7,8 @@ import java.util.List;
 
 public class BeginEndOpNode extends Node {
 
-    public BeginEndOpNode(TempNode.TempDeclsNode tempDeclsNode, List<StatOpNode> statOpNodes) {
-        this.varDeclOpNodes = tempDeclsNode.varDeclOpNodes;
+    public BeginEndOpNode(List<VarDeclOpNode> varDeclsOpNodes, List<StatOpNode> statOpNodes) {
+        this.varDeclOpNodes = varDeclsOpNodes;
         this.statOpNodes = statOpNodes;
     }
 

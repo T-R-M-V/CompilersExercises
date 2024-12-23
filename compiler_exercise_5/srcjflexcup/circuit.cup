@@ -73,7 +73,7 @@ precedence left TIMES, DIV;
 /* Grammar */
 Programma ::= PROGRAM:program Decls:decls BEGIN:begin VarDecls:varDecls Statements:statements END:end
             {:
-            BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
+            BeginEndOpNode beginEndOpNode = new BeginEndOpNode((List)varDecls.children, (List)statements.children);
             beginEndOpNode.setStartPos(begin.line, begin.column);
             ProgramOpNode programOpNode = new ProgramOpNode((List)decls.children, beginEndOpNode);
             programOpNode.setStartPos(program.line, program.column);
@@ -332,7 +332,7 @@ OptType ::= COLON Type:type
 
 Body ::= LBRAC:lbrac VarDecls:varDecls Statements:statements RBRAC
             {:
-                BodyOpNode bodyOpNode = new BodyOpNode((List)varDecls.varDeclOpNodes, (List)statements.children);
+                BodyOpNode bodyOpNode = new BodyOpNode((List)varDecls.children, (List)statements.children);
                 bodyOpNode.setStartPos(lbrac.line, lbrac.column);
                 RESULT = bodyOpNode;
             :}
