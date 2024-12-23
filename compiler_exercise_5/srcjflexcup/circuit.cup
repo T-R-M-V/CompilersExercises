@@ -101,7 +101,7 @@ VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit
                 {:
                 IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
                 identifierNode.setStartPos(identifier.line, identifier.column);
-                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode);
+                VarOptInitOpNode varOptInitNode = new VarOptInitOpNode(identifierNode);
                 varOptInitNode.setStartPos(identifier.line, identifier.column);
                 TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
                 tempAggregateNode.setStartPos(identifier.line, identifier.column);
@@ -112,7 +112,7 @@ VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit
 	            {:
                 IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
                 identifierNode.setStartPos(identifier.line, identifier.column);
-                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode, expr);
+                VarOptInitOpNode varOptInitNode = new VarOptInitOpNode(identifierNode, expr);
                 varOptInitNode.setStartPos(identifier.line, identifier.column);
                 TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
                 tempAggregateNode.setStartPos(identifier.line, identifier.column);
@@ -123,9 +123,9 @@ VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit
                 {:
                 IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
                 identifierNode.setStartPos(identifier.line, identifier.column);
-                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode);
+                VarOptInitOpNode varOptInitNode = new VarOptInitOpNode(identifierNode);
                 varOptInitNode.setStartPos(identifier.line, identifier.column);
-                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varOptInitNode);
                 tempAggregateNode.setStartPos(identifier.line, identifier.column);
 
                 RESULT = tempAggregateNode;
@@ -134,9 +134,9 @@ VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit
 	            {:
                 IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
                 identifierNode.setStartPos(identifier.line, identifier.column);
-                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode, expr);
+                VarOptInitOpNode varOptInitNode = new VarOptInitOpNode(identifierNode, expr);
                 varOptInitNode.setStartPos(identifier.line, identifier.column);
-                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varOptInitNode);
                 tempAggregateNode.setStartPos(identifier.line, identifier.column);
 
 	            RESULT = tempAggregateNode;
@@ -148,92 +148,93 @@ TypeOrConstant ::= Type:type
                     TypeOrConstantNode typeOrConstantNode = new TypeOrConstantNode(type);
                     typeOrConstantNode.setStartPos(type.line, type.column);
 
-                    RESULT = typeOrConstatNode;
+                    RESULT = typeOrConstantNode;
                 :}
         | Constant:constant
 	            {:
                     TypeOrConstantNode typeOrConstantNode = new TypeOrConstantNode(constant);
-                    typeOrConstantNode.setStartPos(type.line, type.column);
+                    typeOrConstantNode.setStartPos(constant.line, constant.column);
 
-	                RESULT = typeOrConstantNode
+	                RESULT = typeOrConstantNode;
 	            :}
 	    ;
 
-Type ::= INT:int
+Type ::= INT:int_t
             {:
                 TypeNode typeNode = new TypeNode(Type.Integer);
-                typeNode.setStartPos(int.line, int.column);
+                typeNode.setStartPos(int_t.line, int_t.column);
 
                 RESULT = typeNode;
             :}
-        |  BOOL:bool
+        |  BOOL:bool_t
             {:
                 TypeNode typeNode = new TypeNode(Type.Boolean);
-                typeNode.setStartPos(bool.line, bool.column);
+                typeNode.setStartPos(bool_t.line, bool_t.column);
 
                 RESULT = typeNode;
             :}
-        |  DOUBLE
+        |  DOUBLE:double_t
             {:
                 TypeNode typeNode = new TypeNode(Type.Double);
-                typeNode.setStartPos(double.line, double.column);
+                typeNode.setStartPos(double_t.line, double_t.column);
 
                 RESULT = typeNode;
             :}
-        |  STRING:string
+        |  STRING:string_t
             {:
                 TypeNode typeNode = new TypeNode(Type.String);
-                typeNode.setStartPos(string.line, string.column);
+                typeNode.setStartPos(string_t.line, string_t.column);
 
                 RESULT = typeNode;
             :}
-        |  CHAR:char
+        |  CHAR:char_t
             {:
                 TypeNode typeNode = new TypeNode(Type.Char);
-                typeNode.setStartPos(char.line, char.column);
+                typeNode.setStartPos(char_t.line, char_t.column);
 
                 RESULT = typeNode;
             :}
+        ;
 
-Constant ::= TRUE:true
+Constant ::= TRUE:true_const
             {:
                 ConstantNode constantNode = new ConstantNode(Type.Boolean, "true");
-                constantNode.setStartPos(true.line, true.colum)
+                constantNode.setStartPos(true_const.line, true_const.column);
 
                 RESULT = constantNode;
             :}
-        | FALSE:false
+        | FALSE:false_const
             {:
                 ConstantNode constantNode = new ConstantNode(Type.Boolean, "false");
-                constantNode.setStartPos(false.line, false.colum)
+                constantNode.setStartPos(false_const.line, false_const.column);
 
                 RESULT = constantNode;
             :}
         | INT_CONST:int_const
             {:
                 ConstantNode constantNode = new ConstantNode(Type.Integer, (String)int_const.value);
-                constantNode.setStartPos(int_const.line, int_const.colum)
+                constantNode.setStartPos(int_const.line, int_const.column);
 
                 RESULT = constantNode;
             :}
         | DOUBLE_CONST:double_const
             {:
                 ConstantNode constantNode = new ConstantNode(Type.Double, (String)double_const.value);
-                constantNode.setStartPos(double_const.line, double_const.colum)
+                constantNode.setStartPos(double_const.line, double_const.column);
 
                 RESULT = constantNode;
             :}
         | CHAR_CONST:char_const
             {:
                 ConstantNode constantNode = new ConstantNode(Type.Char, (String)char_const.value);
-                constantNode.setStartPos(char_const.line, char_const.colum)
+                constantNode.setStartPos(char_const.line, char_const.column);
 
                 RESULT = constantNode;
             :}
         | STRING_CONST:string_const
             {:
                 ConstantNode constantNode = new ConstantNode(Type.String, (String)string_const.value);
-                constantNode.setStartPos(string_const.line, string_const.colum)
+                constantNode.setStartPos(string_const.line, string_const.column);
 
                 RESULT = constantNode;
             :}
@@ -244,17 +245,17 @@ DefDecl ::= DEF:def ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Bo
             {:
                 IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
                 identifierNode.setStartPos(identifier.line, identifier.column);
-                DefDeclOpNode defDeclOpNOde = new DefDeclOpNode(identifierNode, (List)parDecls.children, optType, body);
+                DefDeclOpNode defDeclOpNode = new DefDeclOpNode(identifierNode, (List)parDecls.children, optType, body);
                 defDeclOpNode.setStartPos(def.line, def.column);
 
                 RESULT = defDeclOpNode;
             :}
 
-        | DEF ID:identifier LPAR  RPAR OptType:optType Body:body
+        | DEF:def ID:identifier LPAR  RPAR OptType:optType Body:body
             {:
                 IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
                 identifierNode.setStartPos(identifier.line, identifier.column);
-                DefDeclOpNode defDeclOpNOde = new DefDeclOpNode(new IdentifierNode((String)identifier.value), new ArrayList<>(), optType, body);
+                DefDeclOpNode defDeclOpNode = new DefDeclOpNode(new IdentifierNode((String)identifier.value), new ArrayList<>(), optType, body);
                 defDeclOpNode.setStartPos(def.line, def.column);
 
                 RESULT = defDeclOpNode;
@@ -367,28 +368,28 @@ Stat ::=  Vars:vars IN SEMI
             {:
                 RESULT = funcall;
             :}
-        | IF:if LPAR Expr:expr RPAR THEN Body:body_1 ELSE Body:body_2
+        | IF:IF LPAR Expr:expr RPAR THEN Body:body_1 ELSE Body:body_2
             {:
                 IfThenElseOpNode ifThenElseOpNode = new IfThenElseOpNode(expr, body_1, body_2);
-                ifThenElseOpNode.setStartPos(if.line, if.column);
+                ifThenElseOpNode.setStartPos(IF.line, IF.column);
                 RESULT = ifThenElseOpNode;
             :}
-        | IF:if LPAR Expr:expr RPAR THEN Body:body
+        | IF:IF LPAR Expr:expr RPAR THEN Body:body
             {:
-                IfThenElseOpNode ifThenElseOpNode = new IfThenOpNode(expr, body);
-                ifThenElseOpNode.setStartPos(if.line, if.column);
-                RESULT = ifThenElseOpNode;
+                IfThenOpNode ifThenOpNode = new IfThenOpNode(expr, body);
+                ifThenOpNode.setStartPos(IF.line, IF.column);
+                RESULT = ifThenOpNode;
             :}
-        | WHILE:while LPAR Expr:expr RPAR DO Body:body
+        | WHILE:WHILE LPAR Expr:expr RPAR DO Body:body
             {:
                 WhileOpNode whileOpNode = new WhileOpNode(expr, body);
-                whileOpNode.setStartPos(while.line, while.column);
+                whileOpNode.setStartPos(WHILE.line, WHILE.column);
                 RESULT = whileOpNode;
             :}
-	    | RETURN:return Expr:expr SEMI
+	    | RETURN:RETURN Expr:expr SEMI
             {:
                 ReturnOpNode returnOpNode = new ReturnOpNode(expr);
-                returnOpNode.setStartPos(return.line, return.column);
+                returnOpNode.setStartPos(RETURN.line, RETURN.column);
                 RESULT = returnOpNode;
             :}
 	    ;

@@ -18,7 +18,7 @@ def add( a,b,c : int; x : double; y : double; ref res : double) : int
 	; h = 3 + 4 : int
 	; j = 4 / 2 : double; // Only for testing
 
-	if (x < 100) then { h := j; } else {i <<; i !>>;}
+    if (x < 100) then { h := j; } else {i <<; i !>>;}
 	if (y >= 2000) then {}
 	while((x + y) >= (y - x) and true and false == true) do { e := x - y; }
 
