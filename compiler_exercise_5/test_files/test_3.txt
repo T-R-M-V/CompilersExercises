@@ -1,0 +1,40 @@
+program
+    def printpyramid(height: int)
+    {
+        row : int;
+        spaces : int;
+        stars : int;
+
+        // row : 1;
+        while(row <= height) do
+        {
+            spaces := height - row;
+            stars := (2 * row) - 1;
+
+            // Stampa gli spazi
+            while(spaces > 0) do
+            {
+                " " !>>;
+                spaces := spaces - 1;
+            }
+
+            // Stampa gli asterischi
+            while(stars > 0) do
+            {
+                "*" !>>;
+                stars := stars - 1;
+            }
+
+            // Fine della riga
+            "\n" !>>;
+            row := row + 1;
+        }
+    }
+
+begin
+    height : int;
+    "Inserisci l'altezza della piramide" !>>;
+    height <<;
+
+    printpyramid(height);
+end

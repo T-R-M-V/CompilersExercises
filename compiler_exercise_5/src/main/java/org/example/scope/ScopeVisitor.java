@@ -48,14 +48,20 @@ public class ScopeVisitor implements Visitor {
     public Object visit(ExprValueNode node) {
         node.scope = currentScope;
 
-        node.constantNode.accept(this);
-        currentScope = node.scope;
+        if (node.constantNode != null) {
+            node.constantNode.accept(this);
+            currentScope = node.scope;
+        }
 
-        node.identifierNode.accept(this);
-        currentScope = node.scope;
+        if (node.identifierNode != null) {
+            node.identifierNode.accept(this);
+            currentScope = node.scope;
+        }
 
-        node.callOpNode.accept(this);
-        currentScope = node.scope;
+        if (node.callOpNode != null) {
+            node.callOpNode.accept(this);
+            currentScope = node.scope;
+        }
 
         return null;
     }
@@ -192,7 +198,7 @@ public class ScopeVisitor implements Visitor {
 
         // T: create the new scope (START)
         node.scope = new Scope();
-        node.scope.parent = currentScope; // T: the scope is now set to ProgramOp scope
+        node.scope.setParent( currentScope); // T: the scope is now set to ProgramOp scope
         // T: create the new scope (END)
 
 
@@ -228,7 +234,7 @@ public class ScopeVisitor implements Visitor {
         } else {
             // T: Create a new scope if it's not the Body of a function
             node.scope = new Scope();
-            node.scope.parent = currentScope;
+            node.scope.setParent(currentScope);
 
             currentScope = node.scope;
         }
@@ -290,6 +296,7 @@ public class ScopeVisitor implements Visitor {
 
 
         node.scope = new Scope();
+        node.scope.setParent(currentScope);
         currentScope = node.scope;
         isCalledFromDefDecl = true;
 
@@ -444,8 +451,10 @@ public class ScopeVisitor implements Visitor {
         node.identifierNode.accept(this);
         currentScope = node.scope;
 
-        node.exprOpNode.accept(this);
-        currentScope = node.scope;
+        if (node.exprOpNode != null) {
+            node.exprOpNode.accept(this);
+            currentScope = node.scope;
+        }
 
         return null;
     }

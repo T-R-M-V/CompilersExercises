@@ -4,6 +4,8 @@ import java_cup.runtime.*;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.example.LexerInfo;
+
 import org.example.tree.statements.*;
 import org.example.tree.expr.*;
 import org.example.tree.*;
@@ -11,22 +13,22 @@ import org.example.tree.*;
 import org.example.Type;
 
 /* Terminals (tokens returned by the scanner). */
-terminal    PROGRAM, BEGIN, END;
-terminal    SEMI, COLON;
-terminal    INT, BOOL, DOUBLE, STRING, CHAR;
-terminal    String  ID;
-terminal    COMMA;
-terminal    DEF, RETURN, REF;
-terminal    LPAR, RPAR, LBRAC, RBRAC;
-terminal    IN, OUT, OUTNL;
-terminal    PLUS, MINUS, TIMES, DIV;
-terminal    String  INT_CONST, DOUBLE_CONST, STRING_CONST, CHAR_CONST;
-terminal    String  TRUE, FALSE;
-terminal    ASSIGN, ASSIGNDECL;
-terminal    IF, THEN, WHILE, DO, ELSE;
-terminal    GT, GE, LT, LE, EQ, NE;
-terminal    NOT, AND, OR;
-terminal    PIPE;
+terminal    LexerInfo   PROGRAM, BEGIN, END;
+terminal    LexerInfo   SEMI, COLON;
+terminal    LexerInfo   INT, BOOL, DOUBLE, STRING, CHAR;
+terminal    LexerInfo   ID;
+terminal    LexerInfo   COMMA;
+terminal    LexerInfo   DEF, RETURN, REF;
+terminal    LexerInfo   LPAR, RPAR, LBRAC, RBRAC;
+terminal    LexerInfo   IN, OUT, OUTNL;
+terminal    LexerInfo   PLUS, MINUS, TIMES, DIV;
+terminal    LexerInfo   INT_CONST, DOUBLE_CONST, STRING_CONST, CHAR_CONST;
+terminal    LexerInfo   TRUE, FALSE;
+terminal    LexerInfo   ASSIGN, ASSIGNDECL;
+terminal    LexerInfo   IF, THEN, WHILE, DO, ELSE;
+terminal    LexerInfo   GT, GE, LT, LE, EQ, NE;
+terminal    LexerInfo   NOT, AND, OR;
+terminal    LexerInfo   PIPE;
 
 /* Non terminals */
 non terminal    ProgramOpNode               Programma;
@@ -68,7 +70,7 @@ precedence left TIMES, DIV;
 
 
 /* Grammar */
-Programma ::= PROGRAM Decls:decls BEGIN VarDecls:varDecls Statements:statements END
+Programma ::= PROGRAM Decls:decls BEGIN:bTest VarDecls:varDecls Statements:statements END
             {:
             BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
             RESULT = new ProgramOpNode((List)decls.children, beginEndOpNode);
@@ -83,10 +85,10 @@ VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varD
 
 VarDecl ::= VarsOptInit:varsOptInit COLON TypeOrConstant:typeOrConstant SEMI {: RESULT = new VarDeclOpNode((List)varsOptInit.children, typeOrConstant); :};
 
-VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier)), true); :}
-	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode(identifier), expr), true); :}
-	   | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode(identifier))); :}
-	   | ID:identifier ASSIGNDECL Expr:expr {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode(identifier), expr)); :} ;
+VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode((String)identifier.value)), true); :}
+	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode((String)identifier.value), expr), true); :}
+	   | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode((String)identifier.value))); :}
+	   | ID:identifier ASSIGNDECL Expr:expr {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode((String)identifier.value), expr)); :} ;
 
 TypeOrConstant ::= Type:type {: RESULT = new TypeOrConstantNode(type); :}
 	       | Constant:constant {: RESULT = new TypeOrConstantNode(constant); :} ;
@@ -99,16 +101,16 @@ Type ::= INT {: RESULT = new TypeNode(Type.Integer); :}
 
 Constant ::= TRUE {: RESULT = new ConstantNode(Type.Boolean, "true"); :}
           | FALSE {: RESULT = new ConstantNode(Type.Boolean, "false"); :}
-          | INT_CONST:int_const {: RESULT = new ConstantNode(Type.Integer, int_const); :}
-          | DOUBLE_CONST:double_const {: RESULT = new ConstantNode(Type.Double, double_const); :}
-          | CHAR_CONST:char_const {: RESULT = new ConstantNode(Type.Char, char_const); :}
-          | STRING_CONST:string_const {: RESULT = new ConstantNode(Type.String, string_const); :};
+          | INT_CONST:int_const {: RESULT = new ConstantNode(Type.Integer, (String)int_const.value); :}
+          | DOUBLE_CONST:double_const {: RESULT = new ConstantNode(Type.Double, (String)double_const.value); :}
+          | CHAR_CONST:char_const {: RESULT = new ConstantNode(Type.Char, (String)char_const.value); :}
+          | STRING_CONST:string_const {: RESULT = new ConstantNode(Type.String, (String)string_const.value); :};
 
 DefDecl ::= DEF ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Body:body
-        {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), (List)parDecls.children, optType, body); :} // TO BE CONTINUED
+        {: RESULT = new DefDeclOpNode(new IdentifierNode((String)identifier.value), (List)parDecls.children, optType, body); :}
 
         | DEF ID:identifier LPAR  RPAR OptType:optType Body:body
-        {: RESULT = new DefDeclOpNode(new IdentifierNode(identifier), new ArrayList<>(), optType, body); :};
+        {: RESULT = new DefDeclOpNode(new IdentifierNode((String)identifier.value), new ArrayList<>(), optType, body); :};
 
 ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls {: RESULT = new TempNode.TempAggregateNode(parDecls, parDecl, true); :}
           | ParDecl:parDecl {: RESULT = new TempNode.TempAggregateNode(parDecl); :};
@@ -118,8 +120,8 @@ ParDecl ::= PVars:pVars COLON Type:type {: RESULT = new ParDeclOpNode((List)pVar
 PVars ::= PVar:pVar COMMA PVars:pVars {: RESULT = new TempNode.TempAggregateNode(pVars, pVar, true); :}
       | PVar:pVar {: RESULT = new TempNode.TempAggregateNode(pVar); :};
 
-PVar ::= ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode(identifier)); :}
-    | REF ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode(identifier), true); :};
+PVar ::= ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode((String)identifier.value)); :}
+    | REF ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode((String)identifier.value), true); :};
 
 
 OptType ::= COLON Type:type {: RESULT = type; :}
@@ -142,15 +144,15 @@ Stat ::=  Vars:vars IN SEMI {: RESULT = new ReadOpNode((List)vars.children); :}
 	| RETURN Expr:expr SEMI {: RESULT = new ReturnOpNode(expr); :};
 
 
-Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode(identifier), true); :}
-        | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new IdentifierNode(identifier)); :};
+Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode((String)identifier.value), true); :}
+        | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new IdentifierNode((String)identifier.value)); :};
 
 Exprs ::=  Expr:expr COMMA  Exprs:exprs {: RESULT = new TempNode.TempAggregateNode(exprs, expr, true); :}
 	| Expr:expr {: RESULT = new TempNode.TempAggregateNode(expr); :};
 
 
-FunCall ::= ID:identifier LPAR Exprs:exprs RPAR {: RESULT = new CallOpNode(new IdentifierNode(identifier), (List)exprs.children); :}
-        | ID:identifier LPAR RPAR {: RESULT = new CallOpNode(new IdentifierNode(identifier)); :};
+FunCall ::= ID:identifier LPAR Exprs:exprs RPAR {: RESULT = new CallOpNode(new IdentifierNode((String)identifier.value), (List)exprs.children); :}
+        | ID:identifier LPAR RPAR {: RESULT = new CallOpNode(new IdentifierNode((String)identifier.value)); :};
 
 
 Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
@@ -159,7 +161,7 @@ Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, e
 		| LPAR Expr:expr RPAR {: RESULT = expr; :}
 	        | MINUS Expr:expr {: RESULT = new UnaryOpNode(UnaryOpNode.Type.Uminus, expr); :}
 	        | NOT Expr:expr {: RESULT = new UnaryOpNode(UnaryOpNode.Type.Not, expr); :}
-	        | ID:identifier {: RESULT = new ExprValueNode(new IdentifierNode(identifier)); :}
+	        | ID:identifier {: RESULT = new ExprValueNode(new IdentifierNode((String)identifier.value)); :}
                 | FunCall:funcall {: RESULT = new ExprValueNode(funcall); :}
 		| Constant:constant {: RESULT = new ExprValueNode(constant); :}
 		;

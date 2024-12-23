@@ -1,0 +1,53 @@
+program
+	def spittafactos(number: int) : int
+	{
+		counter = number : int;
+
+		while(counter >= 1) do
+		{
+			if((number - 1) > 0) then
+			{
+				number := number * (number - 1);
+			}
+			else
+			{
+				number := number;
+			}
+			counter := counter - 2;
+			number := counter;
+		}
+
+		return number;
+	}
+
+	def spittafactosrec(ref number: int)
+	{
+		if(number == 1) then
+		{
+			number := number;
+		}
+		else
+		{
+			number := number * spittafactosrec(number - 1);
+		}
+	}
+begin
+
+	number : int;
+	mod : int;
+	"Inserisci un numero" !>>;
+	number <<;
+
+	"Inserisci la modalità (1 per iterativo o 2 per ricorsivo)",
+	mod >>;
+
+	if(mod == 1) then
+	{
+		spittafactos(number) !>>;
+	}
+
+	if(mod == 2) then
+	{
+		spittafactosrec(number) !>>;
+	}
+end

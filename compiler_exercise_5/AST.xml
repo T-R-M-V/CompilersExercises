@@ -1,204 +1,96 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ProgramOpNode>
-    <VarDeclOpNode>
-        <VarOptInitOpNode>
-            <IdentifierNode identifier="n"/>
-        </VarOptInitOpNode>
-        <VarOptInitOpNode>
-            <IdentifierNode identifier="fibonacci"/>
-        </VarOptInitOpNode>
-        <typeOrConstantNode>
-            <TypeNode Type="Integer"/>
-        </typeOrConstantNode>
-    </VarDeclOpNode>
-    <VarDeclOpNode>
-        <VarOptInitOpNode>
-            <IdentifierNode identifier="a"/>
-        </VarOptInitOpNode>
-        <VarOptInitOpNode>
-            <IdentifierNode identifier="b"/>
-        </VarOptInitOpNode>
-        <VarOptInitOpNode>
-            <IdentifierNode identifier="temp"/>
-        </VarOptInitOpNode>
-        <typeOrConstantNode>
-            <TypeNode Type="Integer"/>
-        </typeOrConstantNode>
-    </VarDeclOpNode>
     <DefDeclOpNode>
-        <IdentifierNode identifier="calcoloFibonacci"/>
+        <IdentifierNode identifier="printpyramid"/>
         <ParDeclOpNode>
             <PVarOpNode ref="false">
-                <IdentifierNode identifier="n"/>
-            </PVarOpNode>
-            <TypeNode Type="Integer"/>
-        </ParDeclOpNode>
-        <ParDeclOpNode>
-            <PVarOpNode ref="true">
-                <IdentifierNode identifier="fibonacci"/>
+                <IdentifierNode identifier="height"/>
             </PVarOpNode>
             <TypeNode Type="Integer"/>
         </ParDeclOpNode>
         <TypeNode Type="Void"/>
         <body>
-            <AssignOpNode>
-                <IdentifierNode identifier="a"/>
-                <IdentifierNode identifier="b"/>
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="0"/>
-                </ExprValueNode>
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="1"/>
-                </ExprValueNode>
-            </AssignOpNode>
-            <IfThenElseOpNode>
-                <BinaryOpNode type="Eq">
+            <VarDeclOpNode>
+                <VarOptInitOpNode>
+                    <IdentifierNode identifier="row"/>
+                </VarOptInitOpNode>
+                <typeOrConstantNode>
+                    <TypeNode Type="Integer"/>
+                </typeOrConstantNode>
+            </VarDeclOpNode>
+            <VarDeclOpNode>
+                <VarOptInitOpNode>
+                    <IdentifierNode identifier="spaces"/>
+                </VarOptInitOpNode>
+                <typeOrConstantNode>
+                    <TypeNode Type="Integer"/>
+                </typeOrConstantNode>
+            </VarDeclOpNode>
+            <VarDeclOpNode>
+                <VarOptInitOpNode>
+                    <IdentifierNode identifier="stars"/>
+                </VarOptInitOpNode>
+                <typeOrConstantNode>
+                    <TypeNode Type="Integer"/>
+                </typeOrConstantNode>
+            </VarDeclOpNode>
+            <WhileOpNode>
+                <BinaryOpNode type="Le">
                     <ExprValueNode>
-                        <IdentifierNode identifier="n"/>
+                        <IdentifierNode identifier="row"/>
                     </ExprValueNode>
                     <ExprValueNode>
-                        <ConstantNode type="Integer" value="0"/>
+                        <IdentifierNode identifier="height"/>
                     </ExprValueNode>
                 </BinaryOpNode>
                 <body>
                     <AssignOpNode>
-                        <IdentifierNode identifier="fibonacci"/>
-                        <ExprValueNode>
-                            <IdentifierNode identifier="a"/>
-                        </ExprValueNode>
-                    </AssignOpNode>
-                </body>
-                <body>
-                    <IfThenElseOpNode>
-                        <BinaryOpNode type="Eq">
+                        <IdentifierNode identifier="spaces"/>
+                        <BinaryOpNode type="Minus">
                             <ExprValueNode>
-                                <IdentifierNode identifier="n"/>
+                                <IdentifierNode identifier="height"/>
                             </ExprValueNode>
+                            <ExprValueNode>
+                                <IdentifierNode identifier="row"/>
+                            </ExprValueNode>
+                        </BinaryOpNode>
+                    </AssignOpNode>
+                    <AssignOpNode>
+                        <IdentifierNode identifier="stars"/>
+                        <BinaryOpNode type="Minus">
+                            <BinaryOpNode type="Times">
+                                <ExprValueNode>
+                                    <ConstantNode type="Integer" value="2"/>
+                                </ExprValueNode>
+                                <ExprValueNode>
+                                    <IdentifierNode identifier="row"/>
+                                </ExprValueNode>
+                            </BinaryOpNode>
                             <ExprValueNode>
                                 <ConstantNode type="Integer" value="1"/>
                             </ExprValueNode>
                         </BinaryOpNode>
-                        <body>
-                            <AssignOpNode>
-                                <IdentifierNode identifier="fibonacci"/>
-                                <ExprValueNode>
-                                    <IdentifierNode identifier="b"/>
-                                </ExprValueNode>
-                            </AssignOpNode>
-                        </body>
-                        <body>
-                            <WhileOpNode>
-                                <BinaryOpNode type="Gt">
-                                    <ExprValueNode>
-                                        <IdentifierNode identifier="n"/>
-                                    </ExprValueNode>
-                                    <ExprValueNode>
-                                        <ConstantNode type="Integer" value="1"/>
-                                    </ExprValueNode>
-                                </BinaryOpNode>
-                                <body>
-                                    <AssignOpNode>
-                                        <IdentifierNode identifier="temp"/>
-                                        <ExprValueNode>
-                                            <IdentifierNode identifier="b"/>
-                                        </ExprValueNode>
-                                    </AssignOpNode>
-                                    <AssignOpNode>
-                                        <IdentifierNode identifier="b"/>
-                                        <BinaryOpNode type="Plus">
-                                            <ExprValueNode>
-                                                <IdentifierNode identifier="a"/>
-                                            </ExprValueNode>
-                                            <ExprValueNode>
-                                                <IdentifierNode identifier="b"/>
-                                            </ExprValueNode>
-                                        </BinaryOpNode>
-                                    </AssignOpNode>
-                                    <AssignOpNode>
-                                        <IdentifierNode identifier="a"/>
-                                        <ExprValueNode>
-                                            <IdentifierNode identifier="temp"/>
-                                        </ExprValueNode>
-                                    </AssignOpNode>
-                                    <AssignOpNode>
-                                        <IdentifierNode identifier="n"/>
-                                        <BinaryOpNode type="Minus">
-                                            <ExprValueNode>
-                                                <IdentifierNode identifier="n"/>
-                                            </ExprValueNode>
-                                            <ExprValueNode>
-                                                <ConstantNode type="Integer" value="1"/>
-                                            </ExprValueNode>
-                                        </BinaryOpNode>
-                                    </AssignOpNode>
-                                </body>
-                            </WhileOpNode>
-                            <AssignOpNode>
-                                <IdentifierNode identifier="fibonacci"/>
-                                <ExprValueNode>
-                                    <IdentifierNode identifier="b"/>
-                                </ExprValueNode>
-                            </AssignOpNode>
-                        </body>
-                    </IfThenElseOpNode>
-                </body>
-            </IfThenElseOpNode>
-            <IfThenElseOpNode>
-                <BinaryOpNode type="Eq">
-                    <ExprValueNode>
-                        <IdentifierNode identifier="n"/>
-                    </ExprValueNode>
-                    <ExprValueNode>
-                        <ConstantNode type="Integer" value="1"/>
-                    </ExprValueNode>
-                </BinaryOpNode>
-                <body>
-                    <AssignOpNode>
-                        <IdentifierNode identifier="fibonacci"/>
-                        <ExprValueNode>
-                            <IdentifierNode identifier="b"/>
-                        </ExprValueNode>
                     </AssignOpNode>
-                </body>
-                <body>
                     <WhileOpNode>
                         <BinaryOpNode type="Gt">
                             <ExprValueNode>
-                                <IdentifierNode identifier="n"/>
+                                <IdentifierNode identifier="spaces"/>
                             </ExprValueNode>
                             <ExprValueNode>
-                                <ConstantNode type="Integer" value="1"/>
+                                <ConstantNode type="Integer" value="0"/>
                             </ExprValueNode>
                         </BinaryOpNode>
                         <body>
-                            <AssignOpNode>
-                                <IdentifierNode identifier="temp"/>
+                            <WriteOpNode newline="true">
                                 <ExprValueNode>
-                                    <IdentifierNode identifier="b"/>
+                                    <ConstantNode type="String" value=" "/>
                                 </ExprValueNode>
-                            </AssignOpNode>
+                            </WriteOpNode>
                             <AssignOpNode>
-                                <IdentifierNode identifier="b"/>
-                                <BinaryOpNode type="Plus">
-                                    <ExprValueNode>
-                                        <IdentifierNode identifier="a"/>
-                                    </ExprValueNode>
-                                    <ExprValueNode>
-                                        <IdentifierNode identifier="b"/>
-                                    </ExprValueNode>
-                                </BinaryOpNode>
-                            </AssignOpNode>
-                            <AssignOpNode>
-                                <IdentifierNode identifier="a"/>
-                                <ExprValueNode>
-                                    <IdentifierNode identifier="temp"/>
-                                </ExprValueNode>
-                            </AssignOpNode>
-                            <AssignOpNode>
-                                <IdentifierNode identifier="n"/>
+                                <IdentifierNode identifier="spaces"/>
                                 <BinaryOpNode type="Minus">
                                     <ExprValueNode>
-                                        <IdentifierNode identifier="n"/>
+                                        <IdentifierNode identifier="spaces"/>
                                     </ExprValueNode>
                                     <ExprValueNode>
                                         <ConstantNode type="Integer" value="1"/>
@@ -207,77 +99,76 @@
                             </AssignOpNode>
                         </body>
                     </WhileOpNode>
-                    <AssignOpNode>
-                        <IdentifierNode identifier="fibonacci"/>
+                    <WhileOpNode>
+                        <BinaryOpNode type="Gt">
+                            <ExprValueNode>
+                                <IdentifierNode identifier="stars"/>
+                            </ExprValueNode>
+                            <ExprValueNode>
+                                <ConstantNode type="Integer" value="0"/>
+                            </ExprValueNode>
+                        </BinaryOpNode>
+                        <body>
+                            <WriteOpNode newline="true">
+                                <ExprValueNode>
+                                    <ConstantNode type="String" value="*"/>
+                                </ExprValueNode>
+                            </WriteOpNode>
+                            <AssignOpNode>
+                                <IdentifierNode identifier="stars"/>
+                                <BinaryOpNode type="Minus">
+                                    <ExprValueNode>
+                                        <IdentifierNode identifier="stars"/>
+                                    </ExprValueNode>
+                                    <ExprValueNode>
+                                        <ConstantNode type="Integer" value="1"/>
+                                    </ExprValueNode>
+                                </BinaryOpNode>
+                            </AssignOpNode>
+                        </body>
+                    </WhileOpNode>
+                    <WriteOpNode newline="true">
                         <ExprValueNode>
-                            <IdentifierNode identifier="b"/>
+                            <ConstantNode type="String" value="&#10;"/>
                         </ExprValueNode>
+                    </WriteOpNode>
+                    <AssignOpNode>
+                        <IdentifierNode identifier="row"/>
+                        <BinaryOpNode type="Plus">
+                            <ExprValueNode>
+                                <IdentifierNode identifier="row"/>
+                            </ExprValueNode>
+                            <ExprValueNode>
+                                <ConstantNode type="Integer" value="1"/>
+                            </ExprValueNode>
+                        </BinaryOpNode>
                     </AssignOpNode>
                 </body>
-            </IfThenElseOpNode>
+            </WhileOpNode>
         </body>
     </DefDeclOpNode>
     <beginEndOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="height"/>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <TypeNode Type="Integer"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
         <WriteOpNode newline="true">
             <ExprValueNode>
-                <ConstantNode type="String" value="Questo programma calcola il termine n-esimo della sequenza di Fibonacci"/>
+                <ConstantNode type="String" value="Inserisci l'altezza della piramide"/>
             </ExprValueNode>
         </WriteOpNode>
-        <WriteOpNode newline="true">
-            <ExprValueNode>
-                <ConstantNode type="String" value="Per favore, inserisci un valore intero positivo per n: "/>
-            </ExprValueNode>
-        </WriteOpNode>
-        <AssignOpNode>
-            <IdentifierNode identifier="n"/>
-            <UnaryOpNode type="Uminus">
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="1"/>
-                </ExprValueNode>
-            </UnaryOpNode>
-        </AssignOpNode>
-        <WhileOpNode>
-            <BinaryOpNode type="Lt">
-                <ExprValueNode>
-                    <IdentifierNode identifier="n"/>
-                </ExprValueNode>
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="0"/>
-                </ExprValueNode>
-            </BinaryOpNode>
-            <body>
-                <WriteOpNode newline="true">
-                    <ExprValueNode>
-                        <ConstantNode type="String" value="n deve essere un intero &gt;= 0"/>
-                    </ExprValueNode>
-                </WriteOpNode>
-                <ReadOpNode>
-                    <IdentifierNode identifier="n"/>
-                </ReadOpNode>
-            </body>
-        </WhileOpNode>
+        <ReadOpNode>
+            <IdentifierNode identifier="height"/>
+        </ReadOpNode>
         <CallOpNode>
-            <IdentifierNode identifier="calcoloFibonacci"/>
+            <IdentifierNode identifier="printpyramid"/>
             <ExprValueNode>
-                <IdentifierNode identifier="n"/>
-            </ExprValueNode>
-            <ExprValueNode>
-                <IdentifierNode identifier="fibonacci"/>
+                <IdentifierNode identifier="height"/>
             </ExprValueNode>
         </CallOpNode>
-        <WriteOpNode newline="true">
-            <ExprValueNode>
-                <ConstantNode type="String" value="Il termine "/>
-            </ExprValueNode>
-            <ExprValueNode>
-                <IdentifierNode identifier="n"/>
-            </ExprValueNode>
-            <ExprValueNode>
-                <ConstantNode type="String" value=" della sequenza di Fibonacci è: "/>
-            </ExprValueNode>
-            <ExprValueNode>
-                <IdentifierNode identifier="fibonacci"/>
-            </ExprValueNode>
-        </WriteOpNode>
     </beginEndOpNode>
 </ProgramOpNode>

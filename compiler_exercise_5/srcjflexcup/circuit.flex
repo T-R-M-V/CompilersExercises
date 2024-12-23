@@ -7,6 +7,8 @@ import java.lang.StringBuilder;
 %public
 %class Lexer
 %cup
+%line
+%column
 
 %unicode
 
@@ -14,12 +16,22 @@ import java.lang.StringBuilder;
   StringBuilder buffer = new StringBuilder("");
 
   private Symbol symbol(int type) {
+    return new Symbol(type, yyline, yycolumn, new LexerInfo(yyline, yycolumn, null));
+  }
+
+  private Symbol symbol(int type, Object value) {
+    return new Symbol(type, yyline, yycolumn, new LexerInfo(yyline, yycolumn, value));
+  }
+
+  /*
+  private Symbol symbol(int type) {
     return new Symbol(type, yyline, yycolumn);
   }
 
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+  */
 %}
 
 Digit = [0-9]
@@ -57,7 +69,7 @@ Id = [A-Za-z] [A-Za-z0-9]*
 
     /*KEYWORD FOR PROGRAM*/
     "program"           {return symbol(sym.PROGRAM);}
-    "begin"             {return symbol(sym.BEGIN);}
+    "begin"             { return symbol(sym.BEGIN);}
     "end"               {return symbol(sym.END);}
 
     /*KEYWORD FOR TYPES*/

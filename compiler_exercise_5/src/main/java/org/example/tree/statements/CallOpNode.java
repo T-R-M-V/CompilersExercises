@@ -4,6 +4,7 @@ import org.example.Visitor;
 import org.example.tree.IdentifierNode;
 import org.example.tree.expr.ExprOpNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CallOpNode extends StatOpNode {
@@ -15,7 +16,7 @@ public class CallOpNode extends StatOpNode {
 
     public CallOpNode(IdentifierNode identifierNode) {
         this.identifierNode = identifierNode;
-        this.exprOpNodes = null;
+        this.exprOpNodes = new ArrayList<>();
     }
 
     @Override
