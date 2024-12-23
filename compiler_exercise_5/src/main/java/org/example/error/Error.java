@@ -16,6 +16,10 @@ public class Error {
     public int line;
     public int column;
 
+    public String toString() {
+        return "line: " + line + " col: " + column + "    : " + message;
+    }
+
     // T: the stack of error used during compilation
     public static List<Error> stackError = new ArrayList<>();
 }
