@@ -7,4 +7,13 @@ public abstract class Node {
     public abstract Object accept(Visitor v);
 
     public Scope scope;
+
+    // T: are used to specify the line and column where the code referred to this line start
+    public int line;
+    public int column;
+
+    public void setStartPos(int line, int column) {
+        this.line = line;
+        this.column = column;
+    }
 }

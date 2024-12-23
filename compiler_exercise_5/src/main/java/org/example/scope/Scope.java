@@ -9,11 +9,23 @@ public class Scope {
     public Scope() {
         scopeData = new HashMap<>();
         parent = null;
+
+        this.startingLine = -1;
+        this.startingColumn = -1;
+
         children = new ArrayList<>();
+    }
+
+    public void setStartPos(int startingLine, int startingColumn) {
+        this.startingLine = startingLine;
+        this.startingColumn = startingColumn;
     }
 
     public HashMap<String, ScopeEntry> scopeData;
     public Scope parent;
+    public int startingLine, startingColumn;
+
+
 
     public void setParent(Scope parent) {
         this.parent = parent;

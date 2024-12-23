@@ -26,8 +26,6 @@ public class TempNode {
             else {
                 children.add(0, nodeToAdd);
             }
-
-
         }
 
         @Override

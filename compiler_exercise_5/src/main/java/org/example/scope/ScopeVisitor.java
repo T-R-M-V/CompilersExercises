@@ -198,6 +198,7 @@ public class ScopeVisitor implements Visitor {
 
         // T: create the new scope (START)
         node.scope = new Scope();
+        node.scope.setStartPos(node.line, node.column);
         node.scope.setParent( currentScope); // T: the scope is now set to ProgramOp scope
         // T: create the new scope (END)
 
@@ -235,6 +236,7 @@ public class ScopeVisitor implements Visitor {
             // T: Create a new scope if it's not the Body of a function
             node.scope = new Scope();
             node.scope.setParent(currentScope);
+            node.scope.setStartPos(node.line, node.column);
 
             currentScope = node.scope;
         }
@@ -297,6 +299,7 @@ public class ScopeVisitor implements Visitor {
 
         node.scope = new Scope();
         node.scope.setParent(currentScope);
+        node.scope.setStartPos(node.line, node.column);
         currentScope = node.scope;
         isCalledFromDefDecl = true;
 
@@ -358,6 +361,7 @@ public class ScopeVisitor implements Visitor {
     public Object visit(ProgramOpNode node) {
 
         currentScope = new Scope();
+        currentScope.setStartPos(node.line, node.column);
         node.scope = currentScope;
 
         for(var decl : node.declsNodes) {

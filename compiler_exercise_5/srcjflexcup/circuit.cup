@@ -33,7 +33,7 @@ terminal    LexerInfo   PIPE;
 /* Non terminals */
 non terminal    ProgramOpNode               Programma;
 non terminal    TempNode.TempAggregateNode  Decls;
-non terminal    TempNode.TempDeclsNode      VarDecls;
+non terminal    TempNode.TempDeclsNode      VarDecls;   // T: Fix, remove TempDeclsNode and use TempAggregateNode
 non terminal    VarDeclOpNode               VarDecl;
 non terminal    TempNode.TempAggregateNode  VarsOptInit;
 non terminal    TypeOrConstantNode          TypeOrConstant;
@@ -70,100 +70,442 @@ precedence left TIMES, DIV;
 
 
 /* Grammar */
-Programma ::= PROGRAM Decls:decls BEGIN:bTest VarDecls:varDecls Statements:statements END
+Programma ::= PROGRAM:program Decls:decls BEGIN:begin VarDecls:varDecls Statements:statements END:end
             {:
             BeginEndOpNode beginEndOpNode = new BeginEndOpNode(varDecls, (List)statements.children);
-            RESULT = new ProgramOpNode((List)decls.children, beginEndOpNode);
+            beginEndOpNode.setStartPos(begin.line, begin.column);
+            ProgramOpNode programOpNode = new ProgramOpNode((List)decls.children, beginEndOpNode);
+            programOpNode.setStartPos(program.line, program.column);
+
+            RESULT = programOpNode;
             :};
 
+/* T: we doesn't added line and column because we think that we don't want to send diagnostic for this type of list */
 Decls ::= VarDecl:varDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, varDecl, true); :}
       | DefDecl:defDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode(decls, defDecl, true); :}
       | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
+/* T: we doesn't added line and column because we think that we don't want to send diagnostic for this type of list */
 VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varDecl); RESULT = varDecls; :}
          | /*eps*/ {: RESULT = new TempNode.TempDeclsNode(); :};
 
-VarDecl ::= VarsOptInit:varsOptInit COLON TypeOrConstant:typeOrConstant SEMI {: RESULT = new VarDeclOpNode((List)varsOptInit.children, typeOrConstant); :};
+VarDecl ::= VarsOptInit:varsOptInit COLON TypeOrConstant:typeOrConstant SEMI
+                {:
+                VarDeclOpNode varDeclOpNode = new VarDeclOpNode((List)varsOptInit.children, typeOrConstant);
+                varDeclOpNode.setStartPos(varsOptInit.line, varsOptInit.column);
 
-VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode((String)identifier.value)), true); :}
-	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit {: RESULT = new TempNode.TempAggregateNode(varsOptInit, new VarOptInitOpNode(new IdentifierNode((String)identifier.value), expr), true); :}
-	   | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode((String)identifier.value))); :}
-	   | ID:identifier ASSIGNDECL Expr:expr {: RESULT = new TempNode.TempAggregateNode(new VarOptInitOpNode(new IdentifierNode((String)identifier.value), expr)); :} ;
+                RESULT = varDeclOpNode;
+                :};
 
-TypeOrConstant ::= Type:type {: RESULT = new TypeOrConstantNode(type); :}
-	       | Constant:constant {: RESULT = new TypeOrConstantNode(constant); :} ;
+VarsOptInit ::= ID:identifier PIPE VarsOptInit:varsOptInit
+                {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode);
+                varOptInitNode.setStartPos(identifier.line, identifier.column);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
+                tempAggregateNode.setStartPos(identifier.line, identifier.column);
 
-Type ::= INT {: RESULT = new TypeNode(Type.Integer); :}
-           |  BOOL {: RESULT = new TypeNode(Type.Boolean); :}
-           |  DOUBLE {: RESULT = new TypeNode(Type.Double); :}
-           |  STRING {: RESULT = new TypeNode(Type.String); :}
-           |  CHAR {: RESULT = new TypeNode(Type.Char); :} ;
+                RESULT =  tempAggregateNode;
+                :}
+	   | ID:identifier ASSIGNDECL Expr:expr PIPE VarsOptInit:varsOptInit
+	            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode, expr);
+                varOptInitNode.setStartPos(identifier.line, identifier.column);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
+                tempAggregateNode.setStartPos(identifier.line, identifier.column);
 
-Constant ::= TRUE {: RESULT = new ConstantNode(Type.Boolean, "true"); :}
-          | FALSE {: RESULT = new ConstantNode(Type.Boolean, "false"); :}
-          | INT_CONST:int_const {: RESULT = new ConstantNode(Type.Integer, (String)int_const.value); :}
-          | DOUBLE_CONST:double_const {: RESULT = new ConstantNode(Type.Double, (String)double_const.value); :}
-          | CHAR_CONST:char_const {: RESULT = new ConstantNode(Type.Char, (String)char_const.value); :}
-          | STRING_CONST:string_const {: RESULT = new ConstantNode(Type.String, (String)string_const.value); :};
+	            RESULT = tempAggregateNode;
+	            :}
+	   | ID:identifier
+                {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode);
+                varOptInitNode.setStartPos(identifier.line, identifier.column);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
+                tempAggregateNode.setStartPos(identifier.line, identifier.column);
 
-DefDecl ::= DEF ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Body:body
-        {: RESULT = new DefDeclOpNode(new IdentifierNode((String)identifier.value), (List)parDecls.children, optType, body); :}
+                RESULT = tempAggregateNode;
+                :}
+	   | ID:identifier ASSIGNDECL Expr:expr
+	            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                VarOptInitNode varOptInitNode = new VarOptInitOpNode(identifierNode, expr);
+                varOptInitNode.setStartPos(identifier.line, identifier.column);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(varsOptInit, varOptInitNode, true);
+                tempAggregateNode.setStartPos(identifier.line, identifier.column);
+
+	            RESULT = tempAggregateNode;
+	            :}
+	   ;
+
+TypeOrConstant ::= Type:type
+                {:
+                    TypeOrConstantNode typeOrConstantNode = new TypeOrConstantNode(type);
+                    typeOrConstantNode.setStartPos(type.line, type.column);
+
+                    RESULT = typeOrConstatNode;
+                :}
+        | Constant:constant
+	            {:
+                    TypeOrConstantNode typeOrConstantNode = new TypeOrConstantNode(constant);
+                    typeOrConstantNode.setStartPos(type.line, type.column);
+
+	                RESULT = typeOrConstantNode
+	            :}
+	    ;
+
+Type ::= INT:int
+            {:
+                TypeNode typeNode = new TypeNode(Type.Integer);
+                typeNode.setStartPos(int.line, int.column);
+
+                RESULT = typeNode;
+            :}
+        |  BOOL:bool
+            {:
+                TypeNode typeNode = new TypeNode(Type.Boolean);
+                typeNode.setStartPos(bool.line, bool.column);
+
+                RESULT = typeNode;
+            :}
+        |  DOUBLE
+            {:
+                TypeNode typeNode = new TypeNode(Type.Double);
+                typeNode.setStartPos(double.line, double.column);
+
+                RESULT = typeNode;
+            :}
+        |  STRING:string
+            {:
+                TypeNode typeNode = new TypeNode(Type.String);
+                typeNode.setStartPos(string.line, string.column);
+
+                RESULT = typeNode;
+            :}
+        |  CHAR:char
+            {:
+                TypeNode typeNode = new TypeNode(Type.Char);
+                typeNode.setStartPos(char.line, char.column);
+
+                RESULT = typeNode;
+            :}
+
+Constant ::= TRUE:true
+            {:
+                ConstantNode constantNode = new ConstantNode(Type.Boolean, "true");
+                constantNode.setStartPos(true.line, true.colum)
+
+                RESULT = constantNode;
+            :}
+        | FALSE:false
+            {:
+                ConstantNode constantNode = new ConstantNode(Type.Boolean, "false");
+                constantNode.setStartPos(false.line, false.colum)
+
+                RESULT = constantNode;
+            :}
+        | INT_CONST:int_const
+            {:
+                ConstantNode constantNode = new ConstantNode(Type.Integer, (String)int_const.value);
+                constantNode.setStartPos(int_const.line, int_const.colum)
+
+                RESULT = constantNode;
+            :}
+        | DOUBLE_CONST:double_const
+            {:
+                ConstantNode constantNode = new ConstantNode(Type.Double, (String)double_const.value);
+                constantNode.setStartPos(double_const.line, double_const.colum)
+
+                RESULT = constantNode;
+            :}
+        | CHAR_CONST:char_const
+            {:
+                ConstantNode constantNode = new ConstantNode(Type.Char, (String)char_const.value);
+                constantNode.setStartPos(char_const.line, char_const.colum)
+
+                RESULT = constantNode;
+            :}
+        | STRING_CONST:string_const
+            {:
+                ConstantNode constantNode = new ConstantNode(Type.String, (String)string_const.value);
+                constantNode.setStartPos(string_const.line, string_const.colum)
+
+                RESULT = constantNode;
+            :}
+
+        ;
+
+DefDecl ::= DEF:def ID:identifier LPAR ParDecls:parDecls RPAR OptType:optType Body:body
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                DefDeclOpNode defDeclOpNOde = new DefDeclOpNode(identifierNode, (List)parDecls.children, optType, body);
+                defDeclOpNode.setStartPos(def.line, def.column);
+
+                RESULT = defDeclOpNode;
+            :}
 
         | DEF ID:identifier LPAR  RPAR OptType:optType Body:body
-        {: RESULT = new DefDeclOpNode(new IdentifierNode((String)identifier.value), new ArrayList<>(), optType, body); :};
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                DefDeclOpNode defDeclOpNOde = new DefDeclOpNode(new IdentifierNode((String)identifier.value), new ArrayList<>(), optType, body);
+                defDeclOpNode.setStartPos(def.line, def.column);
 
-ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls {: RESULT = new TempNode.TempAggregateNode(parDecls, parDecl, true); :}
-          | ParDecl:parDecl {: RESULT = new TempNode.TempAggregateNode(parDecl); :};
+                RESULT = defDeclOpNode;
+            :}
 
-ParDecl ::= PVars:pVars COLON Type:type {: RESULT = new ParDeclOpNode((List)pVars.children, type); :};
+        ;
 
-PVars ::= PVar:pVar COMMA PVars:pVars {: RESULT = new TempNode.TempAggregateNode(pVars, pVar, true); :}
-      | PVar:pVar {: RESULT = new TempNode.TempAggregateNode(pVar); :};
+ParDecls  ::= ParDecl:parDecl SEMI ParDecls:parDecls
+            {:
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(parDecls, parDecl, true);
+                tempAggregateNode.setStartPos(parDecl.line, parDecl.column);
+                RESULT = tempAggregateNode;
+            :}
+        | ParDecl:parDecl
+            {:
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(parDecl);
+                tempAggregateNode.setStartPos(parDecl.line, parDecl.column);
+                RESULT = tempAggregateNode;
+            :}
+        ;
 
-PVar ::= ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode((String)identifier.value)); :}
-    | REF ID:identifier {: RESULT = new PVarOpNode(new IdentifierNode((String)identifier.value), true); :};
+ParDecl ::= PVars:pVars COLON Type:type
+            {:
+                ParDeclOpNode parDeclOpNode = new ParDeclOpNode((List)pVars.children, type);
+                parDeclOpNode.setStartPos(pVars.line, pVars.column);
+                RESULT = parDeclOpNode;
+            :}
+        ;
 
+PVars ::= PVar:pVar COMMA PVars:pVars
+            {:
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(pVars, pVar, true);
+                tempAggregateNode.setStartPos(pVar.line, pVar.column);
+                RESULT = tempAggregateNode;
+            :}
+        | PVar:pVar {: RESULT = new TempNode.TempAggregateNode(pVar); :};
 
-OptType ::= COLON Type:type {: RESULT = type; :}
-         | /*eps*/ {: RESULT = new TypeNode(Type.Void); :} ;
+PVar ::= ID:identifier
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                PVarOpNode pVarOpNode = new PVarOpNode(identifierNode);
+                pVarOpNode.setStartPos(identifier.line, identifier.column);
+                RESULT = pVarOpNode;
+            :}
+        | REF ID:identifier
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                PVarOpNode pVarOpNode = new PVarOpNode(identifierNode, true);
+                pVarOpNode.setStartPos(identifier.line, identifier.column);
+                RESULT = pVarOpNode;
+            :}
+        ;
 
-Body ::= LBRAC VarDecls:varDecls Statements:statements RBRAC {: RESULT = new BodyOpNode((List)varDecls.varDeclOpNodes, (List)statements.children); :};
+/* T: how can we store the position for Type.void?? I guess i can resolve returning the line and column of the ')' that ends the
+function definition */
+OptType ::= COLON Type:type
+            {:
+                RESULT = type;
+            :}
+         | /*eps*/
+            {:
+                RESULT = new TypeNode(Type.Void);
+            :}
+         ;
 
+Body ::= LBRAC:lbrac VarDecls:varDecls Statements:statements RBRAC
+            {:
+                BodyOpNode bodyOpNode = new BodyOpNode((List)varDecls.varDeclOpNodes, (List)statements.children);
+                bodyOpNode.setStartPos(lbrac.line, lbrac.column);
+                RESULT = bodyOpNode;
+            :}
+        ;
+
+/* T: we doesn't added line and column because we think that we don't want to send diagnostic for this type of list */
 Statements ::= Stat:stat Statements:statements {: RESULT = new TempNode.TempAggregateNode(statements, stat, true); :}
 	   | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
 
-Stat ::=  Vars:vars IN SEMI {: RESULT = new ReadOpNode((List)vars.children); :}
-        | Exprs:exprs OUT SEMI {: RESULT = new WriteOpNode((List)exprs.children, false); :}
-        | Exprs:exprs OUTNL SEMI {: RESULT = new WriteOpNode((List)exprs.children, true); :}
-	| Vars:vars ASSIGN Exprs:exprs SEMI {: RESULT = new AssignOpNode((List)vars.children, (List)exprs.children); :}
-	| FunCall:funcall SEMI {: RESULT = funcall; :}
-        | IF LPAR Expr:expr RPAR THEN Body:body_1 ELSE Body:body_2 {: RESULT = new IfThenElseOpNode(expr, body_1, body_2); :}
-        | IF LPAR Expr:expr RPAR THEN Body:body {: RESULT = new IfThenOpNode(expr, body); :}
-        | WHILE LPAR Expr:expr RPAR DO Body:body {: RESULT = new WhileOpNode(expr, body); :}
-	| RETURN Expr:expr SEMI {: RESULT = new ReturnOpNode(expr); :};
+Stat ::=  Vars:vars IN SEMI
+            {:
+                ReadOpNode readOpNode = new ReadOpNode((List)vars.children);
+                readOpNode.setStartPos(vars.line, vars.column);
+
+                RESULT = readOpNode;
+            :}
+        | Exprs:exprs OUT SEMI
+            {:
+                WriteOpNode writeOpNode = new WriteOpNode((List)exprs.children, false);
+                writeOpNode.setStartPos(exprs.line, exprs.column);
+
+                RESULT = writeOpNode;
+            :}
+        | Exprs:exprs OUTNL SEMI
+            {:
+                WriteOpNode writeOpNode = new WriteOpNode((List)exprs.children, true);
+                writeOpNode.setStartPos(exprs.line, exprs.column);
+
+                RESULT = writeOpNode;
+            :}
+	    | Vars:vars ASSIGN Exprs:exprs SEMI
+            {:
+                AssignOpNode assignOpNode = new AssignOpNode((List)vars.children, (List)exprs.children);
+                assignOpNode.setStartPos(vars.line, vars.column);
+
+                RESULT = assignOpNode;
+            :}
+	    | FunCall:funcall SEMI
+            {:
+                RESULT = funcall;
+            :}
+        | IF:if LPAR Expr:expr RPAR THEN Body:body_1 ELSE Body:body_2
+            {:
+                IfThenElseOpNode ifThenElseOpNode = new IfThenElseOpNode(expr, body_1, body_2);
+                ifThenElseOpNode.setStartPos(if.line, if.column);
+                RESULT = ifThenElseOpNode;
+            :}
+        | IF:if LPAR Expr:expr RPAR THEN Body:body
+            {:
+                IfThenElseOpNode ifThenElseOpNode = new IfThenOpNode(expr, body);
+                ifThenElseOpNode.setStartPos(if.line, if.column);
+                RESULT = ifThenElseOpNode;
+            :}
+        | WHILE:while LPAR Expr:expr RPAR DO Body:body
+            {:
+                WhileOpNode whileOpNode = new WhileOpNode(expr, body);
+                whileOpNode.setStartPos(while.line, while.column);
+                RESULT = whileOpNode;
+            :}
+	    | RETURN:return Expr:expr SEMI
+            {:
+                ReturnOpNode returnOpNode = new ReturnOpNode(expr);
+                returnOpNode.setStartPos(return.line, return.column);
+                RESULT = returnOpNode;
+            :}
+	    ;
 
 
-Vars   ::= ID:identifier PIPE Vars:vars {: RESULT = new TempNode.TempAggregateNode(vars, new IdentifierNode((String)identifier.value), true); :}
-        | ID:identifier {: RESULT = new TempNode.TempAggregateNode(new IdentifierNode((String)identifier.value)); :};
+Vars   ::= ID:identifier PIPE Vars:vars
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(vars, identifierNode, true);
+                tempAggregateNode.setStartPos(identifier.line, identifier.column);
 
-Exprs ::=  Expr:expr COMMA  Exprs:exprs {: RESULT = new TempNode.TempAggregateNode(exprs, expr, true); :}
-	| Expr:expr {: RESULT = new TempNode.TempAggregateNode(expr); :};
+                RESULT = tempAggregateNode;
+            :}
+        | ID:identifier
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(identifierNode);
+                tempAggregateNode.setStartPos(identifier.line, identifier.column);
+
+                RESULT = tempAggregateNode;
+            :}
+        ;
+
+Exprs ::=  Expr:expr COMMA  Exprs:exprs
+        {:
+            TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(exprs, expr, true);
+            tempAggregateNode.setStartPos(expr.line, expr.column);
+
+            RESULT = tempAggregateNode;
+        :}
+	| Expr:expr
+	    {:
+            TempNode.TempAggregateNode tempAggregateNode = new TempNode.TempAggregateNode(expr);
+            tempAggregateNode.setStartPos(expr.line, expr.column);
+
+	        RESULT = tempAggregateNode;
+	    :}
+	;
 
 
-FunCall ::= ID:identifier LPAR Exprs:exprs RPAR {: RESULT = new CallOpNode(new IdentifierNode((String)identifier.value), (List)exprs.children); :}
-        | ID:identifier LPAR RPAR {: RESULT = new CallOpNode(new IdentifierNode((String)identifier.value)); :};
+FunCall ::= ID:identifier LPAR Exprs:exprs RPAR
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                CallOpNode callOpNode = new CallOpNode(identifierNode, (List)exprs.children);
+                callOpNode.setStartPos(identifier.line, identifier.column);
+
+                RESULT = callOpNode;
+            :}
+        | ID:identifier LPAR RPAR
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                CallOpNode callOpNode = new CallOpNode(identifierNode);
+                callOpNode.setStartPos(identifier.line, identifier.column);
+
+                RESULT = callOpNode;
+            :}
+        ;
 
 
-Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
-		| Expr:expr_1 BoolOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
-	        | Expr:expr_1 RelOp:op Expr:expr_2 {: RESULT = new BinaryOpNode(op, expr_1, expr_2); :}
-		| LPAR Expr:expr RPAR {: RESULT = expr; :}
-	        | MINUS Expr:expr {: RESULT = new UnaryOpNode(UnaryOpNode.Type.Uminus, expr); :}
-	        | NOT Expr:expr {: RESULT = new UnaryOpNode(UnaryOpNode.Type.Not, expr); :}
-	        | ID:identifier {: RESULT = new ExprValueNode(new IdentifierNode((String)identifier.value)); :}
-                | FunCall:funcall {: RESULT = new ExprValueNode(funcall); :}
-		| Constant:constant {: RESULT = new ExprValueNode(constant); :}
+Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2
+            {:
+                BinaryOpNode binaryOpNode = new BinaryOpNode(op, expr_1, expr_2);
+                binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+                RESULT = binaryOpNode;
+            :}
+		| Expr:expr_1 BoolOp:op Expr:expr_2
+            {:
+                BinaryOpNode binaryOpNode = new BinaryOpNode(op, expr_1, expr_2);
+                binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+                RESULT = binaryOpNode;
+            :}
+	    | Expr:expr_1 RelOp:op Expr:expr_2
+            {:
+                BinaryOpNode binaryOpNode = new BinaryOpNode(op, expr_1, expr_2);
+                binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+                RESULT = new BinaryOpNode(op, expr_1, expr_2);
+            :}
+		| LPAR Expr:expr RPAR
+            {:
+                RESULT = expr;
+            :}
+	    | MINUS:minus Expr:expr
+            {:
+                UnaryOpNode unaryOpNode = new UnaryOpNode(UnaryOpNode.Type.Uminus, expr);
+                unaryOpNode.setStartPos(minus.line, minus.column);
+                RESULT = unaryOpNode;
+            :}
+	    | NOT:not Expr:expr
+            {:
+                UnaryOpNode unaryOpNode = new UnaryOpNode(UnaryOpNode.Type.Not, expr);
+                unaryOpNode.setStartPos(not.line, not.column);
+                RESULT = unaryOpNode;
+            :}
+	    | ID:identifier
+            {:
+                IdentifierNode identifierNode = new IdentifierNode((String)identifier.value);
+                identifierNode.setStartPos(identifier.line, identifier.column);
+                ExprValueNode exprValueNode = new ExprValueNode(identifierNode);
+                exprValueNode.setStartPos(identifier.line, identifier.column);
+                RESULT = exprValueNode;
+            :}
+        | FunCall:funcall
+            {:
+                ExprValueNode exprValueNode = new ExprValueNode(funcall);
+                exprValueNode.setStartPos(funcall.line, funcall.column);
+                RESULT = exprValueNode;
+            :}
+		| Constant:constant
+            {:
+                ExprValueNode exprValueNode = new ExprValueNode(constant);
+                exprValueNode.setStartPos(constant.line, constant.column);
+                RESULT = exprValueNode;
+            :}
 		;
 
 ArithOp ::= PLUS {: RESULT = BinaryOpNode.Type.Plus; :}
@@ -176,10 +518,10 @@ BoolOp ::= AND {: RESULT = BinaryOpNode.Type.And; :}
         | OR {: RESULT = BinaryOpNode.Type.Or; :}
         ;
 
-RelOp  ::=  GT {: RESULT = BinaryOpNode.Type.Gt; :}
-        | GE {: RESULT = BinaryOpNode.Type.Ge; :}
-        | LT {: RESULT = BinaryOpNode.Type.Lt; :}
-        | LE {: RESULT = BinaryOpNode.Type.Le; :}
-        | EQ {: RESULT = BinaryOpNode.Type.Eq; :}
-        | NE {: RESULT = BinaryOpNode.Type.Ne; :}
+RelOp  ::=  GT {:  RESULT = BinaryOpNode.Type.Gt; :}
+        | GE {:RESULT = BinaryOpNode.Type.Ge; :}
+        | LT {:RESULT = BinaryOpNode.Type.Lt; :}
+        | LE {:RESULT = BinaryOpNode.Type.Le; :}
+        | EQ {:RESULT = BinaryOpNode.Type.Eq; :}
+        | NE {:RESULT = BinaryOpNode.Type.Ne; :}
         ;
