@@ -1,11 +1,12 @@
 program
 
-e : int
-; x : 1;
- y = 3 + 4 : int
-; z = 4 / 2 : double
-; w = not(x and y or z) and (3 < 4) : bool
-; k = w : bool
+// e : int
+// ; x : 1;
+//  y = 3 + 4 : int
+// ; z = 4 / 2 : double;
+w =  z and x < y : bool;
+// w = not(x and y or z) and (3 < 4) : bool;
+k = w : bool
 ; j : 'a'
 ; l : "i_hope_it_work"
 ; n :string

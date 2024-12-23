@@ -52,15 +52,16 @@ non terminal    TempNode.TempAggregateNode  Vars;
 non terminal    TempNode.TempAggregateNode  Exprs;
 non terminal    ExprOpNode                  Expr;
 non terminal    CallOpNode                  FunCall;
-non terminal    BinaryOpNode.Type           ArithOp;
-non terminal    BinaryOpNode.Type           BoolOp;
-non terminal    BinaryOpNode.Type           RelOp;
+/* non terminal    BinaryOpNode.Type           ArithOp; */
+/* non terminal    BinaryOpNode.Type           BoolOp; */
+/* non terminal    BinaryOpNode.Type           RelOp; */
 
 /* Precedences */
+/* We don't excatly know why nonassoc works on EQ, NE, LT, LE, GT, GE, there is a conflict */
 precedence left OR;
 precedence left AND;
 precedence nonassoc NOT;
-precedence nonassoc EQ, NE, LT, LE, GT, GE; /* We don't excatly know why nonassoc works, there is a conflict */
+precedence nonassoc EQ, NE, LT, LE, GT, GE;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 /* precedence nonassoc LPAR, RPAR; */
@@ -453,24 +454,81 @@ FunCall ::= ID:identifier LPAR Exprs:exprs RPAR
         ;
 
 
-Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2
+Expr   ::= Expr:expr_1 PLUS Expr:expr_2
             {:
-                BinaryOpNode binaryOpNode = new BinaryOpNode(op, expr_1, expr_2);
+                BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Plus, expr_1, expr_2);
                 binaryOpNode.setStartPos(expr_1.line, expr_1.column);
                 RESULT = binaryOpNode;
             :}
-		| Expr:expr_1 BoolOp:op Expr:expr_2
+        | Expr:expr_1 MINUS Expr:expr_2
             {:
-                BinaryOpNode binaryOpNode = new BinaryOpNode(op, expr_1, expr_2);
+                BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Minus, expr_1, expr_2);
                 binaryOpNode.setStartPos(expr_1.line, expr_1.column);
                 RESULT = binaryOpNode;
             :}
-	    | Expr:expr_1 RelOp:op Expr:expr_2
+        | Expr:expr_1 TIMES Expr:expr_2
+             {:
+                 BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Times, expr_1, expr_2);
+                 binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+                 RESULT = binaryOpNode;
+             :}
+        | Expr:expr_1 DIV Expr:expr_2
             {:
-                BinaryOpNode binaryOpNode = new BinaryOpNode(op, expr_1, expr_2);
+                BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Div, expr_1, expr_2);
                 binaryOpNode.setStartPos(expr_1.line, expr_1.column);
-                RESULT = new BinaryOpNode(op, expr_1, expr_2);
+                RESULT = binaryOpNode;
             :}
+
+		| Expr:expr_1 AND Expr:expr_2
+		    {:
+		        BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.And, expr_1, expr_2);
+	            binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+	            RESULT = binaryOpNode;
+		    :}
+		| Expr:expr_1 OR Expr:expr_2
+		    {:
+		        BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Or, expr_1, expr_2);
+	            binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+	            RESULT = binaryOpNode;
+		    :}
+
+		| Expr:expr_1 GT Expr:expr_2
+		    {:
+		        BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Gt, expr_1, expr_2);
+	            binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+	            RESULT = binaryOpNode;
+		    :}
+	    | Expr:expr_1 LT Expr:expr_2
+   		    {:
+   		        BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Lt, expr_1, expr_2);
+   	            binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+   	            RESULT = binaryOpNode;
+   		    :}
+	    | Expr:expr_1 GE Expr:expr_2
+   		    {:
+   		        BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Ge, expr_1, expr_2);
+   	            binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+   	            RESULT = binaryOpNode;
+   		    :}
+	    | Expr:expr_1 LE Expr:expr_2
+   		    {:
+   		        BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Le, expr_1, expr_2);
+   	            binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+   	            RESULT = binaryOpNode;
+   		    :}
+        | Expr:expr_1 EQ Expr:expr_2
+            {:
+                BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Eq, expr_1, expr_2);
+                binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+                RESULT = binaryOpNode;
+            :}
+        | Expr:expr_1 NE Expr:expr_2
+            {:
+                BinaryOpNode binaryOpNode = new BinaryOpNode(BinaryOpNode.Type.Ne, expr_1, expr_2);
+                binaryOpNode.setStartPos(expr_1.line, expr_1.column);
+                RESULT = binaryOpNode;
+            :}
+
 		| LPAR Expr:expr RPAR
             {:
                 RESULT = expr;
@@ -508,21 +566,3 @@ Expr   ::= Expr:expr_1 ArithOp:op Expr:expr_2
                 RESULT = exprValueNode;
             :}
 		;
-
-ArithOp ::= PLUS {: RESULT = BinaryOpNode.Type.Plus; :}
-        |  MINUS {: RESULT = BinaryOpNode.Type.Minus; :}
-        | TIMES  {: RESULT = BinaryOpNode.Type.Times; :}
-        |  DIV {: RESULT = BinaryOpNode.Type.Div; :}
-        ;
-
-BoolOp ::= AND {: RESULT = BinaryOpNode.Type.And; :}
-        | OR {: RESULT = BinaryOpNode.Type.Or; :}
-        ;
-
-RelOp  ::=  GT {:  RESULT = BinaryOpNode.Type.Gt; :}
-        | GE {:RESULT = BinaryOpNode.Type.Ge; :}
-        | LT {:RESULT = BinaryOpNode.Type.Lt; :}
-        | LE {:RESULT = BinaryOpNode.Type.Le; :}
-        | EQ {:RESULT = BinaryOpNode.Type.Eq; :}
-        | NE {:RESULT = BinaryOpNode.Type.Ne; :}
-        ;

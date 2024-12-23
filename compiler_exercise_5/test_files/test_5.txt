@@ -1,0 +1,8 @@
+program
+
+w = x and y or g or not h <= not l and not not e : bool;
+j = x + y - z * a / b * x + 2 : int;
+
+begin
+
+end

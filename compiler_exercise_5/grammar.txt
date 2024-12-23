@@ -1,0 +1,74 @@
+Programma ->  PROGRAM Decls BEGIN VarDecls Statements END
+Decls -> VarDecl Decls 
+Decls -> DefDecl Decls
+Decls -> ''
+VarDecls -> VarDecls VarDecl
+VarDecls -> ''
+VarDecl -> VarsOptInit COLON TypeOrConstant SEMI
+VarsOptInit -> ID PIPE VarsOptInit
+VarsOptInit -> ID ASSIGNDECL Expr PIPE VarsOptInit
+VarsOptInit -> ID
+VarsOptInit -> ID ASSIGNDECL Expr
+TypeOrConstant -> Type
+TypeOrConstant -> Constant
+Type -> INT
+Type ->  BOOL
+Type ->  DOUBLE
+Type -> STRING
+Type -> CHAR
+Constant -> TRUE
+Constant -> FALSE
+Constant -> INT_CONST
+Constant -> DOUBLE_CONST
+Constant -> CHAR_CONST
+Constant -> STRING_CONST
+DefDecl -> DEF ID LPAR ParDecls RPAR OptType Body
+DefDecl -> DEF ID LPAR  RPAR OptType Body
+ParDecls -> Pardecl SEMI ParDecls
+ParDecls -> Pardecl
+ParDecl -> PVars COLON Type
+PVars -> PVar COMMA PVars
+PVars -> PVar
+PVar -> ID
+PVar -> REF ID
+OptType -> COLON Type
+OptType -> ''
+Body -> LBRAC VarDecls Statements RBRAC
+Statements -> Stat Statements
+Statements -> ''
+Stat -> Vars IN SEMI
+Stat -> Exprs OUT SEMI
+Stat -> Exprs OUTNL SEMI
+Stat -> Vars ASSIGN Exprs SEMI
+Stat -> FunCall SEMI
+Stat -> IF LPAR Expr RPAR THEN Body ELSE Body
+Stat -> IF LPAR Expr RPAR THEN Body
+Stat -> WHILE LPAR Expr RPAR DO Body
+Stat -> RETURN expr SEMI
+Vars -> ID PIPE Vars
+Vars -> ID
+Exprs -> Expr COMMA  Exprs
+Exprs -> Expr
+FunCall -> ID LPAR Exprs RPAR
+FunCall -> ID LPAR RPAR
+Expr -> Expr ArithOp Expr
+Expr ->  Expr BoolOp Expr
+Expr -> Expr RelOp Expr
+Expr -> LPAR Expr RPAR
+Expr -> MINUS Expr
+Expr -> NOT Expr
+Expr -> ID
+Expr -> FunCall
+Expr -> Constant
+ArithOp -> PLUS
+ArithOp -> MINUS
+ArithOp -> TIMES
+ArithOp -> DIV
+BoolOp -> AND
+BoolOp -> OR
+RelOp -> GT
+RelOp -> GE
+RelOp -> LT
+RelOp -> LE
+RelOp -> EQ
+RelOp -> NE
