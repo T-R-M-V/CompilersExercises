@@ -449,7 +449,7 @@ public class ScopeVisitor implements Visitor {
                 node.scope.scopeData.put(identifier, scopeEntry);
             } else { // T: Error, already defined this variable in this scope
                 System.out.println("Already defined this variable in this scope");
-                System.exit(0);
+                // System.exit(0);
             }
         }
         // T: retrieve the declared variables (END)

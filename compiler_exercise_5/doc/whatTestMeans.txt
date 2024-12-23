@@ -1,0 +1,1 @@
+test_4: Semantic Error: Already defined variable + Wrong VarDeclOp

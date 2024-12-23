@@ -36,7 +36,7 @@ public class SingleTest {
             transformer.transform(source, result);
 
 
-            
+
             ScopeVisitor scopeVisitor = new ScopeVisitor();
             Scope scope = (Scope)scopeVisitor.visit(programOpNode);
         }

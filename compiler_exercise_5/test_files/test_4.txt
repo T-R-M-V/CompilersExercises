@@ -1,0 +1,18 @@
+program
+
+a | b | c : int;
+d | e : 10;
+f = 11 : 5;
+d : 'a';
+bb | bbb = 15 : 10;
+
+    def add(a : int; b : char)
+        {
+
+    }
+
+begin
+
+
+
+end
