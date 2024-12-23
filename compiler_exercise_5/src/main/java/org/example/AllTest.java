@@ -4,10 +4,13 @@ import java_cup.runtime.Symbol;
 import org.example.scope.Scope;
 import org.example.scope.ScopeVisitor;
 import org.example.tree.ProgramOpNode;
+import org.example.error.Error;
 import org.w3c.dom.Document;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -18,6 +21,7 @@ public class AllTest {
     public static void main(String[] args) throws Exception {
 
         HashMap<String, String> testResults = new HashMap<>();
+        HashMap<String, List<Error>> errors = new HashMap<>();
 
         String testFolder = "test_files";
         File testFolderFile = new File(testFolder);
@@ -27,6 +31,10 @@ public class AllTest {
 
             if (files != null && files.length > 0) {
                 for(var file: files) {
+
+                    // T: reset list of errors
+                    Error.stackError = new ArrayList<>();
+
                     if(file.isFile()) {
                         String res = "corretta!!";
                         FileReader reader = new FileReader(file);
@@ -59,13 +67,19 @@ public class AllTest {
                             e.printStackTrace();
                         }
 
-                        System.out.println("Frase: " + file.getName() + " " + res + "\n");
+                        // System.out.println("Frase: " + file.getName() + " " + res + "\n");
                         testResults.put(file.getName(), res);
+                        errors.put(file.getName(), Error.stackError);
                     }
                 }
             }
         }
 
-        testResults.entrySet().forEach((e) -> {System.out.println(e.getKey() + ": " + e.getValue());} );
+        testResults.entrySet().forEach((e) -> {
+                System.out.println(e.getKey() + ": " + e.getValue());
+                errors.get(e.getKey()).stream().forEach((error) -> System.out.println(error));
+                System.out.println("\n");
+        } );
+
     }
 }

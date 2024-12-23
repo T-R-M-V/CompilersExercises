@@ -9,6 +9,8 @@ import org.example.tree.expr.ExprValueNode;
 import org.example.tree.expr.UnaryOpNode;
 import org.example.tree.statements.*;
 
+import org.example.error.Error;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -275,8 +277,8 @@ public class ScopeVisitor implements Visitor {
         // T: add the sign of procedure to the scope's table (START)
         String identifier = node.identifierNode.identifier;
         if(currentScope.scopeData.get(identifier) != null) {
-            System.out.println("The function is already defined");
-            System.exit(0);
+            Error.stackError.add(new Error("The function is already defined", node.identifierNode.line, node.identifierNode.column));
+            // System.exit(0);
         }
 
         List<ScopeEntry.TypeProcParameter> typeOfParameters = new ArrayList<>();
@@ -341,8 +343,8 @@ public class ScopeVisitor implements Visitor {
                 ScopeEntry scopeEntry = ScopeEntry.createVarScope(type, ref);
                 currentScope.scopeData.put(identifier, scopeEntry);
             } else { // T: Give error in the case in which the variable is already defined
-                System.out.println("Variable is already defined");
-                System.exit(0);
+                Error.stackError.add(new Error("Variable is already defined", varOp.identifierNode.line, varOp.identifierNode.column));
+                // System.exit(0);
             }
         }
 
@@ -419,12 +421,12 @@ public class ScopeVisitor implements Visitor {
             int numberOfVariables = node.varOptInitOpNodes.size();
 
             if(numberOfVariables > 1) {
-                System.out.println("Can't define multiple variables when you use constant");
+                Error.stackError.add(new Error("Can't define multiple variables when you use constant", node.line, node.column));
             }
 
             for(var varOptInit: node.varOptInitOpNodes) {
                 if(varOptInit.exprOpNode != null) {
-                    System.out.println("Can't define an initial value for variables defined with a constant");
+                    Error.stackError.add(new Error("Can't define an initial value for variables defined with a constant", varOptInit.line, varOptInit.column));
                 }
             }
         }
@@ -448,7 +450,7 @@ public class ScopeVisitor implements Visitor {
                 ScopeEntry scopeEntry = ScopeEntry.createVarScope(type, false);
                 node.scope.scopeData.put(identifier, scopeEntry);
             } else { // T: Error, already defined this variable in this scope
-                System.out.println("Already defined this variable in this scope");
+                Error.stackError.add(new Error("Already defined this variable in this scope", varOptInit.identifierNode.line, varOptInit.identifierNode.column));
                 // System.exit(0);
             }
         }
