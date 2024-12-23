@@ -44,19 +44,27 @@ public class ScopeEntry {
         return entry;
     }
 
-    public static ScopeEntry createVarScope(Type varType) {
+    public static ScopeEntry createVarScope(Type varType, boolean ref) {
         ScopeEntry entry = new ScopeEntry();
 
         entry.kind = Kind.Var;
         entry.varType = varType;
+        entry.ref = ref;
 
         return entry;
     }
 
+
+
     public Kind kind;
 
+    // T: for Variable (START)
     public Type varType;
+    public boolean ref;
+    // T: for Variable (END)
 
+    // T: for Procedure/Function (START)
     public List<TypeProcParameter> parameters;
     public Type returnType;
+    // T: for Procedure/Function (END)
 }

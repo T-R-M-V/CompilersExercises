@@ -335,9 +335,10 @@ public class ScopeVisitor implements Visitor {
         for(var varOp: node.pVarOpNodes) {
 
             String identifier = varOp.identifierNode.identifier;
+            boolean ref = varOp.ref;
 
             if(currentScope.scopeData.get(identifier) == null) {
-                ScopeEntry scopeEntry = ScopeEntry.createVarScope(type);
+                ScopeEntry scopeEntry = ScopeEntry.createVarScope(type, ref);
                 currentScope.scopeData.put(identifier, scopeEntry);
             } else { // T: Give error in the case in which the variable is already defined
                 System.out.println("Variable is already defined");
@@ -425,7 +426,7 @@ public class ScopeVisitor implements Visitor {
         for (var varOptInit : node.varOptInitOpNodes) {
             String identifier = varOptInit.identifierNode.identifier;
             if(node.scope.scopeData.get(identifier) == null) {
-                ScopeEntry scopeEntry = ScopeEntry.createVarScope(type);
+                ScopeEntry scopeEntry = ScopeEntry.createVarScope(type, false);
                 node.scope.scopeData.put(identifier, scopeEntry);
             } else { // T: Error, already defined this variable in this scope
                 System.out.println("Already defined this variable in this scope");
