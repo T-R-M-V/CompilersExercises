@@ -33,7 +33,7 @@ terminal    LexerInfo   PIPE;
 /* Non terminals */
 non terminal    ProgramOpNode               Programma;
 non terminal    TempNode.TempAggregateNode  Decls;
-non terminal    TempNode.TempDeclsNode      VarDecls;   // T: Fix, remove TempDeclsNode and use TempAggregateNode
+non terminal    TempNode.TempAggregateNode  VarDecls; //
 non terminal    VarDeclOpNode               VarDecl;
 non terminal    TempNode.TempAggregateNode  VarsOptInit;
 non terminal    TypeOrConstantNode          TypeOrConstant;
@@ -87,8 +87,14 @@ Decls ::= VarDecl:varDecl Decls:decls {: RESULT = new TempNode.TempAggregateNode
       | /*eps*/ {: RESULT = new TempNode.TempAggregateNode(); :};
 
 /* T: we doesn't added line and column because we think that we don't want to send diagnostic for this type of list */
-VarDecls ::= VarDecls:varDecls VarDecl:varDecl {: varDecls.addVarDeclOpNode(varDecl); RESULT = varDecls; :}
-         | /*eps*/ {: RESULT = new TempNode.TempDeclsNode(); :};
+VarDecls ::= VarDecls:varDecls VarDecl:varDecl
+                {:
+                    RESULT = new TempNode.TempAggregateNode(varDecls, varDecl, false);
+                :}
+         | /*eps*/
+            {:
+                RESULT = new TempNode.TempAggregateNode();
+            :};
 
 VarDecl ::= VarsOptInit:varsOptInit COLON TypeOrConstant:typeOrConstant SEMI
                 {:

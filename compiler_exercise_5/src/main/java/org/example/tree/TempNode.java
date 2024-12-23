@@ -35,28 +35,4 @@ public class TempNode {
 
         public List<Node> children;
     }
-
-    public static class TempDeclsNode extends Node {
-
-        public TempDeclsNode() {
-            varDeclOpNodes = new ArrayList<>();
-            defDeclOpNodes = new ArrayList<>();
-        }
-
-        public void addVarDeclOpNode(VarDeclOpNode varDeclOpNode) {
-            varDeclOpNodes.add(varDeclOpNode);
-        }
-
-        public void addDeclOpNode(DefDeclOpNode defDeclOpNode) {
-            defDeclOpNodes.add(defDeclOpNode);
-        }
-
-        @Override
-        public Object accept(Visitor v) {
-            return null;
-        }
-
-        public List<VarDeclOpNode> varDeclOpNodes;
-        public List<DefDeclOpNode> defDeclOpNodes;
-    }
 }
