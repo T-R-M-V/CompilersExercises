@@ -19,7 +19,7 @@ public class Release {
         // T: named correctly the output file (END)
 
 
-        
+
         ProcessBuilder processBuilder = new ProcessBuilder("gcc", sourceFile, "-o", outputFile);
 
         // T: redirect the error stream

@@ -2,88 +2,78 @@
 <ProgramOpNode>
     <VarDeclOpNode>
         <VarOptInitOpNode>
-            <IdentifierNode identifier="w"/>
-            <BinaryOpNode type="Or">
-                <BinaryOpNode type="Or">
-                    <BinaryOpNode type="And">
-                        <ExprValueNode>
-                            <IdentifierNode identifier="x"/>
-                        </ExprValueNode>
-                        <ExprValueNode>
-                            <IdentifierNode identifier="y"/>
-                        </ExprValueNode>
-                    </BinaryOpNode>
-                    <ExprValueNode>
-                        <IdentifierNode identifier="g"/>
-                    </ExprValueNode>
-                </BinaryOpNode>
-                <BinaryOpNode type="And">
-                    <UnaryOpNode type="Not">
-                        <BinaryOpNode type="Le">
-                            <ExprValueNode>
-                                <IdentifierNode identifier="h"/>
-                            </ExprValueNode>
-                            <UnaryOpNode type="Not">
-                                <ExprValueNode>
-                                    <IdentifierNode identifier="l"/>
-                                </ExprValueNode>
-                            </UnaryOpNode>
-                        </BinaryOpNode>
-                    </UnaryOpNode>
-                    <UnaryOpNode type="Not">
-                        <UnaryOpNode type="Not">
-                            <ExprValueNode>
-                                <IdentifierNode identifier="e"/>
-                            </ExprValueNode>
-                        </UnaryOpNode>
-                    </UnaryOpNode>
-                </BinaryOpNode>
-            </BinaryOpNode>
+            <IdentifierNode identifier="a"/>
         </VarOptInitOpNode>
-        <typeOrConstantNode>
-            <TypeNode Type="Boolean"/>
-        </typeOrConstantNode>
-    </VarDeclOpNode>
-    <VarDeclOpNode>
         <VarOptInitOpNode>
-            <IdentifierNode identifier="j"/>
-            <BinaryOpNode type="Plus">
-                <BinaryOpNode type="Minus">
-                    <BinaryOpNode type="Plus">
-                        <ExprValueNode>
-                            <IdentifierNode identifier="x"/>
-                        </ExprValueNode>
-                        <ExprValueNode>
-                            <IdentifierNode identifier="y"/>
-                        </ExprValueNode>
-                    </BinaryOpNode>
-                    <BinaryOpNode type="Times">
-                        <BinaryOpNode type="Div">
-                            <BinaryOpNode type="Times">
-                                <ExprValueNode>
-                                    <IdentifierNode identifier="z"/>
-                                </ExprValueNode>
-                                <ExprValueNode>
-                                    <IdentifierNode identifier="a"/>
-                                </ExprValueNode>
-                            </BinaryOpNode>
-                            <ExprValueNode>
-                                <IdentifierNode identifier="b"/>
-                            </ExprValueNode>
-                        </BinaryOpNode>
-                        <ExprValueNode>
-                            <IdentifierNode identifier="x"/>
-                        </ExprValueNode>
-                    </BinaryOpNode>
-                </BinaryOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="2"/>
-                </ExprValueNode>
-            </BinaryOpNode>
+            <IdentifierNode identifier="b"/>
+        </VarOptInitOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="c"/>
         </VarOptInitOpNode>
         <typeOrConstantNode>
             <TypeNode Type="Integer"/>
         </typeOrConstantNode>
     </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="d"/>
+        </VarOptInitOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="e"/>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <ConstantNode type="Integer" value="10"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="f"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="11"/>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <ConstantNode type="Integer" value="5"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="d"/>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <ConstantNode type="Char" value="'a'"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="bb"/>
+        </VarOptInitOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="bbb"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="15"/>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <ConstantNode type="Integer" value="10"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <DefDeclOpNode>
+        <IdentifierNode identifier="add"/>
+        <ParDeclOpNode>
+            <PVarOpNode ref="false">
+                <IdentifierNode identifier="a"/>
+            </PVarOpNode>
+            <TypeNode Type="Integer"/>
+        </ParDeclOpNode>
+        <ParDeclOpNode>
+            <PVarOpNode ref="false">
+                <IdentifierNode identifier="b"/>
+            </PVarOpNode>
+            <TypeNode Type="Char"/>
+        </ParDeclOpNode>
+        <TypeNode Type="Void"/>
+        <body/>
+    </DefDeclOpNode>
     <beginEndOpNode/>
 </ProgramOpNode>

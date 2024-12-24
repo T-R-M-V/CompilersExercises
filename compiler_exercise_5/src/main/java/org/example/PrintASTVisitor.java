@@ -41,7 +41,7 @@ public class PrintASTVisitor implements Visitor {
         Element rightExprOpNode = (Element) node.right.accept(this);
         binaryOpNodeXml.appendChild(rightExprOpNode);
 
-        binaryOpNodeXml.setAttribute("type", node.type + "");
+        binaryOpNodeXml.setAttribute("type", node.op + "");
 
         return binaryOpNodeXml;
     }
@@ -84,7 +84,7 @@ public class PrintASTVisitor implements Visitor {
         Element exprOpNode = (Element) node.exprOpNode.accept(this);
         unaryOpNodeXml.appendChild(exprOpNode);
 
-        unaryOpNodeXml.setAttribute("type", node.type + "");
+        unaryOpNodeXml.setAttribute("type", node.op + "");
 
         return unaryOpNodeXml;
     }

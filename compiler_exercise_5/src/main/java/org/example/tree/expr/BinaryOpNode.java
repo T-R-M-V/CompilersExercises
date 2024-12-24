@@ -10,8 +10,8 @@ public class BinaryOpNode extends ExprOpNode {
         Gt, Ge, Lt, Le, Eq, Ne,
     }
 
-    public BinaryOpNode(BinaryOpNode.Type type, ExprOpNode left, ExprOpNode right) {
-        this.type = type;
+    public BinaryOpNode(BinaryOpNode.Type op, ExprOpNode left, ExprOpNode right) {
+        this.op = op;
         this.left = left;
         this.right = right;
     }
@@ -21,7 +21,7 @@ public class BinaryOpNode extends ExprOpNode {
         return v.visit(this);
     }
 
-    public BinaryOpNode.Type type;
+    public BinaryOpNode.Type op;
     public ExprOpNode left;
     public ExprOpNode right;
 }

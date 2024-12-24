@@ -8,4 +8,6 @@ public class ExprOpNode extends Node {
     public Object accept(Visitor v) {
         return v.visit(this);
     }
+
+    public boolean withCallOp = false;
 }

@@ -9,8 +9,8 @@ public class UnaryOpNode extends ExprOpNode {
         Not,
     }
 
-    public UnaryOpNode(UnaryOpNode.Type type, ExprOpNode exprOpNode) {
-        this.type = type;
+    public UnaryOpNode(UnaryOpNode.Type op, ExprOpNode exprOpNode) {
+        this.op = op;
         this.exprOpNode = exprOpNode;
     }
 
@@ -19,6 +19,6 @@ public class UnaryOpNode extends ExprOpNode {
         return v.visit(this);
     }
 
-    public UnaryOpNode.Type type;
+    public UnaryOpNode.Type op;
     public ExprOpNode exprOpNode;
 }

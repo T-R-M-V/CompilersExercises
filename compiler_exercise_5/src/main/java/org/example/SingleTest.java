@@ -15,6 +15,7 @@ import java.io.*;
 public class SingleTest {
 
     public static void main(String args[]) throws FileNotFoundException {
+
         String res = "corretta!!";
         FileReader reader = new FileReader(args[0]);
         Reader keyboard = new BufferedReader(reader);

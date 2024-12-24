@@ -21,6 +21,6 @@ public class DefDeclOpNode extends Node {
 
     public IdentifierNode identifierNode;
     public List<ParDeclOpNode> parDeclOpNodes;
-    public TypeNode typeNode;
+    public TypeNode typeNode; // T: return type of the function
     public BodyOpNode bodyOpNode;
 }
