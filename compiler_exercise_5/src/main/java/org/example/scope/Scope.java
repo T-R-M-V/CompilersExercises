@@ -21,11 +21,22 @@ public class Scope {
         this.startingColumn = startingColumn;
     }
 
+    public ScopeEntry find(String lexem) {
+        Scope currentScope = this;
+        ScopeEntry entry = null;
+        while(currentScope != null) {
+            entry = currentScope.scopeData.get(lexem);
+            if(entry != null)
+                break;
+            currentScope = currentScope.parent;
+        }
+
+        return entry;
+    }
+
     public HashMap<String, ScopeEntry> scopeData;
     public Scope parent;
     public int startingLine, startingColumn;
-
-
 
     public void setParent(Scope parent) {
         this.parent = parent;
