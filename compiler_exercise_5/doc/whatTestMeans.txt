@@ -1,2 +1,7 @@
 test_4: Semantic Error: Already defined variable + Wrong VarDeclOp
-test_5: to verify if precedence among expression works...
+test_5: some expression to verify if the system to create AST works well with that
+
+test_6:
+test_7:
+test_8:
+test_9:

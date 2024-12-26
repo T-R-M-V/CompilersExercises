@@ -20,6 +20,10 @@ public class Error {
         return "line: " + line + " col: " + column + "    : " + message;
     }
 
+    public static void launchError(String message, int line, int column) {
+        stackError.add(new Error(message, line, column));
+    }
+
     // T: the stack of error used during compilation
     public static List<Error> stackError = new ArrayList<>();
 }

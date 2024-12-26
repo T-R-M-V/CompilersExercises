@@ -1,0 +1,45 @@
+program
+
+a = 3+4 : int;
+b = 5 : double; 		                // Error: assigning integer to a variable of type double
+c = 4 : 10;			                    // Error: constant + expression value
+d = 4 * 3 and true : bool;	            // Error: error in the expression, we can't use an integer in a boolean operation
+e = a : string			                // Error: type mismatch a is an integer
+f | g = fun(a, c, b) : int;
+
+def fun(a,b : int; ref x : double) : int{
+	
+	return 0;
+}
+
+
+begin
+
+
+h : bool;
+f : int;
+t : double;
+
+l = fun(3, 4, t) : int;
+fun(3, 4, t);
+
+
+l = fun(3, 4, t) : double;	            // Error: type mismatch between return of function and type of variable
+
+fun(3, 4);			                    // Error: missing parameters in the calling of function
+
+fun(3, 4, 3.1);			                // Error: type mismatch, isn't a variable
+
+fun(3, h and false, t); 	            // Error: type mismatch, second parameter
+
+h := fun(3, 4, t);		                // Error: type mismatch between return of function and type of variable
+
+a := fun(3, 4, t);
+
+h | f := true, fun(3, 4, t);	        // Error: multiple assigning with a function calling
+
+a | b := 1;			                    // Error: multiple assignin mismatch between number of expressions and variables
+
+
+
+end

@@ -1,0 +1,44 @@
+program
+
+a | b | c | d: int;
+e | f | g : double;
+h | i | l : bool;
+m | n | o : string;
+
+
+def fun1(a: int; ref x : double) : int{
+	
+	return 0;
+}
+
+def fun2(){
+
+}
+
+
+begin
+
+if((a + fun1(a, f)) <> f) then{
+	"dfdfdf" + a + c !>>;
+	val <<;
+	fun1 <<;                                //
+
+	if(true) then{
+		a | l := 12, true;
+	}else{
+		c := fun2();			            // int = void
+	}
+}
+
+while( h and f == g) do{
+
+	while(h and a) do{			            // bool and int
+		b := b -1;
+	}
+}
+
+
+
+end
+
+

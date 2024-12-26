@@ -2,6 +2,7 @@ package org.example.type;
 
 import org.example.Type;
 import org.example.Visitor;
+import org.example.error.Error;
 import org.example.scope.ScopeEntry;
 import org.example.tree.*;
 import org.example.tree.expr.BinaryOpNode;
@@ -17,7 +18,6 @@ public class TypeCheckingVisitor implements Visitor {
 
     // T: NOTES
     // T: identifierNode.type not setted, because we verify the value setted in the scope only after
-    // T:
 
     // T: this buffer is used to take notes of the return encountered during the visiting
     // of a function or the Begin...End part of the program.
@@ -43,6 +43,8 @@ public class TypeCheckingVisitor implements Visitor {
         node.type = resultType;
         if(typeLeft != Type.Error && typeRight != Type.Error && resultType == Type.Error) {
             // T: launch error
+            String errorMessage = "Can't use " + node.op + " with expression of type: " + typeLeft + " and " + typeRight;
+            Error.launchError(errorMessage, node.line, node.column);
         }
 
         return node.type;
@@ -73,9 +75,13 @@ public class TypeCheckingVisitor implements Visitor {
             if(entry.kind == ScopeEntry.Kind.Var) {
                 node.type = entry.varType;
             }
-            // T: check if the identifier refer to a function
+            // T: return error if the identifier refer to a function
+            // T: WARNING we don't know if this is necessary
             else {
                 // T: launch error
+                String errorMessage = "The identifier: " + node.identifierNode.identifier + " isn't a variable";
+                Error.launchError(errorMessage, node.line, node.column);
+
                 node.type = Type.Error;
             }
         }
@@ -102,6 +108,8 @@ public class TypeCheckingVisitor implements Visitor {
         node.type = resultType;
         if(typeArg != Type.Error && resultType == Type.Error) {
             // T: launch error
+            String errorMessage = "Can't use " + node.op + " with expression of type: " + typeArg;
+            Error.launchError(errorMessage, node.line, node.column);
         }
 
         return node.type;
@@ -122,6 +130,9 @@ public class TypeCheckingVisitor implements Visitor {
             // when there are multiple exprOpNode.
             if(node.exprOpNodes.size() > 1 && exprOpNode.withCallOp) {
                 // T: launch error
+                String errorMessage = "Can't use the return value of a function in multiple assignment";
+                Error.launchError(errorMessage, exprOpNode.line, exprOpNode.column);
+
                 node.type = Type.Error;
             }
         }
@@ -130,6 +141,9 @@ public class TypeCheckingVisitor implements Visitor {
 
         if(node.exprOpNodes.size() != node.identifierNodes.size()) {
             // T: launch error
+            String errorMessage = "The number of values and variables isn't equal";
+            Error.launchError(errorMessage, node.line, node.column);
+
             node.type = Type.Error;
         }
 
@@ -143,12 +157,19 @@ public class TypeCheckingVisitor implements Visitor {
                 // T: check if the variable and the expr has the same type
                 if(entry.varType != exprOpNode.type) {
                     // T: launch error
+                    // T: Review: add the types
+                    String errorMessage = "Type mismatch between the identifier: " + identifierNode.identifier + " and the expression at: (" + exprOpNode.line + "," + exprOpNode.column + ")";
+                    Error.launchError(errorMessage, identifierNode.line, identifierNode.column);
+
                     node.type = Type.Error;
                 }
             } else
-            // T: check if the identifier is referred to a function
+            // T: return error if the identifier is referred to a function
             {
                 // T: Launch error
+                String errorMessage = "The identifier: " + identifierNode.identifier + " isn't a variable";
+                Error.launchError(errorMessage, identifierNode.line, identifierNode.column);
+
                 node.type = Type.Error;
             }
         }
@@ -169,15 +190,22 @@ public class TypeCheckingVisitor implements Visitor {
         // T: check if the identifier is referred to a variable
         {
             // T: launch error
+            String errorMessage = "The identifier: " + node.identifierNode.identifier + " isn't a function/procedure";
+            Error.launchError(errorMessage, node.line, node.column);
+
             node.type = Type.Error;
 
-            // T: if referred to a variable, we must exit from this procedure
+            // T: if referred to a variable, we must exit from this procedure, there is no sense
+            // in returning other errors.
             return node.type;
         }
 
         // T: check if the number of parameters is the same of the definition (START)
         if(node.exprOpNodes.size() != entry.parameters.size() ) {
             // T: launch error
+            String errorMessage = "The number of parameters of the function and the number of parameter provided in the call mismatch";
+            Error.launchError(errorMessage, node.line, node.column);
+
             node.type = Type.Error;
         }
         // T: check if the number of parameters is the same of the definition (END)
@@ -191,24 +219,30 @@ public class TypeCheckingVisitor implements Visitor {
                 node.type = Type.Error;
             }
             else {
-                // T: check if the type of expression is the same of the parameter (START)
+                // T: return error if the type of expression is the same of the parameter (START)
                 if(typeExprOpNode != entry.parameters.get(index).type) {
                     // T: launch error
+                    String errorMessage = "Type mismatch between the value passed in the function call and the definition of the function";
+                    Error.launchError(errorMessage, exprOpNode.line, exprOpNode.column);
+
                     node.type = Type.Error;
                 }
-                // T: check if the type of expression is the same of the parameter (END)
+                // T: return error if the type of expression is the same of the parameter (END)
 
-                // T: check if the parameter is a reference and the expression node (START)
+                // T: check if the parameter is a reference and the expression node is a variable (START)
                 else if(entry.parameters.get(index).ref) {
                     if(exprOpNode instanceof ExprValueNode) {
                         ExprValueNode castedExprOpNode = (ExprValueNode)exprOpNode;
                         if(castedExprOpNode.identifierNode == null) {
                             // T: launch error
+                            String errorMessage = "The parameter of the function is defined like a reference, an expression is passed";
+                            Error.launchError(errorMessage, exprOpNode.line, exprOpNode.column);
+
                             node.type = Type.Error;
                         }
                     }
                 }
-                // T: check if the parameter is a reference and the expression node (END)
+                // T: check if the parameter is a reference and the expression node  is a variable(END)
             }
 
             index++;
@@ -224,8 +258,11 @@ public class TypeCheckingVisitor implements Visitor {
         node.type = Type.Void;
 
         node.exprOpNode.accept(this);
-        if(node.exprOpNode.type != Type.Boolean) {
+        if(node.exprOpNode.type != Type.Error && node.exprOpNode.type != Type.Boolean) {
             // T: launch error
+            String errorMessage = "The type of the condition of an If must be boolean";
+            Error.launchError(errorMessage, node.exprOpNode.line, node.exprOpNode.column);
+
             node.type = Type.Error;
         }
 
@@ -252,6 +289,9 @@ public class TypeCheckingVisitor implements Visitor {
         node.exprOpNode.accept(this);
         if(node.exprOpNode.type != Type.Boolean) {
             // T: launch error
+            String errorMessage = "The type of the condition of an If must be boolean";
+            Error.launchError(errorMessage, node.exprOpNode.line, node.exprOpNode.column);
+
             node.type = Type.Error;
         }
 
@@ -275,9 +315,12 @@ public class TypeCheckingVisitor implements Visitor {
             ScopeEntry scopeEntry = node.scope.find(identifierNode.identifier);
             // T: WARNING miss the control if the identifier exist
 
-            // T: check if the identifier is referred to a function
+            // T: return error if the identifier is referred to a function
             if(scopeEntry.kind == ScopeEntry.Kind.Proc) {
                 // T: launch error
+                String errorMessage = "The identifier: " + identifierNode.identifier + " isn't a variable";
+                Error.launchError(errorMessage, identifierNode.line, identifierNode.column);
+
                 node.type = Type.Error;
             }
         }
@@ -286,6 +329,7 @@ public class TypeCheckingVisitor implements Visitor {
     }
 
     @Override
+    // T: the errors for putting in the wrong place the return isn't returned here
     public Object visit(ReturnOpNode node) {
 
         node.exprOpNode.accept(this);
@@ -312,6 +356,9 @@ public class TypeCheckingVisitor implements Visitor {
         Type typeExprOpNode = (Type)node.exprOpNode.accept(this);
         if(typeExprOpNode != Type.Boolean) {
             // T: launch error
+            String errorMessage = "The type of the condition of a while must be boolean";
+            Error.launchError(errorMessage, node.exprOpNode.line, node.exprOpNode.column);
+
             node.type = Type.Error;
         }
 
@@ -337,8 +384,12 @@ public class TypeCheckingVisitor implements Visitor {
                 node.type = Type.Error;
             }
 
+            // T: NOTE the type of expression is void only if is represented by a procedure call
             if(typeExprOpNode == Type.Void) {
-                // T: launch error (you can't use a procedure )
+                // T: launch error (you can't use a procedure)
+                String errorMessage = "Can't use a procedure call like input to a write, procedure hasn't a returning value";
+                Error.launchError(errorMessage, exprOpNode.line, exprOpNode.column);
+
                 node.type = Type.Void;
             }
         }
@@ -357,7 +408,7 @@ public class TypeCheckingVisitor implements Visitor {
         for(var varDeclOpNode : node.varDeclOpNodes) {
             Type typeVarDeclOpNode = (Type)varDeclOpNode.accept(this);
             if(typeVarDeclOpNode != Type.Void) {
-                // T: launch error
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
@@ -365,14 +416,20 @@ public class TypeCheckingVisitor implements Visitor {
         for(var statOpNode : node.statOpNodes) {
             Type typeStatOpNode = (Type)statOpNode.accept(this);
             if(typeStatOpNode != Type.Void) {
-                // T: launch error
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
 
-        // T: check if there isnt' any return in the function
+        // T: return error if there is any return in Begin...End
         if(! returnOpNodesOfLastFunction.isEmpty()) {
             // T: launch error
+            // T: we launch an error for each return we found in Begin...End
+            for(var returnOpNode : returnOpNodesOfLastFunction) {
+                String errorMessage = "You can't use return outside of a function";
+                Error.launchError(errorMessage, returnOpNode.line, returnOpNode.column);
+            }
+
             node.type = Type.Error;
         }
 
@@ -387,7 +444,7 @@ public class TypeCheckingVisitor implements Visitor {
         for(var varDeclOpNode : node.varDeclOpNodes) {
             Type typeVarDeclOpNode = (Type)varDeclOpNode.accept(this);
             if(typeVarDeclOpNode != Type.Void) {
-                // T: omit error
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
@@ -395,7 +452,7 @@ public class TypeCheckingVisitor implements Visitor {
         for(var statOpNode : node.statOpNodes) {
             Type typeStatOpNode = (Type)statOpNode.accept(this);
             if(typeStatOpNode == Type.Error) {
-                // T: omit error because nun teng genj
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
@@ -442,6 +499,9 @@ public class TypeCheckingVisitor implements Visitor {
             // T: check if there is at least one return in this function
             if(returnOpNodesOfLastFunction.isEmpty()) {
                 // T: launch error
+                String errorMessage = "Must provide at least one return statement in a function";
+                Error.launchError(errorMessage, node.line, node.column);
+
                 node.type = Type.Error;
             }
 
@@ -449,15 +509,24 @@ public class TypeCheckingVisitor implements Visitor {
             for(var returnOpNode : returnOpNodesOfLastFunction) {
                 if(returnOpNode.type != returnType) {
                     // T: launch error
+                    String errorMessage = "Type mismatch between type of return statement and the type provided in the declaration of function";
+                    Error.launchError(errorMessage, returnOpNode.line, returnOpNode.column);
+
                     node.type = Type.Error;
                 }
             }
             // T: check if the return type is coherent with the return type of the function (END)
         }
         else {
-            // T: check if there isn't any return in this function
+            // T: return error if there is any return in a procedure
             if(! returnOpNodesOfLastFunction.isEmpty()) {
                 // T: launch error
+                // T: we launch an error for each return we found in the procedure
+                for(var returnOpNode : returnOpNodesOfLastFunction) {
+                    String errorMessage = "You can't use return outside of a function";
+                    Error.launchError(errorMessage, returnOpNode.line, returnOpNode.column);
+                }
+
                 node.type = Type.Error;
             }
         }
@@ -482,7 +551,7 @@ public class TypeCheckingVisitor implements Visitor {
         for(var pVarOpNode : node.pVarOpNodes) {
             Type typePVarOpNode = (Type)pVarOpNode.accept(this);
             if(typePVarOpNode != Type.Void) {
-                // T: omitted error
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
@@ -497,14 +566,14 @@ public class TypeCheckingVisitor implements Visitor {
 
         Type typeBeginEndOpNode = (Type)node.beginEndOpNode.accept(this);
         if(typeBeginEndOpNode != Type.Void) {
-            // T: launch error
+            // T: WARNING omitted error
             node.type = Type.Error;
         }
 
         for(var declsNode : node.declsNodes) {
             Type typeDeclsNode = (Type)declsNode.accept(this);
             if(typeDeclsNode != Type.Void) {
-                // T: launch error
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
@@ -556,7 +625,7 @@ public class TypeCheckingVisitor implements Visitor {
         }
 
         if(node.typeOrConstant.type == Type.Error) {
-            // T: Launch error
+            // T: WARNING omitted error
             node.type = Type.Error;
         }
         // T: visit typeOrConstant (END)
@@ -565,7 +634,7 @@ public class TypeCheckingVisitor implements Visitor {
         for(var varOptInitOpNode : node.varOptInitOpNodes) {
             Type typeVarOptInitOpNode = (Type)varOptInitOpNode.accept(this);
             if(typeVarOptInitOpNode == Type.Error) {
-                // T: Launch error
+                // T: WARNING omitted error
                 node.type = Type.Error;
             }
         }
@@ -581,6 +650,9 @@ public class TypeCheckingVisitor implements Visitor {
         if(node.typeOrConstant.typeNode != null) {
             Type type = node.typeOrConstant.type;
             for(var varOptInitOpNode : node.varOptInitOpNodes) {
+
+                // T: we put void as type of varOptInitOpNode when we don't provide an expression
+                // to varOptInitOpNode.
                 if(varOptInitOpNode.type == Type.Void) {
                     varOptInitOpNode.type = type;
                     continue;
@@ -588,6 +660,9 @@ public class TypeCheckingVisitor implements Visitor {
 
                 if(varOptInitOpNode.type != type) {
                     // T: Launch error
+                    String errorMessage = "Type mismatch between the identifier: " + varOptInitOpNode.identifierNode.identifier + " and the expression at: (" + varOptInitOpNode.exprOpNode.line + "," + varOptInitOpNode.exprOpNode.column + ")";
+                    Error.launchError(errorMessage, varOptInitOpNode.identifierNode.line, varOptInitOpNode.identifierNode.column);
+
                     node.type = Type.Error;
                 }
             }
@@ -606,7 +681,7 @@ public class TypeCheckingVisitor implements Visitor {
         if(node.exprOpNode != null) {
             node.type = (Type)node.exprOpNode.accept(this);
             if(node.type == Type.Error) {
-                // Launch error
+                // T: WARNING omitted error
             }
         }
 

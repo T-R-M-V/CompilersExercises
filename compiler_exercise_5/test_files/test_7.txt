@@ -1,0 +1,55 @@
+program
+
+def fun1(a,b : int; ref x : double) : int{
+	
+	return 0;
+}
+
+def fun2(a,b : int; ref x : double) : int{	        // return mancante
+
+
+}
+
+def fun3(a,b : int; x : double) : int{
+	
+	return true;				                    // bool
+
+
+	return 0;
+
+
+	return 3.4;				                        // double
+}
+
+def fun4(a,b : int; ref x : double){
+	
+	return true;
+}
+
+
+begin
+
+
+return 3;					                        //
+
+h | g | l: bool;
+h | g := true, false;
+l := true;
+
+if((h and g) or not l) then {
+	
+	return 14;				                        //
+}
+
+
+fun1(3, 4, fun(3, 4, 3.1)); 			            // fun() non è un ref
+
+
+end
+
+
+
+
+
+
+
