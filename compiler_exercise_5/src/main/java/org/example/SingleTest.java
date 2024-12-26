@@ -4,7 +4,9 @@ import java_cup.runtime.Symbol;
 import org.example.scope.Scope;
 import org.example.scope.ScopeVisitor;
 import org.example.tree.ProgramOpNode;
+import org.example.type.TypeCheckingVisitor;
 import org.w3c.dom.Document;
+import org.example.error.Error;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -40,6 +42,9 @@ public class SingleTest {
 
             ScopeVisitor scopeVisitor = new ScopeVisitor();
             Scope scope = (Scope)scopeVisitor.visit(programOpNode);
+
+            TypeCheckingVisitor typeCheckingVisitor = new TypeCheckingVisitor();
+            Type returnedType = (Type)typeCheckingVisitor.visit(programOpNode);
         }
         catch(Exception e) {
             res = "errata!!";
@@ -47,6 +52,7 @@ public class SingleTest {
         }
 
         System.out.println("Frase " + res);
+        Error.printErrors();
     }
 
 }

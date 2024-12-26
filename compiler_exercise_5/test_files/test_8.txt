@@ -19,23 +19,22 @@ def fun2(a: int; x : double){
 
 begin
 
-a := a * e + c + f;			                // intero = double
+a := a * e + c + f;			                    // Error: mismatch integer = double
 e := a * e + c - f / b;
 
-d = a + b + n;				                // stringa = intero
-m = a * b + n;
-m = n + e + a;
+d := a + b + n;				                    // Error: mismatch integer = string
+m := a * b + n;
+m := n + e + a;
 
-a = fun2(3, e) + b;			                // fun2() è una procedura
-a = fun1(3, e) + b;
+a := fun2(3, e) + b;			                // Error: fun2() is a procedure
+a := fun1(3, e) + b;
 
 
-a = h and i or l and not(a <> b);	        // intero = bool
-h = (e > fun1(a, e)) or fun2();		        // fun2() è una procedura
-h = fun1(3, e) <= fun1(1, e);
+a := h and i or l and not(a <> b);	            // Error: mismatch integer = boolean
+h := fun2(3, e);                                    // Error: fun2() is a procedure
+h := (e > fun1(a, e)) or fun2(3, e);		        // Error: fun2() is a procedure
+h := fun1(3, e) <= fun1(1, e);
  
-
-
 
 
 end

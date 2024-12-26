@@ -230,7 +230,7 @@ public class TypeCheckingVisitor implements Visitor {
                 // T: return error if the type of expression is the same of the parameter (END)
 
                 // T: check if the parameter is a reference and the expression node is a variable (START)
-                else if(entry.parameters.get(index).ref) {
+                if(entry.parameters.get(index).ref) {
                     if(exprOpNode instanceof ExprValueNode) {
                         ExprValueNode castedExprOpNode = (ExprValueNode)exprOpNode;
                         if(castedExprOpNode.identifierNode == null) {
@@ -287,7 +287,7 @@ public class TypeCheckingVisitor implements Visitor {
         node.type = Type.Void;
 
         node.exprOpNode.accept(this);
-        if(node.exprOpNode.type != Type.Boolean) {
+        if(node.exprOpNode.type != Type.Error && node.exprOpNode.type != Type.Boolean) {
             // T: launch error
             String errorMessage = "The type of the condition of an If must be boolean";
             Error.launchError(errorMessage, node.exprOpNode.line, node.exprOpNode.column);
@@ -354,7 +354,7 @@ public class TypeCheckingVisitor implements Visitor {
         node.type = Type.Void;
 
         Type typeExprOpNode = (Type)node.exprOpNode.accept(this);
-        if(typeExprOpNode != Type.Boolean) {
+        if(node.exprOpNode.type != Type.Error && typeExprOpNode != Type.Boolean) {
             // T: launch error
             String errorMessage = "The type of the condition of a while must be boolean";
             Error.launchError(errorMessage, node.exprOpNode.line, node.exprOpNode.column);

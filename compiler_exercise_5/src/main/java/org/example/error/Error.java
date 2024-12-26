@@ -24,6 +24,12 @@ public class Error {
         stackError.add(new Error(message, line, column));
     }
 
+    public static void printErrors() {
+        for(var error : stackError) {
+            System.out.println("(" + error.line + "," + error.column + ")Error:     " + error.message);
+        }
+    }
+
     // T: the stack of error used during compilation
     public static List<Error> stackError = new ArrayList<>();
 }

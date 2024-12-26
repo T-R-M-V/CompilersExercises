@@ -20,19 +20,19 @@ begin
 
 if((a + fun1(a, f)) <> f) then{
 	"dfdfdf" + a + c !>>;
-	val <<;
-	fun1 <<;                                //
+	a <<;
+	fun1 <<;                                // Error: Can't use a procedure call like input to a write
 
 	if(true) then{
 		a | l := 12, true;
 	}else{
-		c := fun2();			            // int = void
+		c := fun2();			            // Error: mismatch integer = void
 	}
 }
 
 while( h and f == g) do{
 
-	while(h and a) do{			            // bool and int
+	while(h and a) do{			            // Error: error in the expression, we can't use AND operation btween bool and int
 		b := b -1;
 	}
 }
@@ -40,5 +40,3 @@ while( h and f == g) do{
 
 
 end
-
-
