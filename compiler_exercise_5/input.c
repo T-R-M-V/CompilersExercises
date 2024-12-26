@@ -1,3 +1,10 @@
+#include <stdio.h>
+
+void f(int& a) {
+
+}
+
 int main() {
-return 0;
+    printf("Hello World!");
+    return 0;
 }

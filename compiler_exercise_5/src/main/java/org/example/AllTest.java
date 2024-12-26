@@ -42,8 +42,8 @@ public class AllTest {
                         parser p = new parser(new Lexer(keyboard));
 
                         try {
-                            // Symbol symbol = p.debug_parse(); // l'uso di p.debug_parse() al posto di p.parse() produce tutte le azioni del parser durante il riconoscimento
-                            Symbol symbol = p.parse();
+                            Symbol symbol = p.debug_parse(); // l'uso di p.debug_parse() al posto di p.parse() produce tutte le azioni del parser durante il riconoscimento
+                            // Symbol symbol = p.parse();
                             ProgramOpNode programOpNode = (ProgramOpNode) symbol.value;
 
                             PrintASTVisitor printASTVisitor = new PrintASTVisitor();
@@ -67,19 +67,14 @@ public class AllTest {
                             e.printStackTrace();
                         }
 
-                        // System.out.println("Frase: " + file.getName() + " " + res + "\n");
-                        testResults.put(file.getName(), res);
-                        errors.put(file.getName(), Error.stackError);
+
+                        System.out.println("Test: " + file.getName());
+                        Error.printErrors();
+                        System.out.println("\n");
                     }
                 }
             }
         }
-
-        testResults.entrySet().forEach((e) -> {
-                System.out.println(e.getKey() + ": " + e.getValue());
-                errors.get(e.getKey()).stream().forEach((error) -> System.out.println(error));
-                System.out.println("\n");
-        } );
 
     }
 }

@@ -20,7 +20,7 @@ public class Release {
 
 
 
-        ProcessBuilder processBuilder = new ProcessBuilder("gcc", sourceFile, "-o", outputFile);
+        ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat","&&","C:\\Languages\\CLang\\LLVM\\bin\\clang", sourceFile, "-o", outputFile);
 
         // T: redirect the error stream
         processBuilder.redirectErrorStream(true);
