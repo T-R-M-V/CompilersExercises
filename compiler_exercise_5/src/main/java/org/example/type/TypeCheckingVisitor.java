@@ -564,18 +564,18 @@ public class TypeCheckingVisitor implements Visitor {
 
         node.type = Type.Void;
 
-        Type typeBeginEndOpNode = (Type)node.beginEndOpNode.accept(this);
-        if(typeBeginEndOpNode != Type.Void) {
-            // T: WARNING omitted error
-            node.type = Type.Error;
-        }
-
         for(var declsNode : node.declsNodes) {
             Type typeDeclsNode = (Type)declsNode.accept(this);
             if(typeDeclsNode != Type.Void) {
                 // T: WARNING omitted error
                 node.type = Type.Error;
             }
+        }
+
+        Type typeBeginEndOpNode = (Type)node.beginEndOpNode.accept(this);
+        if(typeBeginEndOpNode != Type.Void) {
+            // T: WARNING omitted error
+            node.type = Type.Error;
         }
 
         return node.type;
@@ -617,12 +617,7 @@ public class TypeCheckingVisitor implements Visitor {
         node.type = Type.Void;
 
         // T: visit typeOrConstant (START)
-        if(node.typeOrConstant.constantNode != null) {
-            node.typeOrConstant.constantNode.accept(this);
-        }
-        if(node.typeOrConstant.typeNode != null) {
-            node.typeOrConstant.typeNode.accept(this);
-        }
+        node.typeOrConstant.accept(this);
 
         if(node.typeOrConstant.type == Type.Error) {
             // T: WARNING omitted error

@@ -4,11 +4,11 @@ a = 3+4 : int;
 b = 5 : double; 		                // Error: assigning integer to a variable of type double
 c = 4 : 10;			                    // Error: constant + expression value
 d = 4 * 3 and true : bool;	            // Error: error in the expression, we can't use an integer in a boolean operation
-e = a : string			                // Error: type mismatch a is an integer
+e = a : string;			                // Error: type mismatch a is an integer
 f | g = fun(a, c, b) : int;
 
 def fun(a,b : int; ref x : double) : int{
-	
+
 	return 0;
 }
 
@@ -21,10 +21,12 @@ f : int;
 t : double;
 
 l = fun(3, 4, t) : int;
-fun(3, 4, t);
+
 
 
 l = fun(3, 4, t) : double;	            // Error: type mismatch between return of function and type of variable
+
+fun(3, 4, t);
 
 fun(3, 4);			                    // Error: missing parameters in the calling of function
 

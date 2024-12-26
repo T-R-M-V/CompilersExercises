@@ -1,7 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ProgramOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="a"/>
+            <BinaryOpNode type="Plus">
+                <ExprValueNode>
+                    <ConstantNode type="Integer" value="3"/>
+                </ExprValueNode>
+                <ExprValueNode>
+                    <ConstantNode type="Integer" value="4"/>
+                </ExprValueNode>
+            </BinaryOpNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <TypeNode Type="Integer"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="b"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="5"/>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <TypeNode Type="Double"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="c"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="4"/>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <ConstantNode type="Integer" value="10"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="d"/>
+            <BinaryOpNode type="And">
+                <BinaryOpNode type="Times">
+                    <ExprValueNode>
+                        <ConstantNode type="Integer" value="4"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <ConstantNode type="Integer" value="3"/>
+                    </ExprValueNode>
+                </BinaryOpNode>
+                <ExprValueNode>
+                    <ConstantNode type="Boolean" value="true"/>
+                </ExprValueNode>
+            </BinaryOpNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <TypeNode Type="Boolean"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="e"/>
+            <ExprValueNode>
+                <IdentifierNode identifier="a"/>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <TypeNode Type="String"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
+    <VarDeclOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="f"/>
+        </VarOptInitOpNode>
+        <VarOptInitOpNode>
+            <IdentifierNode identifier="g"/>
+            <ExprValueNode>
+                <CallOpNode>
+                    <IdentifierNode identifier="fun"/>
+                    <ExprValueNode>
+                        <IdentifierNode identifier="a"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <IdentifierNode identifier="c"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <IdentifierNode identifier="b"/>
+                    </ExprValueNode>
+                </CallOpNode>
+            </ExprValueNode>
+        </VarOptInitOpNode>
+        <typeOrConstantNode>
+            <TypeNode Type="Integer"/>
+        </typeOrConstantNode>
+    </VarDeclOpNode>
     <DefDeclOpNode>
-        <IdentifierNode identifier="fun1"/>
+        <IdentifierNode identifier="fun"/>
         <ParDeclOpNode>
             <PVarOpNode ref="false">
                 <IdentifierNode identifier="a"/>
@@ -22,88 +117,6 @@
             <ReturnOpNode>
                 <ExprValueNode>
                     <ConstantNode type="Integer" value="0"/>
-                </ExprValueNode>
-            </ReturnOpNode>
-        </body>
-    </DefDeclOpNode>
-    <DefDeclOpNode>
-        <IdentifierNode identifier="fun2"/>
-        <ParDeclOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="a"/>
-            </PVarOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="b"/>
-            </PVarOpNode>
-            <TypeNode Type="Integer"/>
-        </ParDeclOpNode>
-        <ParDeclOpNode>
-            <PVarOpNode ref="true">
-                <IdentifierNode identifier="x"/>
-            </PVarOpNode>
-            <TypeNode Type="Double"/>
-        </ParDeclOpNode>
-        <TypeNode Type="Integer"/>
-        <body/>
-    </DefDeclOpNode>
-    <DefDeclOpNode>
-        <IdentifierNode identifier="fun3"/>
-        <ParDeclOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="a"/>
-            </PVarOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="b"/>
-            </PVarOpNode>
-            <TypeNode Type="Integer"/>
-        </ParDeclOpNode>
-        <ParDeclOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="x"/>
-            </PVarOpNode>
-            <TypeNode Type="Double"/>
-        </ParDeclOpNode>
-        <TypeNode Type="Integer"/>
-        <body>
-            <ReturnOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="Boolean" value="true"/>
-                </ExprValueNode>
-            </ReturnOpNode>
-            <ReturnOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="Integer" value="0"/>
-                </ExprValueNode>
-            </ReturnOpNode>
-            <ReturnOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="Double" value="3.4"/>
-                </ExprValueNode>
-            </ReturnOpNode>
-        </body>
-    </DefDeclOpNode>
-    <DefDeclOpNode>
-        <IdentifierNode identifier="fun4"/>
-        <ParDeclOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="a"/>
-            </PVarOpNode>
-            <PVarOpNode ref="false">
-                <IdentifierNode identifier="b"/>
-            </PVarOpNode>
-            <TypeNode Type="Integer"/>
-        </ParDeclOpNode>
-        <ParDeclOpNode>
-            <PVarOpNode ref="true">
-                <IdentifierNode identifier="x"/>
-            </PVarOpNode>
-            <TypeNode Type="Double"/>
-        </ParDeclOpNode>
-        <TypeNode Type="Void"/>
-        <body>
-            <ReturnOpNode>
-                <ExprValueNode>
-                    <ConstantNode type="Boolean" value="true"/>
                 </ExprValueNode>
             </ReturnOpNode>
         </body>
@@ -113,63 +126,72 @@
             <VarOptInitOpNode>
                 <IdentifierNode identifier="h"/>
             </VarOptInitOpNode>
-            <VarOptInitOpNode>
-                <IdentifierNode identifier="g"/>
-            </VarOptInitOpNode>
-            <VarOptInitOpNode>
-                <IdentifierNode identifier="l"/>
-            </VarOptInitOpNode>
             <typeOrConstantNode>
                 <TypeNode Type="Boolean"/>
             </typeOrConstantNode>
         </VarDeclOpNode>
-        <AssignOpNode>
-            <IdentifierNode identifier="h"/>
-            <IdentifierNode identifier="g"/>
-            <ExprValueNode>
-                <ConstantNode type="Boolean" value="true"/>
-            </ExprValueNode>
-            <ExprValueNode>
-                <ConstantNode type="Boolean" value="false"/>
-            </ExprValueNode>
-        </AssignOpNode>
-        <AssignOpNode>
-            <IdentifierNode identifier="l"/>
-            <ExprValueNode>
-                <ConstantNode type="Boolean" value="true"/>
-            </ExprValueNode>
-        </AssignOpNode>
-        <ReturnOpNode>
-            <ExprValueNode>
-                <ConstantNode type="Integer" value="3"/>
-            </ExprValueNode>
-        </ReturnOpNode>
-        <IfThenOpNode>
-            <BinaryOpNode type="Or">
-                <BinaryOpNode type="And">
-                    <ExprValueNode>
-                        <IdentifierNode identifier="h"/>
-                    </ExprValueNode>
-                    <ExprValueNode>
-                        <IdentifierNode identifier="g"/>
-                    </ExprValueNode>
-                </BinaryOpNode>
-                <UnaryOpNode type="Not">
-                    <ExprValueNode>
-                        <IdentifierNode identifier="l"/>
-                    </ExprValueNode>
-                </UnaryOpNode>
-            </BinaryOpNode>
-            <body>
-                <ReturnOpNode>
-                    <ExprValueNode>
-                        <ConstantNode type="Integer" value="14"/>
-                    </ExprValueNode>
-                </ReturnOpNode>
-            </body>
-        </IfThenOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="f"/>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <TypeNode Type="Integer"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="t"/>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <TypeNode Type="Double"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="l"/>
+                <ExprValueNode>
+                    <CallOpNode>
+                        <IdentifierNode identifier="fun"/>
+                        <ExprValueNode>
+                            <ConstantNode type="Integer" value="3"/>
+                        </ExprValueNode>
+                        <ExprValueNode>
+                            <ConstantNode type="Integer" value="4"/>
+                        </ExprValueNode>
+                        <ExprValueNode>
+                            <IdentifierNode identifier="t"/>
+                        </ExprValueNode>
+                    </CallOpNode>
+                </ExprValueNode>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <TypeNode Type="Integer"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
+        <VarDeclOpNode>
+            <VarOptInitOpNode>
+                <IdentifierNode identifier="l"/>
+                <ExprValueNode>
+                    <CallOpNode>
+                        <IdentifierNode identifier="fun"/>
+                        <ExprValueNode>
+                            <ConstantNode type="Integer" value="3"/>
+                        </ExprValueNode>
+                        <ExprValueNode>
+                            <ConstantNode type="Integer" value="4"/>
+                        </ExprValueNode>
+                        <ExprValueNode>
+                            <IdentifierNode identifier="t"/>
+                        </ExprValueNode>
+                    </CallOpNode>
+                </ExprValueNode>
+            </VarOptInitOpNode>
+            <typeOrConstantNode>
+                <TypeNode Type="Double"/>
+            </typeOrConstantNode>
+        </VarDeclOpNode>
         <CallOpNode>
-            <IdentifierNode identifier="fun1"/>
+            <IdentifierNode identifier="fun"/>
             <ExprValueNode>
                 <ConstantNode type="Integer" value="3"/>
             </ExprValueNode>
@@ -177,8 +199,52 @@
                 <ConstantNode type="Integer" value="4"/>
             </ExprValueNode>
             <ExprValueNode>
+                <IdentifierNode identifier="t"/>
+            </ExprValueNode>
+        </CallOpNode>
+        <CallOpNode>
+            <IdentifierNode identifier="fun"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="3"/>
+            </ExprValueNode>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="4"/>
+            </ExprValueNode>
+        </CallOpNode>
+        <CallOpNode>
+            <IdentifierNode identifier="fun"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="3"/>
+            </ExprValueNode>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="4"/>
+            </ExprValueNode>
+            <ExprValueNode>
+                <ConstantNode type="Double" value="3.1"/>
+            </ExprValueNode>
+        </CallOpNode>
+        <CallOpNode>
+            <IdentifierNode identifier="fun"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="3"/>
+            </ExprValueNode>
+            <BinaryOpNode type="And">
+                <ExprValueNode>
+                    <IdentifierNode identifier="h"/>
+                </ExprValueNode>
+                <ExprValueNode>
+                    <ConstantNode type="Boolean" value="false"/>
+                </ExprValueNode>
+            </BinaryOpNode>
+            <ExprValueNode>
+                <IdentifierNode identifier="t"/>
+            </ExprValueNode>
+        </CallOpNode>
+        <AssignOpNode>
+            <IdentifierNode identifier="h"/>
+            <ExprValueNode>
                 <CallOpNode>
-                    <IdentifierNode identifier="fun3"/>
+                    <IdentifierNode identifier="fun"/>
                     <ExprValueNode>
                         <ConstantNode type="Integer" value="3"/>
                     </ExprValueNode>
@@ -186,10 +252,55 @@
                         <ConstantNode type="Integer" value="4"/>
                     </ExprValueNode>
                     <ExprValueNode>
-                        <ConstantNode type="Double" value="3.1"/>
+                        <IdentifierNode identifier="t"/>
                     </ExprValueNode>
                 </CallOpNode>
             </ExprValueNode>
-        </CallOpNode>
+        </AssignOpNode>
+        <AssignOpNode>
+            <IdentifierNode identifier="a"/>
+            <ExprValueNode>
+                <CallOpNode>
+                    <IdentifierNode identifier="fun"/>
+                    <ExprValueNode>
+                        <ConstantNode type="Integer" value="3"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <ConstantNode type="Integer" value="4"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <IdentifierNode identifier="t"/>
+                    </ExprValueNode>
+                </CallOpNode>
+            </ExprValueNode>
+        </AssignOpNode>
+        <AssignOpNode>
+            <IdentifierNode identifier="h"/>
+            <IdentifierNode identifier="f"/>
+            <ExprValueNode>
+                <ConstantNode type="Boolean" value="true"/>
+            </ExprValueNode>
+            <ExprValueNode>
+                <CallOpNode>
+                    <IdentifierNode identifier="fun"/>
+                    <ExprValueNode>
+                        <ConstantNode type="Integer" value="3"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <ConstantNode type="Integer" value="4"/>
+                    </ExprValueNode>
+                    <ExprValueNode>
+                        <IdentifierNode identifier="t"/>
+                    </ExprValueNode>
+                </CallOpNode>
+            </ExprValueNode>
+        </AssignOpNode>
+        <AssignOpNode>
+            <IdentifierNode identifier="a"/>
+            <IdentifierNode identifier="b"/>
+            <ExprValueNode>
+                <ConstantNode type="Integer" value="1"/>
+            </ExprValueNode>
+        </AssignOpNode>
     </beginEndOpNode>
 </ProgramOpNode>
