@@ -232,7 +232,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public Object visit(ReturnOpNode node) {
-        String identifierString = (String)node.accept(this);
+        String identifierString = (String)node.exprOpNode.accept(this);
 
         return "return " + identifierString + ";";
     }

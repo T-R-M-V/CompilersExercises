@@ -4,11 +4,22 @@ b = true : bool;
 
 def takeABoolean(n : int;b : bool; ref bref : bool) : bool {
 
-
+    b2 = false : bool;
+    b := not b and not b2;
 
     return not b;
 }
 
 begin
+
+b2 = true : bool;
+b3 : bool;
+
+b2 !>>;
+b2 := takeABoolean(3, b, b2);
+b2 !>>;
+
+b3 <<;
+b3 !>>;
 
 end
