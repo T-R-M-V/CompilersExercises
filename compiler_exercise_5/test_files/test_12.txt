@@ -1,0 +1,14 @@
+program
+
+b = true : bool;
+
+def takeABoolean(n : int;b : bool; ref bref : bool) : bool {
+
+
+
+    return not b;
+}
+
+begin
+
+end

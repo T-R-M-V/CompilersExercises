@@ -356,6 +356,13 @@ public class CodeGenerationVisitor implements Visitor {
 
             return OperatorConverter.fromConstantToHeap + "( \"" + valueString + "\" )";
         }
+        else if(node.type == Type.Boolean) {
+            if(node.value.equals("true")) {
+                return "1";
+            }
+            // T: if there isn't 'true', must be 'false'
+            return "0";
+        }
 
         return node.value;
     }
@@ -367,7 +374,7 @@ public class CodeGenerationVisitor implements Visitor {
         StringBuilder headerLine = new StringBuilder("");
 
         // T: create header of the function/procedure (START)
-        
+
         // T: unused
         node.identifierNode.accept(this);
 
