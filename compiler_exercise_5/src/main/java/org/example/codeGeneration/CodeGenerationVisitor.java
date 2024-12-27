@@ -21,6 +21,10 @@ import java.util.List;
 
 public class CodeGenerationVisitor implements Visitor {
 
+    public CodeGenerationVisitor() {
+
+    }
+
     @Override
     // T: REVIEW
     public Object visit(BinaryOpNode node) {
@@ -257,7 +261,7 @@ public class CodeGenerationVisitor implements Visitor {
 
         String newLine = "";
         if(node.newLine)
-            newLine = "\n";
+            newLine = "\\n";
 
         StringBuilder regexForPrintf = new StringBuilder("");
         StringBuilder parameters = new StringBuilder("");
@@ -270,11 +274,12 @@ public class CodeGenerationVisitor implements Visitor {
             if(exprOpNode.type == Type.String) {
                 exprOpNodeString = comma + " *" + exprOpNodeString;
             }
+            parameters.append(exprOpNodeString);
 
             comma = ",";
         }
 
-        return "printf( " + regexForPrintf.toString() + " " + newLine + " , " + parameters.toString() + ");";
+        return "printf( \"" + regexForPrintf.toString() + newLine + "\" , " + parameters.toString() + ");";
     }
 
     @Override
@@ -286,8 +291,8 @@ public class CodeGenerationVisitor implements Visitor {
         lines.add("{");
 
         for(var varDeclOpNode : node.varDeclOpNodes) {
-            List<String> varDeclLines = (List)varDeclOpNode.accept(this);
-            lines.addAll(varDeclLines);
+            String varDeclOpLine = (String)varDeclOpNode.accept(this);
+            lines.add(varDeclOpLine);
         }
 
         for(var statOpNode : node.statOpNodes) {
@@ -312,8 +317,8 @@ public class CodeGenerationVisitor implements Visitor {
         List<String> lines = new ArrayList<>();
 
         for(var varDeclOpNode : node.varDeclOpNodes) {
-            List<String> varDeclLines = (List)varDeclOpNode.accept(this);
-            lines.addAll(varDeclLines);
+            String varDeclOpLine = (String)varDeclOpNode.accept(this);
+            lines.add(varDeclOpLine);
         }
 
         for(var statOpNode : node.statOpNodes) {
@@ -335,7 +340,12 @@ public class CodeGenerationVisitor implements Visitor {
     public Object visit(ConstantNode node) {
 
         if(node.type == Type.String) {
-            return OperatorConverter.cloneString + "( \"" + node.value + "\" )";
+
+            String valueString = node.value.replace("\n", "\\n").
+                                      replace("\t", "\\t").
+                                      replace("\r", "\\r");
+
+            return OperatorConverter.cloneString + "( \"" + valueString + "\" )";
         }
 
         return node.value;
@@ -437,6 +447,7 @@ public class CodeGenerationVisitor implements Visitor {
             List<String> libLines = Files.readAllLines(Paths.get("codeToImport" + File.separator + "lib.c"));
             lines.addAll(libLines);
             lines.add("/*STANDARD IMPORT*/");
+            lines.add("\n\n\n");
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
