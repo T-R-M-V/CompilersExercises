@@ -1,5 +1,6 @@
 program
 
+n : 5;
 globalS = "ciaociaociao" : string;
 
 begin

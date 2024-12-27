@@ -21,9 +21,13 @@ import java.util.List;
 
 public class CodeGenerationVisitor implements Visitor {
 
-    public CodeGenerationVisitor() {
+    public boolean globalScope;
 
+    public CodeGenerationVisitor() {
+        globalScope = true;
     }
+
+    public static String globalVariableInitFunction = "initializeGlobalVariable_()";
 
     @Override
     // T: REVIEW
@@ -290,6 +294,7 @@ public class CodeGenerationVisitor implements Visitor {
 
         lines.add("int main()");
         lines.add("{");
+        lines.add(globalVariableInitFunction + ";");
 
         for(var varDeclOpNode : node.varDeclOpNodes) {
             String varDeclOpLine = (String)varDeclOpNode.accept(this);
@@ -298,6 +303,8 @@ public class CodeGenerationVisitor implements Visitor {
 
         for(var statOpNode : node.statOpNodes) {
             Object result = statOpNode.accept(this);
+
+
             if(result instanceof String) {
                 String stringStatOpNode = (String)result;
                 lines.add(stringStatOpNode);
@@ -459,15 +466,32 @@ public class CodeGenerationVisitor implements Visitor {
         // T: import code from lib.c (END)
 
 
-        for(var declNode : node.declsNodes) {
-            Object result = declNode.accept(this);
 
-            if(result instanceof String) {
-                lines.add((String)result);
-            } else {
-                lines.addAll((List)result);
+
+
+        List<String> globVariablesDefinition = new ArrayList<>();
+        globVariablesDefinition.add("void " + globalVariableInitFunction);
+        globVariablesDefinition.add("{");
+
+        for(var declNode : node.declsNodes) {
+
+            if(declNode instanceof VarDeclOpNode) {
+                globalScope = true;
+                List<String> declAndDef = (List)declNode.accept(this);
+                globalScope = false;
+
+                lines.add(declAndDef.get(0));
+                globVariablesDefinition.add(declAndDef.get(1));
+            }
+            else {
+                List<String> functionDefinitionLines = (List)declNode.accept(this);
+                lines.addAll((List)functionDefinitionLines);
             }
         }
+
+        globVariablesDefinition.add("}");
+
+        lines.addAll(globVariablesDefinition);
 
         List<String> beginEndOpNodeLines = (List)node.beginEndOpNode.accept(this);
         lines.addAll(beginEndOpNodeLines);
@@ -519,24 +543,65 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public Object visit(VarDeclOpNode node) {
 
-        StringBuilder varDeclOpNodeLine = new StringBuilder("");
+        Object result = node.typeOrConstant.accept(this);
 
         Type type = node.typeOrConstant.type;
         String typeString = OperatorConverter.convertTypeInC(type);
 
-        varDeclOpNodeLine.append(typeString + " ");
-
-        String comma = "";
-        for(var varOptInitOpNode : node.varOptInitOpNodes) {
-            String varOptInitOpNodeString = (String)varOptInitOpNode.accept(this);
-            varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
-
-            comma = ",";
+        String value = null;
+        if(node.typeOrConstant.constantNode != null) {
+            value = (String)result;
         }
 
-        varDeclOpNodeLine.append(";");
+        if(! globalScope) {
+            StringBuilder varDeclOpNodeLine = new StringBuilder("");
 
-        return varDeclOpNodeLine.toString();
+            varDeclOpNodeLine.append(typeString + " ");
+
+            String comma = "";
+            for(var varOptInitOpNode : node.varOptInitOpNodes) {
+                String varOptInitOpNodeString = (String)varOptInitOpNode.accept(this);
+                if(node.typeOrConstant.constantNode != null) {
+                    varOptInitOpNodeString = varOptInitOpNodeString + " = " + value;
+                }
+
+                varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
+
+                comma = ",";
+            }
+
+            varDeclOpNodeLine.append(";");
+
+            return varDeclOpNodeLine.toString();
+        }
+        else {
+            List<String> lines = new ArrayList<>();
+            StringBuilder declarations = new StringBuilder("");
+            declarations.append(typeString + " ");
+            StringBuilder definitions = new StringBuilder("");
+
+            String comma = "";
+            for(var varOptInitOpNode : node.varOptInitOpNodes) {
+                String varOptInitOpNodeString = (String)varOptInitOpNode.accept(this);
+                if(node.typeOrConstant.constantNode != null) {
+                    definitions.append(varOptInitOpNodeString + " = " + value + ";");
+                }
+                else if(varOptInitOpNode.exprOpNode != null) {
+                    definitions.append(varOptInitOpNodeString + ";");
+                }
+
+                declarations.append(comma + varOptInitOpNode.identifierNode.identifier);
+
+                comma = ",";
+            }
+
+            declarations.append(";\n");
+
+            lines.add(declarations.toString());
+            lines.add(definitions.toString());
+            return lines;
+        }
+
     }
 
     @Override
