@@ -8,3 +8,4 @@ test_9:     Semantic Errors:
 test_10:    Testing generation of code
 test_11:    Testing generation of code for string
 test_12:    Testing booleans
+test_13:    Testing for generation of expressions

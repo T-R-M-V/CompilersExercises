@@ -58,15 +58,15 @@ public class CodeGenerationVisitor implements Visitor {
         // T: In the case we had Plus operator and we are operating among strings, call the concatenation
         // function.
         if(node.op == BinaryOpNode.Type.Plus && resultType == Type.String) {
-            return OperatorConverter.plusStringOperator + "(" + leftExpression + "," + rightExpression + ")";
+            return " (" + OperatorConverter.plusStringOperator + "(" + leftExpression + "," + rightExpression + ")" + " )";
         }
         // T: In the case we had Div operator we must ensure that the second parameter of division is casted
         // to double to ensure that the result is calculated as a double.
         else if(node.op == BinaryOpNode.Type.Div && resultType == Type.Double) {
-            return leftExpression + " /(double) (" + rightExpression + ")";
+            return " (" + leftExpression + " /(double) (" + rightExpression + ")" + " )";
         }
 
-        return leftExpression + " " + operator + " " + rightExpression;
+        return " (" + leftExpression + " " + operator + " " + rightExpression + " )";
     }
 
     @Override
@@ -100,7 +100,7 @@ public class CodeGenerationVisitor implements Visitor {
         String argExpression = (String)node.exprOpNode.accept(this);
         String op = OperatorConverter.convertInC(node.op);
 
-        return op + " " + argExpression;
+        return " (" + op + " " + argExpression + ") ";
     }
 
     @Override
