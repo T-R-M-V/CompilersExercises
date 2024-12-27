@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// change name to staticBuffer to not occupy a declaration
 static char staticBuffer[1000];
 
 char** stringConcatenation_(char** first, char** second) {
@@ -15,6 +14,30 @@ char** stringConcatenation_(char** first, char** second) {
 
     strcpy(*newString, *first);
     strcpy(*newString + sizeFirst, *second);
+
+    return newString;
+}
+
+char** fromConstantStringToHeap_(char* string) {
+
+    int size = strlen(string);
+
+    char** newString = (char**)malloc(sizeof(char*));
+    *newString = (char*)malloc((size+1)*sizeof(char));
+
+    strcpy(*newString, string);
+
+    return newString;
+}
+
+char** cloneString_(char** string) {
+
+    int size = strlen(*string);
+
+    char** newString = (char**)malloc(sizeof(char*));
+    *newString = (char*)malloc((size+1)*sizeof(char));
+
+    strcpy(*newString, *string);
 
     return newString;
 }

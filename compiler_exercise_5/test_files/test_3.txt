@@ -1,11 +1,10 @@
 program
     def printpyramid(height: int)
     {
-        row : int;
-        spaces : int;
-        stars : int;
+        row : 1;
+        spaces = 10 : int;
+        stars = 5 : int;
 
-        // row : 1;
         while(row <= height) do
         {
             spaces := height - row;

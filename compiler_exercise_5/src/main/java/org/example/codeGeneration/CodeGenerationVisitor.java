@@ -345,7 +345,7 @@ public class CodeGenerationVisitor implements Visitor {
                                       replace("\t", "\\t").
                                       replace("\r", "\\r");
 
-            return OperatorConverter.cloneString + "( \"" + valueString + "\" )";
+            return OperatorConverter.fromConstantToHeap + "( \"" + valueString + "\" )";
         }
 
         return node.value;
