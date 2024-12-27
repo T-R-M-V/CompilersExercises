@@ -539,7 +539,7 @@ public class CodeGenerationVisitor implements Visitor {
 
         return null;
     }
-
+    
     @Override
     // T: This function create definitions for global/non global variable
     // on the base of the globalScope field.
@@ -570,6 +570,13 @@ public class CodeGenerationVisitor implements Visitor {
                 if(node.typeOrConstant.constantNode != null) {
                     varOptInitOpNodeString = varOptInitOpNodeString + " = " + value;
                 }
+                // T: In the case no initial value is provided, allocate space to store
+                // the first pointer for string.
+                else if(varOptInitOpNode.exprOpNode == null) {
+                    if(node.typeOrConstant.type == Type.String) {
+                        varOptInitOpNodeString = varOptInitOpNodeString + " = (char**)malloc(sizeof(char*))";
+                    }
+                }
 
                 varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
 
@@ -599,11 +606,16 @@ public class CodeGenerationVisitor implements Visitor {
                 if(node.typeOrConstant.constantNode != null) {
                     definitions.append(varOptInitOpNodeString + " = " + value + ";");
                 }
-                // T: in the case also the expression node is null, no value is provided for the initialization
-                // so we don't add an assignment in this list.
-                // T: so we add only in the case the expression node isn't null
+                // T: In the case no constant is provided, we try to use the exprOpNode value
                 else if(varOptInitOpNode.exprOpNode != null) {
                     definitions.append(varOptInitOpNodeString + ";");
+                }
+                // T: In the case no initial value is provided, allocate space to store
+                // the first pointer for string.
+                else {
+                    if(node.typeOrConstant.type == Type.String) {
+                        definitions.append(varOptInitOpNodeString + " = (char**)malloc(sizeof(char*));");
+                    }
                 }
 
                 declarations.append(comma + varOptInitOpNode.identifierNode.identifier);
@@ -634,5 +646,6 @@ public class CodeGenerationVisitor implements Visitor {
         }
 
         return node.identifierNode.identifier;
+
     }
 }
