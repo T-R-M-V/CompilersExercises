@@ -22,8 +22,23 @@ public class Scope {
         this.startingColumn = startingColumn;
     }
 
-    public ScopeEntry find(String lexem, ScopeEntry.Kind kind) {
-        ScopeKey scopeKey = new ScopeKey(lexem, kind);
+    public ScopeEntry findProc(String lexem) {
+        ScopeKey scopeKey = new ScopeKey(lexem, ScopeEntry.Kind.Proc);
+
+        Scope currentScope = this;
+        ScopeEntry entry = null;
+        while(currentScope != null) {
+            entry = currentScope.scopeData.get(scopeKey);
+            if(entry != null)
+                break;
+            currentScope = currentScope.parent;
+        }
+
+        return entry;
+    }
+
+    public ScopeEntry findVar(String lexem) {
+        ScopeKey scopeKey = new ScopeKey(lexem, ScopeEntry.Kind.Var);
 
         Scope currentScope = this;
         ScopeEntry entry = null;

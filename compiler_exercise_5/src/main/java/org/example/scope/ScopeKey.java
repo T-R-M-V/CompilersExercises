@@ -14,8 +14,8 @@ public class ScopeKey {
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof Scope.ScopeKey) {
-            Scope.ScopeKey other = (Scope.ScopeKey)obj;
+        if(obj instanceof ScopeKey) {
+            ScopeKey other = (ScopeKey)obj;
             return this.lexem.equals(other.lexem) && this.kind == other.kind;
         }
 

@@ -3,6 +3,11 @@ program
 n : 5;
 globalS = "ciaociaociao" : string;
 
+def globalS(n : int; m : int)
+{
+    "called globalS" !>>;
+}
+
 begin
 
 input : string;
@@ -13,6 +18,8 @@ input <<;
 
 globalS := "C______C";
 s := globalS + 5 + (10 * 5);
+
+globalS(3, 4);
 
 globalS, "  ", input !>>;
 s !>>;

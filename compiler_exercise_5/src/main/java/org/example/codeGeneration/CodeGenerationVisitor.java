@@ -133,7 +133,7 @@ public class CodeGenerationVisitor implements Visitor {
         // T: Unused
         node.identifierNode.accept(this);
 
-        ScopeEntry scopeEntry = node.scope.find(node.identifierNode.identifier);
+        ScopeEntry scopeEntry = node.scope.findProc(node.identifierNode.identifier);
 
         StringBuilder parametersString = new StringBuilder("");
 
@@ -210,7 +210,7 @@ public class CodeGenerationVisitor implements Visitor {
         for(var identifierNode : node.identifierNodes) {
             String identifierString = (String)identifierNode.accept(this);
 
-            ScopeEntry scopeEntry = node.scope.find(identifierString);
+            ScopeEntry scopeEntry = node.scope.findVar(identifierString);
 
             // T: we don't need the & in the case in wich we are using a string(char**)
             if(scopeEntry.varType != Type.String) {
@@ -399,6 +399,8 @@ public class CodeGenerationVisitor implements Visitor {
     }
 
     @Override
+    // T: The result of this function is always discarded when the
+    // identifier is referred to a function(CallOpNode, DefDeclOpNode).
     // T: This function return:
     // !function & string & ref     -> identifier
     // !function & string & !ref    -> identifier
@@ -407,7 +409,12 @@ public class CodeGenerationVisitor implements Visitor {
     // function                     -> identifier
     public Object visit(IdentifierNode node) {
 
-        ScopeEntry scopeEntry = node.scope.find(node.identifier);
+        // T: we assume that we want to use this visit
+        ScopeEntry scopeEntry = node.scope.findVar(node.identifier);
+
+        if(scopeEntry == null) {
+            return node.identifier;
+        }
 
         if(scopeEntry.kind == ScopeEntry.Kind.Var) {
             // T: string & ref -> identifier
@@ -505,7 +512,7 @@ public class CodeGenerationVisitor implements Visitor {
         // T: unused
         node.identifierNode.accept(this);
 
-        ScopeEntry scopeEntry = node.scope.find(node.identifierNode.identifier);
+        ScopeEntry scopeEntry = node.scope.findVar(node.identifierNode.identifier);
 
         Type typeVar = scopeEntry.varType;
         if(typeVar != Type.String) {

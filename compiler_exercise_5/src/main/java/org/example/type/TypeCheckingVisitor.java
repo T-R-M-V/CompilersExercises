@@ -69,21 +69,10 @@ public class TypeCheckingVisitor implements Visitor {
         if(node.identifierNode != null) {
             node.withCallOp = false;
 
-            ScopeEntry entry = node.scope.find(node.identifierNode.identifier);
+            ScopeEntry entry = node.scope.findVar(node.identifierNode.identifier);
             // T: WARNING missing check if the identifier isn't defined
 
-            if(entry.kind == ScopeEntry.Kind.Var) {
-                node.type = entry.varType;
-            }
-            // T: return error if the identifier refer to a function
-            // T: WARNING we don't know if this is necessary
-            else {
-                // T: launch error
-                String errorMessage = "The identifier: " + node.identifierNode.identifier + " isn't a variable";
-                Error.launchError(errorMessage, node.line, node.column);
-
-                node.type = Type.Error;
-            }
+            node.type = entry.varType;
         }
 
         if(node.callOpNode != null) {
@@ -151,23 +140,14 @@ public class TypeCheckingVisitor implements Visitor {
             var exprOpNode = node.exprOpNodes.get(i);
             var identifierNode = node.identifierNodes.get(i);
 
-            ScopeEntry entry = node.scope.find(identifierNode.identifier);
+            ScopeEntry entry = node.scope.findVar(identifierNode.identifier);
             // T: WARNING: miss the control if the variable is defined
-            if(entry.kind == ScopeEntry.Kind.Var) {
-                // T: check if the variable and the expr has the same type
-                if(entry.varType != exprOpNode.type) {
-                    // T: launch error
-                    // T: Review: add the types
-                    String errorMessage = "Type mismatch between the identifier: " + identifierNode.identifier + " and the expression at: (" + exprOpNode.line + "," + exprOpNode.column + ")";
-                    Error.launchError(errorMessage, identifierNode.line, identifierNode.column);
 
-                    node.type = Type.Error;
-                }
-            } else
-            // T: return error if the identifier is referred to a function
-            {
-                // T: Launch error
-                String errorMessage = "The identifier: " + identifierNode.identifier + " isn't a variable";
+            // T: check if the variable and the expr has the same type
+            if(entry.varType != exprOpNode.type) {
+                // T: launch error
+                // T: Review: add the types
+                String errorMessage = "Type mismatch between the identifier: " + identifierNode.identifier + " and the expression at: (" + exprOpNode.line + "," + exprOpNode.column + ")";
                 Error.launchError(errorMessage, identifierNode.line, identifierNode.column);
 
                 node.type = Type.Error;
@@ -181,24 +161,11 @@ public class TypeCheckingVisitor implements Visitor {
     // T: WARNING rewrite this piece of shit
     public Object visit(CallOpNode node) {
 
-        ScopeEntry entry = node.scope.find(node.identifierNode.identifier);
+        ScopeEntry entry = node.scope.findProc(node.identifierNode.identifier);
         // T: WARNING miss the control if the variable is defined
-        if(entry.kind == ScopeEntry.Kind.Proc) {
-            node.type = entry.returnType;
-        }
-        else
-        // T: check if the identifier is referred to a variable
-        {
-            // T: launch error
-            String errorMessage = "The identifier: " + node.identifierNode.identifier + " isn't a function/procedure";
-            Error.launchError(errorMessage, node.line, node.column);
+        node.type = entry.returnType;
 
-            node.type = Type.Error;
 
-            // T: if referred to a variable, we must exit from this procedure, there is no sense
-            // in returning other errors.
-            return node.type;
-        }
 
         // T: check if the number of parameters is the same of the definition (START)
         if(node.exprOpNodes.size() != entry.parameters.size() ) {
@@ -312,17 +279,8 @@ public class TypeCheckingVisitor implements Visitor {
         for(var identifierNode : node.identifierNodes) {
             identifierNode.accept(this);
 
-            ScopeEntry scopeEntry = node.scope.find(identifierNode.identifier);
+            ScopeEntry scopeEntry = node.scope.findVar(identifierNode.identifier);
             // T: WARNING miss the control if the identifier exist
-
-            // T: return error if the identifier is referred to a function
-            if(scopeEntry.kind == ScopeEntry.Kind.Proc) {
-                // T: launch error
-                String errorMessage = "The identifier: " + identifierNode.identifier + " isn't a variable";
-                Error.launchError(errorMessage, identifierNode.line, identifierNode.column);
-
-                node.type = Type.Error;
-            }
         }
 
         return node.type;
