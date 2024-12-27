@@ -5,10 +5,16 @@ globalS = "ciaociaociao" : string;
 
 begin
 
+input : string;
 s = "hello hello" : string;
-s := globalS + s;
 
-globalS !>>;
+
+input <<;
+
+globalS := "C______C";
+s := globalS + 5 + (10 * 5);
+
+globalS, "  ", input !>>;
 s !>>;
 
 end

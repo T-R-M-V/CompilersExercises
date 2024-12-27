@@ -205,29 +205,29 @@ public class CodeGenerationVisitor implements Visitor {
     // T: we don't take space for sense of justice
     public Object visit(ReadOpNode node) {
 
-        StringBuilder regexForScanf = new StringBuilder("");
-        StringBuilder parameters = new StringBuilder("");
+        List<String> lines = new ArrayList<>();
 
-        String comma = "";
         for(var identifierNode : node.identifierNodes) {
             String identifierString = (String)identifierNode.accept(this);
 
-            ScopeEntry scopeEntry = node.scope.find(identifierNode.identifier);
+            ScopeEntry scopeEntry = node.scope.find(identifierString);
 
+            // T: we don't need the & in the case in wich we are using a string(char**)
             if(scopeEntry.varType != Type.String) {
                 identifierString = "&" + identifierString;
             }
-            else {
-                identifierString = "*" + identifierString;
+
+            String pattern = OperatorConverter.pattern(scopeEntry.varType);
+
+            String inputLine = "scanf( \"" + pattern + "\" , " + identifierString + ");";
+            if(scopeEntry.varType == Type.String) {
+                inputLine = OperatorConverter.inputString + "(" + identifierString + ");";
             }
-            parameters.append(comma + identifierString + " ");
 
-            regexForScanf.append(OperatorConverter.pattern(scopeEntry.varType));
-
-            comma = ",";
+            lines.add(inputLine);
         }
 
-        return "scanf( \"" + regexForScanf.toString() + "\", " + parameters.toString() + " );";
+        return lines;
     }
 
     @Override
@@ -351,8 +351,8 @@ public class CodeGenerationVisitor implements Visitor {
         if(node.type == Type.String) {
 
             String valueString = node.value.replace("\n", "\\n").
-                                      replace("\t", "\\t").
-                                      replace("\r", "\\r");
+                    replace("\t", "\\t").
+                    replace("\r", "\\r");
 
             return OperatorConverter.fromConstantToHeap + "( \"" + valueString + "\" )";
         }
@@ -541,6 +541,8 @@ public class CodeGenerationVisitor implements Visitor {
     }
 
     @Override
+    // T: This function create definitions for global/non global variable
+    // on the base of the globalScope field.
     public Object visit(VarDeclOpNode node) {
 
         Object result = node.typeOrConstant.accept(this);
@@ -548,11 +550,14 @@ public class CodeGenerationVisitor implements Visitor {
         Type type = node.typeOrConstant.type;
         String typeString = OperatorConverter.convertTypeInC(type);
 
+        // T: if the constant value is provided, no expression is provided
+        // to initialize the variables. So we take this value.
         String value = null;
         if(node.typeOrConstant.constantNode != null) {
             value = (String)result;
         }
 
+        // T: In the case the definition isn't global (START)
         if(! globalScope) {
             StringBuilder varDeclOpNodeLine = new StringBuilder("");
 
@@ -561,6 +566,7 @@ public class CodeGenerationVisitor implements Visitor {
             String comma = "";
             for(var varOptInitOpNode : node.varOptInitOpNodes) {
                 String varOptInitOpNodeString = (String)varOptInitOpNode.accept(this);
+                // T: add the value of CostantNode to initialize the variable
                 if(node.typeOrConstant.constantNode != null) {
                     varOptInitOpNodeString = varOptInitOpNodeString + " = " + value;
                 }
@@ -574,6 +580,11 @@ public class CodeGenerationVisitor implements Visitor {
 
             return varDeclOpNodeLine.toString();
         }
+        // T: In the case the definition isn't global (END)
+
+        // T: In the case the definition is global (START)
+        // T: In this case we store declarations and definitions like a
+        // list formed by two string(first string for declaration, second for definitions).
         else {
             List<String> lines = new ArrayList<>();
             StringBuilder declarations = new StringBuilder("");
@@ -583,9 +594,14 @@ public class CodeGenerationVisitor implements Visitor {
             String comma = "";
             for(var varOptInitOpNode : node.varOptInitOpNodes) {
                 String varOptInitOpNodeString = (String)varOptInitOpNode.accept(this);
+                // T: in the case the ConstantNode is provided, no expression value is provided
+                // so we use this value to initialize the variable
                 if(node.typeOrConstant.constantNode != null) {
                     definitions.append(varOptInitOpNodeString + " = " + value + ";");
                 }
+                // T: in the case also the expression node is null, no value is provided for the initialization
+                // so we don't add an assignment in this list.
+                // T: so we add only in the case the expression node isn't null
                 else if(varOptInitOpNode.exprOpNode != null) {
                     definitions.append(varOptInitOpNodeString + ";");
                 }
@@ -601,10 +617,12 @@ public class CodeGenerationVisitor implements Visitor {
             lines.add(definitions.toString());
             return lines;
         }
-
+        // T: In the case the definition is global (END)
     }
 
     @Override
+    // T: This function return only the identifier if no expression is provided
+    // to initialize the identifier.
     public Object visit(VarOptInitOpNode node) {
 
         // T: unused

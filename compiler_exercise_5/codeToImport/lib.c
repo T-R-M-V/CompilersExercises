@@ -4,6 +4,27 @@
 
 static char staticBuffer[1000];
 
+char** fromConstantStringToHeap_(char* string) {
+
+    int size = strlen(string);
+
+    char** newString = (char**)malloc(sizeof(char*));
+    *newString = (char*)malloc((size+1)*sizeof(char));
+
+    strcpy(*newString, string);
+
+    return newString;
+}
+
+void inputString_(char** string) {
+
+    scanf("%s", staticBuffer);
+    int size = strlen(staticBuffer);
+
+    *string = (char*)malloc((size+1) + sizeof(char));
+    strcpy(*string, staticBuffer);
+}
+
 char** stringConcatenation_(char** first, char** second) {
 
     int sizeFirst = strlen(*first);
@@ -14,18 +35,6 @@ char** stringConcatenation_(char** first, char** second) {
 
     strcpy(*newString, *first);
     strcpy(*newString + sizeFirst, *second);
-
-    return newString;
-}
-
-char** fromConstantStringToHeap_(char* string) {
-
-    int size = strlen(string);
-
-    char** newString = (char**)malloc(sizeof(char*));
-    *newString = (char*)malloc((size+1)*sizeof(char));
-
-    strcpy(*newString, string);
 
     return newString;
 }

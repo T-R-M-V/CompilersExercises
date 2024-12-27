@@ -11,6 +11,7 @@ public class OperatorConverter {
     public static String doubleToString = "fromDoubleToString_";
     public static String cloneString = "cloneString_";
     public static String fromConstantToHeap = "fromConstantStringToHeap_";
+    public static String inputString = "inputString_";
 
     public static String convertInC(BinaryOpNode.Type op) {
         switch (op) {
