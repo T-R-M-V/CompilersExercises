@@ -539,7 +539,9 @@ public class CodeGenerationVisitor implements Visitor {
 
         return null;
     }
-    
+
+
+
     @Override
     // T: This function create definitions for global/non global variable
     // on the base of the globalScope field.
@@ -550,8 +552,8 @@ public class CodeGenerationVisitor implements Visitor {
         Type type = node.typeOrConstant.type;
         String typeString = OperatorConverter.convertTypeInC(type);
 
-        // T: if the constant value is provided, no expression is provided
-        // to initialize the variables. So we take this value.
+        // T: if the constant node isn't null, we take this value and
+        // use that to initilize the variables.
         String value = null;
         if(node.typeOrConstant.constantNode != null) {
             value = (String)result;

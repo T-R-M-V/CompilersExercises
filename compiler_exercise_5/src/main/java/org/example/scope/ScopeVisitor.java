@@ -279,23 +279,24 @@ public class ScopeVisitor implements Visitor {
 
         // T: add the sign of procedure to the scope's table (START)
         String identifier = node.identifierNode.identifier;
-        if(currentScope.scopeData.get(identifier) != null) {
-            Error.stackError.add(new Error("The function is already defined", node.identifierNode.line, node.identifierNode.column));
+        ScopeKey scopeKey = new ScopeKey(identifier, ScopeEntry.Kind.Proc);
+        if(currentScope.scopeData.get(scopeKey) != null) {
+            Error.stackError.add(new Error("The function with this identifier is already defined", node.identifierNode.line, node.identifierNode.column));
             // System.exit(0);
-        }
+        } else {
+            List<ScopeEntry.TypeProcParameter> typeOfParameters = new ArrayList<>();
+            for (var parDecl : node.parDeclOpNodes) {
+                Type type = parDecl.typeNode.type;
 
-        List<ScopeEntry.TypeProcParameter> typeOfParameters = new ArrayList<>();
-        for (var parDecl : node.parDeclOpNodes) {
-            Type type = parDecl.typeNode.type;
-
-            for (var varOp : parDecl.pVarOpNodes) {
-                ScopeEntry.TypeProcParameter typeProcParameter = new ScopeEntry.TypeProcParameter(type, varOp.ref);
-                typeOfParameters.add(typeProcParameter);
+                for (var varOp : parDecl.pVarOpNodes) {
+                    ScopeEntry.TypeProcParameter typeProcParameter = new ScopeEntry.TypeProcParameter(type, varOp.ref);
+                    typeOfParameters.add(typeProcParameter);
+                }
             }
-        }
 
-        ScopeEntry scopeEntry = ScopeEntry.createProcScope(node.typeNode.type, typeOfParameters);
-        currentScope.scopeData.put(identifier, scopeEntry);
+            ScopeEntry scopeEntry = ScopeEntry.createProcScope(node.typeNode.type, typeOfParameters);
+            currentScope.scopeData.put(scopeKey, scopeEntry);
+        }
         // T: add the sign of procedure to the scope's table (END)
 
 
@@ -345,9 +346,12 @@ public class ScopeVisitor implements Visitor {
             String identifier = varOp.identifierNode.identifier;
             boolean ref = varOp.ref;
 
-            if(currentScope.scopeData.get(identifier) == null) {
+            // T: we search only in the current scope to ensure that in this scope
+            // a variable isn't already defined in this scope.
+            ScopeKey scopeKey = new ScopeKey(identifier, ScopeEntry.Kind.Var);
+            if(currentScope.scopeData.get(scopeKey) == null) {
                 ScopeEntry scopeEntry = ScopeEntry.createVarScope(type, ref);
-                currentScope.scopeData.put(identifier, scopeEntry);
+                currentScope.scopeData.put(scopeKey, scopeEntry);
             } else { // T: Give error in the case in which the variable is already defined
                 Error.stackError.add(new Error("Variable is already defined", varOp.identifierNode.line, varOp.identifierNode.column));
                 // System.exit(0);
@@ -452,9 +456,12 @@ public class ScopeVisitor implements Visitor {
         // T: retrieve the declared variables (START)
         for (var varOptInit : node.varOptInitOpNodes) {
             String identifier = varOptInit.identifierNode.identifier;
-            if(node.scope.scopeData.get(identifier) == null) {
+            ScopeKey scopeKey = new ScopeKey(identifier, ScopeEntry.Kind.Var);
+
+            // T: we check if the variable is alredy defined only in this scope
+            if(node.scope.scopeData.get(scopeKey) == null) {
                 ScopeEntry scopeEntry = ScopeEntry.createVarScope(type, false);
-                node.scope.scopeData.put(identifier, scopeEntry);
+                node.scope.scopeData.put(scopeKey, scopeEntry);
             } else { // T: Error, already defined this variable in this scope
                 Error.stackError.add(new Error("Already defined this variable in this scope", varOptInit.identifierNode.line, varOptInit.identifierNode.column));
                 // System.exit(0);

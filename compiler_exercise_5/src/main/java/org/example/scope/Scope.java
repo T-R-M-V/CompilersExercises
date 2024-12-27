@@ -3,6 +3,7 @@ package org.example.scope;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class Scope {
 
@@ -21,11 +22,13 @@ public class Scope {
         this.startingColumn = startingColumn;
     }
 
-    public ScopeEntry find(String lexem) {
+    public ScopeEntry find(String lexem, ScopeEntry.Kind kind) {
+        ScopeKey scopeKey = new ScopeKey(lexem, kind);
+
         Scope currentScope = this;
         ScopeEntry entry = null;
         while(currentScope != null) {
-            entry = currentScope.scopeData.get(lexem);
+            entry = currentScope.scopeData.get(scopeKey);
             if(entry != null)
                 break;
             currentScope = currentScope.parent;
@@ -34,7 +37,7 @@ public class Scope {
         return entry;
     }
 
-    public HashMap<String, ScopeEntry> scopeData;
+    public HashMap<ScopeKey, ScopeEntry> scopeData;
     public Scope parent;
     public int startingLine, startingColumn;
 
