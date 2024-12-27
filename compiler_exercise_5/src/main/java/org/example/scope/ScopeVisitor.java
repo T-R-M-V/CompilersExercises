@@ -100,6 +100,9 @@ public class ScopeVisitor implements Visitor {
     public Object visit(CallOpNode node) {
         node.scope = currentScope;
 
+        node.identifierNode.accept(this);
+        currentScope = node.scope;
+
         for(var exprOpNode : node.exprOpNodes) {
             exprOpNode.accept(this);
             currentScope = node.scope;
@@ -332,6 +335,9 @@ public class ScopeVisitor implements Visitor {
 
     @Override
     public Object visit(ParDeclOpNode node) {
+
+        node.scope = currentScope;
+
         Type type = node.typeNode.type;
 
         for(var varOp: node.pVarOpNodes) {
