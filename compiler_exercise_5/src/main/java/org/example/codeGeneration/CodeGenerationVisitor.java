@@ -10,6 +10,12 @@ import org.example.tree.expr.ExprValueNode;
 import org.example.tree.expr.UnaryOpNode;
 import org.example.tree.statements.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -273,62 +279,264 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public Object visit(BeginEndOpNode node) {
-        return null;
+
+        List<String> lines = new ArrayList<>();
+
+        lines.add("int main()");
+        lines.add("{");
+
+        for(var varDeclOpNode : node.varDeclOpNodes) {
+            List<String> varDeclLines = (List)varDeclOpNode.accept(this);
+            lines.addAll(varDeclLines);
+        }
+
+        for(var statOpNode : node.statOpNodes) {
+            Object result = statOpNode.accept(this);
+            if(result instanceof String) {
+                String stringStatOpNode = (String)result;
+                lines.add(stringStatOpNode);
+            } else {
+                List<String> statOpNodeLines = (List)result;
+                lines.addAll(statOpNodeLines);
+            }
+        }
+
+        lines.add("}");
+
+        return lines;
     }
 
     @Override
     public Object visit(BodyOpNode node) {
-        return null;
+
+        List<String> lines = new ArrayList<>();
+
+        for(var varDeclOpNode : node.varDeclOpNodes) {
+            List<String> varDeclLines = (List)varDeclOpNode.accept(this);
+            lines.addAll(varDeclLines);
+        }
+
+        for(var statOpNode : node.statOpNodes) {
+            Object result = statOpNode.accept(this);
+            if(result instanceof String) {
+                String stringStatOpNode = (String)result;
+                lines.add(stringStatOpNode);
+            } else {
+                List<String> statOpNodeLines = (List)result;
+                lines.addAll(statOpNodeLines);
+            }
+        }
+
+        return lines;
     }
 
     @Override
     // T: to handle the string constant, wrap the value around a cloneString function
     public Object visit(ConstantNode node) {
-        return null;
+
+        if(node.type == Type.String) {
+            return OperatorConverter.cloneString + "( \"" + node.value + "\" )";
+        }
+
+        return node.value;
     }
 
     @Override
     public Object visit(DefDeclOpNode node) {
-        return null;
+
+        List<String> lines = new ArrayList<>();
+        StringBuilder headerLine = new StringBuilder("");
+
+        // T: create header of the function/procedure (START)
+        // T: unused
+        node.identifierNode.accept(this);
+
+        String typeNodeString = (String)node.typeNode.accept(this);
+
+        headerLine.append(typeNodeString + " ");
+        headerLine.append(node.identifierNode.identifier + "( ");
+
+        String comma = "";
+        for(var parDeclOpNode : node.parDeclOpNodes) {
+            String parDeclOpNodeString = (String)parDeclOpNode.accept(this);
+            headerLine.append(comma + parDeclOpNodeString);
+
+            comma = ",";
+        }
+
+        headerLine.append(" )");
+
+        lines.add(headerLine.toString());
+        // T: create header of the function/procedure (END)
+
+        // T: create the body (START)
+        lines.add("{");
+        List<String> bodyLines = (List)node.bodyOpNode.accept(this);
+        lines.addAll(bodyLines);
+        lines.add("}");
+        // T: create the body (END)
+
+        return lines;
     }
 
     @Override
+    // T: This function return:
+    // !function & string & ref     -> identifier
+    // !function & string & !ref    -> identifier
+    // !function & !string & ref    -> "*" + identifier
+    // !function & !string & !ref   -> identifier
+    // function                     -> identifier
     public Object visit(IdentifierNode node) {
-        return null;
+
+        ScopeEntry scopeEntry = node.scope.find(node.identifier);
+
+        if(scopeEntry.kind == ScopeEntry.Kind.Var) {
+            // T: string & ref -> identifier
+            // T: string & !ref -> identifier
+            // !string & ref -> *identifier
+            // !string & !ref -> identifier
+
+            if(scopeEntry.varType != Type.String && scopeEntry.ref) {
+                return "*" + node.identifier;
+            }
+            return node.identifier;
+
+        }
+        else {
+            return node.identifier;
+        }
     }
 
     @Override
     public Object visit(ParDeclOpNode node) {
-        return null;
+
+        StringBuilder parDeclOpNodeLine = new StringBuilder("");
+
+        String typeNodeString = (String)node.typeNode.accept(this);
+
+        String comma = "";
+        for(var pVarOpNode : node.pVarOpNodes) {
+            String pVarOpNodeString = (String)pVarOpNode.accept(this);
+
+            parDeclOpNodeLine.append(comma + typeNodeString + " " + pVarOpNodeString);
+
+            comma = ",";
+        }
+
+        return parDeclOpNodeLine.toString();
     }
 
     @Override
     public Object visit(ProgramOpNode node) {
-        return null;
+
+        List<String> lines = new ArrayList<>();
+
+        // T: import code from lib.c (START)
+        try {
+            lines.add("/*STANDARD IMPORT*/");
+            List<String> libLines = Files.readAllLines(Paths.get("codeToImport" + File.separator + "lib.c"));
+            lines.addAll(libLines);
+            lines.add("/*STANDARD IMPORT*/");
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // T: import code from lib.c (END)
+
+
+        for(var declNode : node.declsNodes) {
+            Object result = declNode.accept(this);
+
+            if(result instanceof String) {
+                lines.add((String)result);
+            } else {
+                lines.addAll((List)result);
+            }
+        }
+
+        List<String> beginEndOpNodeLines = (List)node.beginEndOpNode.accept(this);
+        lines.addAll(beginEndOpNodeLines);
+
+        return lines;
     }
 
     @Override
     public Object visit(PVarOpNode node) {
-        return null;
+
+        // T: unused
+        node.identifierNode.accept(this);
+
+        ScopeEntry scopeEntry = node.scope.find(node.identifierNode.identifier);
+
+        Type typeVar = scopeEntry.varType;
+        if(typeVar != Type.String) {
+            if(scopeEntry.ref) {
+                return "*" + node.identifierNode.identifier;
+            }
+            else {
+                return node.identifierNode.identifier;
+            }
+        }
+        else {
+            return node.identifierNode.identifier;
+        }
     }
 
     @Override
     public Object visit(TypeNode node) {
-        return null;
+        return OperatorConverter.convertTypeInC(node.type);
     }
 
     @Override
     public Object visit(TypeOrConstantNode node) {
+
+        if(node.typeNode != null) {
+            return node.typeNode.accept(this);
+        }
+
+        if(node.constantNode != null) {
+            return node.constantNode.accept(this);
+        }
+
         return null;
     }
 
     @Override
     public Object visit(VarDeclOpNode node) {
-        return null;
+
+        StringBuilder varDeclOpNodeLine = new StringBuilder("");
+
+        Type type = node.typeOrConstant.type;
+        String typeString = OperatorConverter.convertTypeInC(type);
+
+        varDeclOpNodeLine.append(typeString + " ");
+
+        String comma = "";
+        for(var varOptInitOpNode : node.varOptInitOpNodes) {
+            String varOptInitOpNodeString = (String)varOptInitOpNode.accept(this);
+            varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
+
+            comma = ",";
+        }
+
+        varDeclOpNodeLine.append(";");
+
+        return varDeclOpNodeLine.toString();
     }
 
     @Override
     public Object visit(VarOptInitOpNode node) {
-        return null;
+
+        // T: unused
+        node.identifierNode.accept(this);
+
+        if(node.exprOpNode != null) {
+            String exprOpNodeString = (String)node.exprOpNode.accept(this);
+            return node.identifierNode.identifier + " = " + exprOpNodeString;
+        }
+
+        return node.identifierNode.identifier;
     }
 }

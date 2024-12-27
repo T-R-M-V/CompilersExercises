@@ -98,4 +98,33 @@ public class OperatorConverter {
             }
         }
     }
+
+    public static String convertTypeInC(Type type) {
+        switch (type) {
+            case Error -> {
+                return null;
+            }
+            case Integer -> {
+                return "int";
+            }
+            case Boolean -> {
+                return "int/*ex boolean*/";
+            }
+            case Double -> {
+                return "double";
+            }
+            case String -> {
+                return "char**";
+            }
+            case Char -> {
+                return "char";
+            }
+            case Void -> {
+                return "void";
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
 }
