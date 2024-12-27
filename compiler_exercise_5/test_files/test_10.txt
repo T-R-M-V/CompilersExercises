@@ -1,7 +1,24 @@
 program
 
-def 
+def printCycle(a : int; b : double) {
+
+    while(a > 0) do
+    {
+        b := b * 2;
+        "b: ", b !>>;
+        a := a - 1;
+    }
+
+}
 
 begin
+
+d : int;
+c : double;
+
+"Inserire d e c: \n" !>>;
+d | c <<;
+
+printCycle(d, c);
 
 end

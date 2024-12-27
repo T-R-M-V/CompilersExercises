@@ -1,0 +1,13 @@
+program
+
+globalS = "ciaociaociao" : string;
+
+begin
+
+s = "hello hello" : string;
+s := globalS + s;
+
+globalS !>>;
+s !>>;
+
+end

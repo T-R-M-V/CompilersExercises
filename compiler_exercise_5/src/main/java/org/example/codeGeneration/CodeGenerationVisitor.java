@@ -112,7 +112,7 @@ public class CodeGenerationVisitor implements Visitor {
 
             String line = identifierString + " = " + exprOpNodeString + ";";
             if(exprOpNode.type == Type.String) {
-                line = OperatorConverter.cloneString + "(" + identifierString + "," + exprOpNodeString + ")";
+                line = identifierString + " = " + OperatorConverter.cloneString + "(" + identifierString + "," + exprOpNodeString + ");";
             }
 
             assignments.add(line);
@@ -272,8 +272,9 @@ public class CodeGenerationVisitor implements Visitor {
 
             regexForPrintf.append(OperatorConverter.pattern(exprOpNode.type));
             if(exprOpNode.type == Type.String) {
-                exprOpNodeString = comma + " *" + exprOpNodeString;
+                exprOpNodeString = " *" + exprOpNodeString;
             }
+            exprOpNodeString = comma + exprOpNodeString;
             parameters.append(exprOpNodeString);
 
             comma = ",";
