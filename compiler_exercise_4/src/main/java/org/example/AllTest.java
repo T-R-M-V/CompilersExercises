@@ -12,7 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-public class Circuit {
+public class AllTest {
     public static void main(String[] args) throws Exception {
 
         HashMap<String, String> testResults = new HashMap<>();
