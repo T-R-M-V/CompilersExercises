@@ -163,7 +163,7 @@ public class CodeGenerationVisitor implements Visitor {
             index++;
         }
 
-        return node.identifierNode.identifier + "(" + parametersString.toString() + ")";
+        return node.identifierNode.identifier + OperatorConverter.addonForFunctionIdentifier + "(" + parametersString.toString() + ")";
     }
 
     @Override
@@ -367,13 +367,14 @@ public class CodeGenerationVisitor implements Visitor {
         StringBuilder headerLine = new StringBuilder("");
 
         // T: create header of the function/procedure (START)
+        
         // T: unused
         node.identifierNode.accept(this);
 
         String typeNodeString = (String)node.typeNode.accept(this);
 
         headerLine.append(typeNodeString + " ");
-        headerLine.append(node.identifierNode.identifier + "( ");
+        headerLine.append(node.identifierNode.identifier + OperatorConverter.addonForFunctionIdentifier + "( ");
 
         String comma = "";
         for(var parDeclOpNode : node.parDeclOpNodes) {
