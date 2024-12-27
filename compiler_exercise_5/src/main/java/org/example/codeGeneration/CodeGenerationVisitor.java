@@ -116,7 +116,15 @@ public class CodeGenerationVisitor implements Visitor {
 
             String line = identifierString + " = " + exprOpNodeString + ";";
             if(exprOpNode.type == Type.String) {
-                line = identifierString + " = " + OperatorConverter.cloneString + "(" + exprOpNodeString + ");";
+                ScopeEntry scopeEntry = node.scope.findVar(identifierOpNode.identifier);
+
+                if(scopeEntry.ref) {
+                    line = "*" + identifierString + " = *" + OperatorConverter.cloneString + "(" + exprOpNodeString + ");";
+                }
+                else {
+                    line = identifierString + " = " + OperatorConverter.cloneString + "(" + exprOpNodeString + ");";
+                }
+
             }
 
             assignments.add(line);
@@ -597,7 +605,10 @@ public class CodeGenerationVisitor implements Visitor {
 
                 varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
 
-                comma = ",";
+                if(type == Type.String)
+                    comma = ", **";
+                else
+                    comma = ",";
             }
 
             varDeclOpNodeLine.append(";");
@@ -637,7 +648,10 @@ public class CodeGenerationVisitor implements Visitor {
 
                 declarations.append(comma + varOptInitOpNode.identifierNode.identifier);
 
-                comma = ",";
+                if(type == Type.String)
+                    comma = ", **";
+                else
+                    comma = ",";
             }
 
             declarations.append(";\n");
@@ -663,6 +677,5 @@ public class CodeGenerationVisitor implements Visitor {
         }
 
         return node.identifierNode.identifier;
-
     }
 }
