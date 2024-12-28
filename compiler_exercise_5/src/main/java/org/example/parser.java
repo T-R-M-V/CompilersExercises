@@ -1217,6 +1217,8 @@ class CUP$parser$actions {
 		int funcallright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		CallOpNode funcall = (CallOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
+                funcall.isStatement = true;
+
                 RESULT = funcall;
             
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Stat",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1736,6 +1738,8 @@ class CUP$parser$actions {
 		int funcallright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		CallOpNode funcall = (CallOpNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
+                funcall.isStatement = false;
+
                 ExprValueNode exprValueNode = new ExprValueNode(funcall);
                 exprValueNode.setStartPos(funcall.line, funcall.column);
                 RESULT = exprValueNode;

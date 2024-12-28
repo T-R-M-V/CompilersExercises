@@ -26,4 +26,6 @@ public class CallOpNode extends StatOpNode {
 
     public IdentifierNode identifierNode;
     public List<ExprOpNode> exprOpNodes;
+
+    public boolean isStatement;
 }

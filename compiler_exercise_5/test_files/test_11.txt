@@ -8,6 +8,11 @@ def globalS(n : int; m : int)
     "called globalS" !>>;
 }
 
+def compoundString(a : string) : string
+{
+    return a + a;
+}
+
 begin
 
 input : string;
@@ -18,6 +23,7 @@ input <<;
 
 globalS := "C______C";
 s := globalS + 5 + (10 * 5);
+s := compoundString(s);
 
 globalS(3, 4);
 

@@ -127,7 +127,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     // T: WARNING we expect that all the identifier that are
-    // reference are written adding '+'(excluding the String)
+    // reference are written adding '*'(excluding the String)
     public Object visit(CallOpNode node) {
 
         // T: Unused
@@ -163,7 +163,11 @@ public class CodeGenerationVisitor implements Visitor {
             index++;
         }
 
-        return node.identifierNode.identifier + OperatorConverter.addonForFunctionIdentifier + "(" + parametersString.toString() + ")";
+        String semi = "";
+        if(node.isStatement)
+            semi = ";";
+
+        return node.identifierNode.identifier + OperatorConverter.addonForFunctionIdentifier + "(" + parametersString.toString() + ")" + semi;
     }
 
     @Override

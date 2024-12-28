@@ -33,7 +33,7 @@ terminal    LexerInfo   PIPE;
 /* Non terminals */
 non terminal    ProgramOpNode               Programma;
 non terminal    TempNode.TempAggregateNode  Decls;
-non terminal    TempNode.TempAggregateNode  VarDecls; //
+non terminal    TempNode.TempAggregateNode  VarDecls;
 non terminal    VarDeclOpNode               VarDecl;
 non terminal    TempNode.TempAggregateNode  VarsOptInit;
 non terminal    TypeOrConstantNode          TypeOrConstant;
@@ -373,6 +373,8 @@ Stat ::=  Vars:vars IN SEMI
             :}
 	    | FunCall:funcall SEMI
             {:
+                funcall.isStatement = true;
+
                 RESULT = funcall;
             :}
         | IF:IF LPAR Expr:expr RPAR THEN Body:body_1 ELSE Body:body_2
@@ -561,6 +563,8 @@ Expr   ::= Expr:expr_1 PLUS Expr:expr_2
             :}
         | FunCall:funcall
             {:
+                funcall.isStatement = false;
+
                 ExprValueNode exprValueNode = new ExprValueNode(funcall);
                 exprValueNode.setStartPos(funcall.line, funcall.column);
                 RESULT = exprValueNode;

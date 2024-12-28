@@ -32,5 +32,7 @@ public class ExprValueNode extends ExprOpNode {
 
     public ConstantNode constantNode;
     public IdentifierNode identifierNode;
+
+    // T: Remember, CallOpNode is a statement, but is used here to not too much how the nodes are made
     public CallOpNode callOpNode;
 }
