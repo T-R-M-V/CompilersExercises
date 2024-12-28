@@ -1,0 +1,26 @@
+program
+
+f1 = fun() : int;
+
+n1 = 3 : int;
+
+def fun() : int{
+    n1, " + ", n3, " = ", n1+n2 !>>;
+    return 1;
+}
+
+n2 | n3 = 5 * n1 : int;
+
+
+
+
+d2 = d1 : double;
+
+d1 = 3.1 : double;
+
+
+begin
+
+fun();
+
+end

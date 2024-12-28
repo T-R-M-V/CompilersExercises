@@ -3,13 +3,40 @@ program
 s1 : "ciao1";
 s2 = "ciao2" : string;
 
+def fun(n1, n2, n3 : int; b1, b2 : bool; d1, d2 : double) {
 
+    n1 := 5;
+    n1 | n2 := 4 , 5;
+    d1 | d2 := 1.15 , 4.4;
+    b1 := (n1 < n2) and (1 >= 5) or ( d1 <> d2) and (n1 == n2-1);
+    "1. Risultato atteso 1", "Risultato ottenuto: ", b1 !>>;
+
+    n1 := (n1 + n2) * (3 - n1) / 4;
+    "2. Risultato atteso -2", "Risultato ottenuto: ", n1 !>>;
+
+    d1 | d2 | n2 := 1.5, 3.0 , 4;
+    d1 := 2 + 4 * (n2 - d1) + (n2 / d2);
+    "3. Risultato atteso 13.333", "Risultato ottenuto: ", d1 !>>;
+
+    d1 | d2 | n2 := 1.5, 3.3 , 4;
+    d1 := (d1 - n2)* 4 + (d2 / n2) + 2;
+    "4. Risultato atteso -11.175", "Risultato ottenuto: ", d1 !>>;
+
+}
 
 begin
 
 n1 | n2 | n3 : int;
 b1 | b2 : bool;
 d1 | d2 : double;
+
+
+"Prima della funzione --------------------- \n" !>>;
+
+fun(n1,n2,n3,b1,b2,d1,d2);
+
+"Dopo la funzione----------------------\n" !>>;
+
 
 n1 | n2 := 4 , 5;
 d1 | d2 := 1.15 , 4.4;
