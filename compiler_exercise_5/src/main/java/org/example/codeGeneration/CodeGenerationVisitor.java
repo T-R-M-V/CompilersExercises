@@ -116,7 +116,7 @@ public class CodeGenerationVisitor implements Visitor {
 
             String line = identifierString + " = " + exprOpNodeString + ";";
             if(exprOpNode.type == Type.String) {
-                line = identifierString + " = " + OperatorConverter.cloneString + "(" + exprOpNodeString + ");";
+                line = "*" + identifierString + " = *" + OperatorConverter.cloneString + "(" + exprOpNodeString + ");";
             }
 
             assignments.add(line);
@@ -602,6 +602,9 @@ public class CodeGenerationVisitor implements Visitor {
                 varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
 
                 comma = ",";
+                if(type == Type.String) {
+                    comma = ",**";
+                }
             }
 
             varDeclOpNodeLine.append(";");
@@ -642,6 +645,9 @@ public class CodeGenerationVisitor implements Visitor {
                 declarations.append(comma + varOptInitOpNode.identifierNode.identifier);
 
                 comma = ",";
+                if(type == Type.String) {
+                    comma = ",**";
+                }
             }
 
             declarations.append(";\n");
