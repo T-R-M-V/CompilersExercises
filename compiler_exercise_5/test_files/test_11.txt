@@ -8,20 +8,11 @@ def globalS(n : int; m : int)
     "called globalS" !>>;
 }
 
-def passAString(s : string; ref sref : string ) : string
-{
-    s := "Stringa da non cambiare cambiata";
-    sref := "Stringa cambiata";
-
-    return s;
-}
-
 begin
 
 input : string;
 s = "hello hello" : string;
 
-sToPass = "Hello" | sToPassRef = "HelloRef" : string;
 
 input <<;
 
@@ -32,8 +23,5 @@ globalS(3, 4);
 
 globalS, "  ", input !>>;
 s !>>;
-
-passAString(sToPass, sToPassRef);
-sToPass, "\n", sToPassRef !>>;
 
 end

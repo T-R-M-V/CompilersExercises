@@ -107,8 +107,6 @@ public class TypeCheckingVisitor implements Visitor {
     @Override
     public Object visit(AssignOpNode node) {
 
-        node.type = Type.Void;
-
         for(var identifierNode : node.identifierNodes) {
             identifierNode.accept(this);
         }
@@ -127,6 +125,8 @@ public class TypeCheckingVisitor implements Visitor {
                 node.type = Type.Error;
             }
         }
+
+        node.type = Type.Void;
 
         if(node.exprOpNodes.size() != node.identifierNodes.size()) {
             // T: launch error
@@ -241,7 +241,7 @@ public class TypeCheckingVisitor implements Visitor {
 
         node.elseBodyOpNode.accept(this);
         if(node.elseBodyOpNode.type != Type.Void) {
-            // T: launch error
+            // T: launche error
             node.type = Type.Error;
         }
 
@@ -373,8 +373,7 @@ public class TypeCheckingVisitor implements Visitor {
 
         for(var statOpNode : node.statOpNodes) {
             Type typeStatOpNode = (Type)statOpNode.accept(this);
-            // T: WARNING this must be Type.Void when you adjust the way callOpNode works
-            if(typeStatOpNode == Type.Error) {
+            if(typeStatOpNode != Type.Void) {
                 // T: WARNING omitted error
                 node.type = Type.Error;
             }
