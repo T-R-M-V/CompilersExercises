@@ -14,6 +14,11 @@ public class OperatorConverter {
     public static String inputString = "inputString_";
     public static String addonForFunctionIdentifier = "_fun";
 
+    public static String commentForFunctionDefinitionSection = "/* FUNCTION DEFINITIONS */";
+    public static String commentForFunctionDeclarationSection = "/* FUNCTION DECLARATIONS */";
+    public static String commentForGlobVarDeclarationSection = "/* GLOBAL VARIABLES DECLARATION */";
+    public static String commentForGlobVarDefinitionSection = "/* GLOBAL VARIABLES DEFINITION */";
+
     public static String convertInC(BinaryOpNode.Type op) {
         switch (op) {
             case Plus -> {

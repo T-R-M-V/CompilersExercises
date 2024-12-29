@@ -1,26 +1,79 @@
 program
 
-f1 = fun() : int;
+risultatoFib : int;
 
-n1 = 3 : int;
+def fibonacciRic(n : int) : int {
 
-def fun() : int{
-    n1, " + ", n3, " = ", n1+n2 !>>;
-    return 1;
+    if (n <= 1) then
+    {
+        return n;
+    }
+
+    return fibonacciRic(n - 1) + fibonacciRic(n - 2);
 }
 
-n2 | n3 = 5 * n1 : int;
+def fibonacciRicRef(ref n, ref result : int){
+
+    nMinus1 = n - 1 : int;
+    result1 : int;
+
+    nMinus2 = n - 2 | result2 : int;
+
+    if (n <= 1) then {
+        result := n;
+    }
+    else
+    {
+    result1 := 0;
+    result2 := 0;
+
+    fibonacciRicRef(nMinus1, result1);
+    fibonacciRicRef(nMinus2, result2);
+
+    result := result1 + result2;
+    }
+}
 
 
 
+dfibonacciIter(n : int) : int {
+/*
+    a = 0 | b = 1 | fib = 0 | i : int;
 
-d2 = d1 : double;
+    if (n <= 1) then {
+        return n;
+    }
 
-d1 = 3.1 : double;
+    while(i <= n) do {
+        fib := a + b;
+        a := b;
+        b := fib;
+        i := i + 1;
+    }
+
+    return fib;
+    */
+}
 
 
 begin
+    n : int;
+    res: int;
 
-fun();
+/*
+    n := 10;
+    risultatoFib := fibonacciIter(n);
+    "\n valore atteso Fibonacci Iterativo 55 -- ris: ", risultatoFib !>>;
+*/
+
+    n := 10;
+    risultatoFib := fibonacciRic(n);
+    "\n valore atteso Fibonacci Ricorsivo 55 -- ris: ", risultatoFib !>>;
+
+
+    res := 0;
+    n := 15;
+    fibonacciRicRef(n,res);
+    "\n valore atteso Fibonacci Ricorsivo Ref 610 -- ris: ", res !>>;
 
 end

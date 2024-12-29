@@ -21,6 +21,9 @@ import java.util.List;
 
 public class CodeGenerationVisitor implements Visitor {
 
+    // T: This variable is used distinguish the generation of code for VarDecl in the case we are in globalScope
+    // and in the case we aren't in globalScope. In the case we are in globalScope, the VarDecl must be initialized
+    // by a function called by main. So we need to divide declaration from initialization.
     public boolean globalScope;
 
     public CodeGenerationVisitor() {
@@ -487,8 +490,16 @@ public class CodeGenerationVisitor implements Visitor {
 
 
 
+        // T: Put in different collection declarations and definitions of functions and global variables (START)
+        List<String> functionDeclarations = new ArrayList<>();
+        functionDeclarations.add(OperatorConverter.commentForFunctionDeclarationSection);
+        List<String> functionDefinitions = new ArrayList<>();
+        functionDefinitions.add(OperatorConverter.commentForFunctionDefinitionSection);
 
+        List<String> globVariableDeclarations = new ArrayList<>();
+        globVariableDeclarations.add(OperatorConverter.commentForGlobVarDeclarationSection);
         List<String> globVariablesDefinition = new ArrayList<>();
+        globVariablesDefinition.add(OperatorConverter.commentForGlobVarDefinitionSection);
         globVariablesDefinition.add("void " + globalVariableInitFunction);
         globVariablesDefinition.add("{");
 
@@ -499,18 +510,38 @@ public class CodeGenerationVisitor implements Visitor {
                 List<String> declAndDef = (List)declNode.accept(this);
                 globalScope = false;
 
-                lines.add(declAndDef.get(0));
+                globVariableDeclarations.add(declAndDef.get(0));
                 globVariablesDefinition.add(declAndDef.get(1));
             }
             else {
                 List<String> functionDefinitionLines = (List)declNode.accept(this);
-                lines.addAll((List)functionDefinitionLines);
+
+                // T: extract from the definition of the function the header of the function
+                functionDeclarations.add(functionDefinitionLines.get(0) + ";");
+
+                functionDefinitions.addAll((List)functionDefinitionLines);
             }
         }
 
         globVariablesDefinition.add("}");
 
+        functionDeclarations.add(OperatorConverter.commentForFunctionDeclarationSection);
+        functionDefinitions.add(OperatorConverter.commentForFunctionDefinitionSection);
+        globVariableDeclarations.add(OperatorConverter.commentForGlobVarDeclarationSection);
+        globVariablesDefinition.add(OperatorConverter.commentForGlobVarDefinitionSection);
+        // T: Put in different collection declarations and definitions of functions and global variables (END)
+
+
+
+        // T: combine in the correct way definitions and declarations of function and global variables (START)
+        lines.addAll(functionDeclarations);
+        lines.addAll(globVariableDeclarations);
+        lines.addAll(functionDefinitions);
         lines.addAll(globVariablesDefinition);
+        // T: combine in the correct way definitions and declarations of function and global variables (END)
+
+
+
 
         List<String> beginEndOpNodeLines = (List)node.beginEndOpNode.accept(this);
         lines.addAll(beginEndOpNodeLines);

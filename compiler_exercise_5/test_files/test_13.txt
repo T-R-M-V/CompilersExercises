@@ -3,37 +3,67 @@ program
 s1 : "ciao1";
 s2 = "ciao2" : string;
 
-def fun(n1, n2, n3 : int; b1, b2 : bool; d1, d2 : double) {
+def fun2() : string{
+    return "fun2()";
+}
 
-    n1 := 5;
-    n1 | n2 := 4 , 5;
-    d1 | d2 := 1.15 , 4.4;
-    b1 := (n1 < n2) and (1 >= 5) or ( d1 <> d2) and (n1 == n2-1);
-    "1. Risultato atteso 1", "Risultato ottenuto: ", b1 !>>;
+def fun(n1, n2, n3 : int; b1, b2, b3 : bool; d1, d2 : double) {
+s3 : "ciao3";
 
-    n1 := (n1 + n2) * (3 - n1) / 4;
-    "2. Risultato atteso -2", "Risultato ottenuto: ", n1 !>>;
+n1 | n2 := 4 , 5;
+d1 | d2 := 1.15 , 4.4;
+b1 := (n1 < n2) and (1 >= 5) or ( d1 <> d2) and (n1 == n2-1);
+"1. Risultato atteso 1", "--Risultato ottenuto: ", b1 !>>;
 
-    d1 | d2 | n2 := 1.5, 3.0 , 4;
-    d1 := 2 + 4 * (n2 - d1) + (n2 / d2);
-    "3. Risultato atteso 13.333", "Risultato ottenuto: ", d1 !>>;
+n1 := (n1 + n2) * (3 - n1) / 4;
+"2. Risultato atteso -2", "--Risultato ottenuto: ", n1 !>>;
 
-    d1 | d2 | n2 := 1.5, 3.3 , 4;
-    d1 := (d1 - n2)* 4 + (d2 / n2) + 2;
-    "4. Risultato atteso -11.175", "Risultato ottenuto: ", d1 !>>;
+d1 | d2 | n2 := 1.5, 3.0 , 4;
+d1 := 2 + 4 * (n2 - d1) + (n2 / d2);
+"3. Risultato atteso 13.333", "--Risultato ottenuto: ", d1 !>>;
+
+d1 | d2 | n2 := 1.5, 3.3 , 4;
+d1 := (d1 - n2)* 4 + (d2 / n2) + 2;
+"4. Risultato atteso -7.175", "--Risultato ottenuto: ", d1 !>>;
+
+b2 | b3 := false, true;
+d1 | n1 := 3.15, 3;
+b1 := b1 or b2 and not(b1 and d1 <= n1);
+"5. Risultato atteso 1", "--Risultato ottenuto: ", b1 !>>;
+
+b2 := false;
+b1 := not(n1 == n1) and b1 or b2;
+"6. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
+
+n1 | d1 := 3, 5.55;
+s3 :=  n1 + s1 + d1  + n1 + " || " + d1;
+"7. Risultato atteso 3ciao15.553 || 5.55", "--Risultato ottenuto: ", s3 !>>;
+
+s3 := "ciao3";
+s3 := fun2() + "---" + s1 + ", " + s2;
+"8. Risultato atteso fun2()---ciao1, ciao2", "--Risultato ottenuto: ", s3 !>>;
+
+n1 | n2 := 1, 4;
+b1 := not(n1 < n2 and n2 >= n1) or not not( n1 <> n1 );
+"9. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
+
+d1 | d2 := 1.5, 3.0;
+b1 := d1 >= 10 and not d2 == d2 or (d1 == d2);
+"10. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
 
 }
 
 begin
 
 n1 | n2 | n3 : int;
-b1 | b2 : bool;
+b1 | b2 | b3 : bool;
 d1 | d2 : double;
+s3 : "ciao3";
 
 
 "Prima della funzione --------------------- \n" !>>;
 
-fun(n1,n2,n3,b1,b2,d1,d2);
+fun(n1,n2,n3,b1,b2,b3,d1,d2);
 
 "Dopo la funzione----------------------\n" !>>;
 
@@ -41,17 +71,43 @@ fun(n1,n2,n3,b1,b2,d1,d2);
 n1 | n2 := 4 , 5;
 d1 | d2 := 1.15 , 4.4;
 b1 := (n1 < n2) and (1 >= 5) or ( d1 <> d2) and (n1 == n2-1);
-"1. Risultato atteso 1", "Risultato ottenuto: ", b1 !>>;
+"1. Risultato atteso 1", "--Risultato ottenuto: ", b1 !>>;
 
 n1 := (n1 + n2) * (3 - n1) / 4;
-"2. Risultato atteso -2", "Risultato ottenuto: ", n1 !>>;
+"2. Risultato atteso -2", "--Risultato ottenuto: ", n1 !>>;
 
-d1 | d2 | n2 := 1.5, 3.0 , 4; 
+d1 | d2 | n2 := 1.5, 3.0 , 4;
 d1 := 2 + 4 * (n2 - d1) + (n2 / d2);
-"3. Risultato atteso 13.333", "Risultato ottenuto: ", d1 !>>;
+"3. Risultato atteso 13.333", "--Risultato ottenuto: ", d1 !>>;
 
-d1 | d2 | n2 := 1.5, 3.3 , 4; 
+d1 | d2 | n2 := 1.5, 3.3 , 4;
 d1 := (d1 - n2)* 4 + (d2 / n2) + 2;
-"4. Risultato atteso -11.175", "Risultato ottenuto: ", d1 !>>;
+"4. Risultato atteso -7.175", "--Risultato ottenuto: ", d1 !>>;
+
+b2 | b3 := false, true;
+d1 | n1 := 3.15, 3;
+b1 := b1 or b2 and not(b1 and d1 <= n1);
+"5. Risultato atteso 1", "--Risultato ottenuto: ", b1 !>>;
+
+b2 := false;
+b1 := not(n1 == n1) and b1 or b2;
+"6. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
+
+n1 | d1 := 3, 5.55;
+s3 :=  n1 + s1 + d1  + n1 + " || " + d1;
+"7. Risultato atteso 3ciao15.553 || 5.55", "--Risultato ottenuto: ", s3 !>>;
+
+s3 := "ciao3";
+s3 := fun2() + "---" + s1 + ", " + s2;
+"8. Risultato atteso fun2()---ciao1, ciao2", "--Risultato ottenuto: ", s3 !>>;
+
+n1 | n2 := 1, 4;
+b1 := not(n1 < n2 and n2 >= n1) or not not( n1 <> n1 );
+"9. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
+
+d1 | d2 := 1.5, 3.0;
+b1 := d1 >= 10 and not d2 == d2 or (d1 == d2);
+"10. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
+
 
 end
