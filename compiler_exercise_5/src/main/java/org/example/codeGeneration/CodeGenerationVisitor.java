@@ -28,7 +28,7 @@ public class CodeGenerationVisitor implements Visitor {
     public boolean globalScope;
 
     public CodeGenerationVisitor() {
-        globalScope = true;
+        globalScope = false;
     }
 
     public static String globalVariableInitFunction = "initializeGlobalVariable_()";
