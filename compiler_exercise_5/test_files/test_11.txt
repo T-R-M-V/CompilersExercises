@@ -1,16 +1,16 @@
 program
 
 n : 5;
+def compoundString(a : string) : string
+{
+    return a + globalS;
+}
+
 globalS = "ciaociaociao" : string;
 
 def globalS(n : int; m : int)
 {
     "called globalS" !>>;
-}
-
-def compoundString(a : string) : string
-{
-    return a + a;
 }
 
 begin

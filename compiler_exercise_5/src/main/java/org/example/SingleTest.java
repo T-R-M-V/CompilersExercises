@@ -16,6 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 public class SingleTest {
@@ -56,6 +57,12 @@ public class SingleTest {
                 CodeGenerationVisitor codeGenerationVisitor = new CodeGenerationVisitor();
                 List<String> generatedCLines = (List)codeGenerationVisitor.visit(programOpNode);
                 Files.write(Paths.get(outputCodeGenerationFile), generatedCLines);
+
+                // T: write also in the file for testing with Clang (START)
+                String outputForDebugWithClang = "C:\\Languages\\CLang\\LLVM\\bin\\main.c";
+                Files.write(Paths.get(outputForDebugWithClang), generatedCLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+                // T: write also in the file for testing with Clang (END)
             }
         }
         catch(Exception e) {
