@@ -9,3 +9,5 @@ test_10:    Testing generation of code
 test_11:    Testing generation of code for string
 test_12:    Testing booleans
 test_13:    Testing for generation of expressions
+test_14:
+test_15:    Testing for a program where is written Fibonacci

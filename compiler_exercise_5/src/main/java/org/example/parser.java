@@ -13,6 +13,7 @@ import org.example.tree.statements.*;
 import org.example.tree.expr.*;
 import org.example.tree.*;
 import org.example.Type;
+import org.example.sym;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -409,6 +410,25 @@ public class parser extends java_cup.runtime.lr_parser {
 
   /** <code>error</code> Symbol index. */
   public int error_sym() {return 1;}
+
+
+
+    @Override
+    public void report_error(String message, Object info) {
+        // T: in the case the error is a lexical error (START)
+        if(info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol symbol = (java_cup.runtime.Symbol)info;
+
+            if(symbol.sym == sym.error) {
+                LexerInfo lexerInfo = (LexerInfo) symbol.value;
+
+                throw new RuntimeException("Lexical error line: " + lexerInfo.line + " column: " + lexerInfo.column);
+            }
+        }
+        // T: in the case the error is a lexical error (END)
+
+        throw new RuntimeException("Syntax error");
+    }
 
 
 /** Cup generated class to encapsulate user supplied action code.*/

@@ -36,15 +36,17 @@ def fibonacciRicRef(ref n, ref result : int){
 
 
 
-dfibonacciIter(n : int) : int {
-/*
-    a = 0 | b = 1 | fib = 0 | i : int;
+def fibonacciIter(n : int) : int {
+
+    a = 0 | b = 1 | fib = 0 | i = 1 : int;
 
     if (n <= 1) then {
         return n;
     }
 
-    while(i <= n) do {
+    while(i < n) do {
+        "valore: ", fib !>>;
+
         fib := a + b;
         a := b;
         b := fib;
@@ -52,7 +54,6 @@ dfibonacciIter(n : int) : int {
     }
 
     return fib;
-    */
 }
 
 
@@ -60,11 +61,11 @@ begin
     n : int;
     res: int;
 
-/*
+
     n := 10;
     risultatoFib := fibonacciIter(n);
     "\n valore atteso Fibonacci Iterativo 55 -- ris: ", risultatoFib !>>;
-*/
+
 
     n := 10;
     risultatoFib := fibonacciRic(n);

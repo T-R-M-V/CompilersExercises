@@ -173,7 +173,7 @@ Id = [A-Za-z] [A-Za-z0-9]*
 <COMMENT> {
     "*/"                {yybegin(YYINITIAL);}
     <<EOF>>             { return symbol(sym.error, "Commento non chiuso");}
-    [^]                 {   }
+    [^]                 {  }
 }
 
-[^]         {  }
+[^]         { return symbol(sym.error, "Unkwon character"); }

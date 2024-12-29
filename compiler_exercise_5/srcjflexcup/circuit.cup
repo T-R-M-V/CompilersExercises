@@ -12,6 +12,27 @@ import org.example.tree.*;
 
 import org.example.Type;
 
+import org.example.sym;
+
+parser code {:
+    @Override
+    public void report_error(String message, Object info) {
+        // T: in the case the error is a lexical error (START)
+        if(info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol symbol = (java_cup.runtime.Symbol)info;
+
+            if(symbol.sym == sym.error) {
+                LexerInfo lexerInfo = (LexerInfo) symbol.value;
+
+                throw new RuntimeException("Lexical error line: " + lexerInfo.line + " column: " + lexerInfo.column);
+            }
+        }
+        // T: in the case the error is a lexical error (END)
+
+        throw new RuntimeException("Syntax error");
+    }
+:}
+
 /* Terminals (tokens returned by the scanner). */
 terminal    LexerInfo   PROGRAM, BEGIN, END;
 terminal    LexerInfo   SEMI, COLON;
@@ -52,9 +73,6 @@ non terminal    TempNode.TempAggregateNode  Vars;
 non terminal    TempNode.TempAggregateNode  Exprs;
 non terminal    ExprOpNode                  Expr;
 non terminal    CallOpNode                  FunCall;
-/* non terminal    BinaryOpNode.Type           ArithOp; */
-/* non terminal    BinaryOpNode.Type           BoolOp; */
-/* non terminal    BinaryOpNode.Type           RelOp; */
 
 /* Precedences */
 /* We don't excatly know why nonassoc works on EQ, NE, LT, LE, GT, GE, there is a conflict */

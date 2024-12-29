@@ -24,6 +24,7 @@ public class CodeGenerationVisitor implements Visitor {
     // T: This variable is used distinguish the generation of code for VarDecl in the case we are in globalScope
     // and in the case we aren't in globalScope. In the case we are in globalScope, the VarDecl must be initialized
     // by a function called by main. So we need to divide declaration from initialization.
+    // T: WARNING change the name of this variable...
     public boolean globalScope;
 
     public CodeGenerationVisitor() {

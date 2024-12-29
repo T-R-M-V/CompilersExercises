@@ -23,7 +23,6 @@ public class SingleTest {
 
     public static void main(String args[]) throws FileNotFoundException {
 
-        String res = "corretta!!";
         FileReader reader = new FileReader(args[0]);
         Reader keyboard = new BufferedReader(reader);
         parser p = new parser(new Lexer(keyboard));
@@ -61,16 +60,16 @@ public class SingleTest {
                 // T: write also in the file for testing with Clang (START)
                 String outputForDebugWithClang = "C:\\Languages\\CLang\\LLVM\\bin\\main.c";
                 Files.write(Paths.get(outputForDebugWithClang), generatedCLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
                 // T: write also in the file for testing with Clang (END)
             }
         }
         catch(Exception e) {
-            res = "errata!!";
-            e.printStackTrace();
+            System.out.println("Errors: ");
+            System.out.println(e.getMessage());
+
+            return;
         }
 
-        System.out.println("Frase " + res);
         Error.printErrors();
     }
 

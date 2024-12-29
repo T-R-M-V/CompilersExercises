@@ -378,12 +378,22 @@ public class Lexer implements java_cup.runtime.Scanner {
   StringBuilder buffer = new StringBuilder("");
 
   private Symbol symbol(int type) {
+    return new Symbol(type, yyline, yycolumn, new LexerInfo(yyline, yycolumn, null));
+  }
+
+  private Symbol symbol(int type, Object value) {
+    return new Symbol(type, yyline, yycolumn, new LexerInfo(yyline, yycolumn, value));
+  }
+
+  /*
+  private Symbol symbol(int type) {
     return new Symbol(type, yyline, yycolumn);
   }
 
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+  */
 
 
   /**
@@ -1063,7 +1073,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 111: break;
           case 53:
-            { return symbol(sym.BEGIN, new LexerInfo(yyline, yycolumn, null));
+            { return symbol(sym.BEGIN);
             }
             // fall through
           case 112: break;
