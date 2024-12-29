@@ -22,8 +22,12 @@ def concatenaStringe(s1, s2 : string) : string{
 	return s1+s2;
 }
 
+def ciao() : string{
+    return "ciao";
+}
 
- str1 = "a---a"| str2 = str1 : string;
+
+ str1 = "a---a"| str2 = str1 | str4 = ciao() : string;
  str3 = str1 + " " + str2 : string;
 
 
@@ -31,7 +35,11 @@ begin
 
  str1 := "b---b";
 
- "Risultato atteso: b---b a---a ,   Risultato ottenuto: ", str1+" "+str2 !>>;
+"1. Risultato atteso: b---b a---a ,  Risultato ottenuto: ", str1+" "+str2 !>>;
+
+"2. Risultato atteso: b---b a---a ,  Risultato ottenuto: ", str3 !>>;
+
+"3. Risultato atteso: ciao ,  Risultato ottenuto: ", str4 !>>;
 
 
 

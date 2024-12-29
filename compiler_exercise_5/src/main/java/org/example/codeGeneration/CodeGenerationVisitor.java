@@ -701,6 +701,14 @@ public class CodeGenerationVisitor implements Visitor {
 
         if(node.exprOpNode != null) {
             String exprOpNodeString = (String)node.exprOpNode.accept(this);
+            if(node.exprOpNode.type == Type.String && node.exprOpNode instanceof ExprValueNode) {
+                ExprValueNode exprOpNode = (ExprValueNode)node.exprOpNode;
+
+                if(exprOpNode.identifierNode != null) {
+                    return node.identifierNode.identifier + " = " + OperatorConverter.cloneString + "(" + exprOpNodeString + ")";
+                }
+            }
+
             return node.identifierNode.identifier + " = " + exprOpNodeString;
         }
 
