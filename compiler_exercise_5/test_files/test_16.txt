@@ -20,8 +20,8 @@ c : string;
 d = c + "1" : string;
 
 e = e + "12": string;
-
-
+f = f + b + g : double;
+g : int;
 
 begin
 
@@ -48,6 +48,8 @@ bool2 := true;
 "8. Risultato atteso 1 ", " --Risultato ottenuto: ", bool1 or bool2 !>>;
 
 "9. Risultato atteso 12 ", " --Risultato ottenuto: ", e !>>;
+
+"10. Risultato atteso 10.0 ", " --Risultato ottenuto: ", f !>>;
 
 
 

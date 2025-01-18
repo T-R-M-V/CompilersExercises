@@ -11,4 +11,4 @@ test_12:    Testing booleans
 test_13:    Testing for generation of expressions
 test_14:    Testing for strings
 test_15:    Testing for a program where is written Fibonacci
-test_16:    Testing for the declarations
+test_16:    Testing for the default values initialization (both global variables and local variables)
