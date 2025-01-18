@@ -373,7 +373,10 @@ public class TypeCheckingVisitor implements Visitor {
 
         for(var statOpNode : node.statOpNodes) {
             Type typeStatOpNode = (Type)statOpNode.accept(this);
-            if(typeStatOpNode != Type.Void) {
+            // T: In this case we doesn't check if the type of statement is void, because
+            // the statement can have a return type, for example in the case of CallOpNode when
+            // is used like a statement.
+            if(typeStatOpNode == Type.Error) {
                 // T: WARNING omitted error
                 node.type = Type.Error;
             }
@@ -409,6 +412,9 @@ public class TypeCheckingVisitor implements Visitor {
 
         for(var statOpNode : node.statOpNodes) {
             Type typeStatOpNode = (Type)statOpNode.accept(this);
+            // T: In this case we doesn't check if the type of the statement is void because
+            // the type of statement can be different from void in the case of return statement
+            // or when we have a statement for calling the functions
             if(typeStatOpNode == Type.Error) {
                 // T: WARNING omitted error
                 node.type = Type.Error;

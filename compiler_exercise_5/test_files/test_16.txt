@@ -1,0 +1,26 @@
+program
+
+
+a : 5;
+b = 10 : int;
+
+
+
+def fun1() : int{
+	x1 = 3 | x2 = 5 : int;
+
+	x1 := b + x1 +c;
+	"1. Risultato atteso 14", "--Risultato ottenuto: ", x1 !>>;
+
+	return 5;
+}
+
+d = c + "" : string;
+c = 1 : int;
+
+begin
+
+fun1();
+
+
+end

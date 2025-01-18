@@ -4,10 +4,11 @@ test_5:     some expression to verify if the system to create AST works well wit
 test_6:
 test_7:
 test_8:
-test_9:     Semantic Errors:
+test_9:     Semantic Errors
 test_10:    Testing generation of code
-test_11:    Testing generation of code for string
+test_11:    Testing generation of code for strings
 test_12:    Testing booleans
 test_13:    Testing for generation of expressions
-test_14:
+test_14:    Testing for strings
 test_15:    Testing for a program where is written Fibonacci
+test_16:    Testing for the declarations
