@@ -32,18 +32,6 @@ public class ScopeVisitor implements Visitor {
     // of identifiers.
     private boolean isInGlobal;
 
-    // T: This enum is used to distinguish if i am in a VarDecl or in a DefDecl (START)
-    // T: This variable is useful during analysis of the global scope
-    // T: WARNING this variable is correctly setted only when isInGlobal is true
-    private TypeDecl typeOfDecl;
-    public enum TypeDecl {
-        None, // Is neither a VarDecl or DefDecl
-        VarDecl,
-        DefDecl,
-    }
-    // T: This enum is used to distinguish if i am in a VarDecl or in a DefDecl (END)
-
-
 
 
     public ScopeVisitor() {
@@ -51,8 +39,6 @@ public class ScopeVisitor implements Visitor {
         isCalledFromDefDecl = false;
 
         isInGlobal = false;
-
-        typeOfDecl = TypeDecl.None;
 
         forwardVarDecls = new ArrayList<>();
         forwardFunDecls = new ArrayList<>();
@@ -525,18 +511,8 @@ public class ScopeVisitor implements Visitor {
         // T: fill the lists for forward declarations (END)
 
         for(var decl : node.declsNodes) {
-            if(decl instanceof VarDeclOpNode) {
-                typeOfDecl = TypeDecl.VarDecl;
-            }
-            // T: In this case decl is a DefDecl
-            else {
-                typeOfDecl = TypeDecl.DefDecl;
-            }
-
             decl.accept(this);
             currentScope = node.scope;
-
-            typeOfDecl = TypeDecl.None;
         }
 
         isInGlobal = false;
