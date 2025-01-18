@@ -110,4 +110,17 @@ b1 := d1 >= 10 and not d2 == d2 or (d1 == d2);
 "10. Risultato atteso 0", "--Risultato ottenuto: ", b1 !>>;
 
 
+s1 | s2 | s3 := "ciao", "ciao", "no";
+b1 | b2 := true, false;
+"11. Risultato atteso 1", "--Risultato ottenuto: ", s1 == s2 and b1 !>>;
+
+"12. Risultato atteso 0", "--Risultato ottenuto: ", s1 == s3 or b2 !>>;
+
+n1 | n2 := 3 , 4;
+"13. Risultato atteso 0", "--Risultato ottenuto: ", s1 <> s2 and 3 <= 4 !>>;
+
+"14. Risultato atteso 1", "--Risultato ottenuto: ", s1 <> s3 and 3 <= 4 !>>;
+
+
+
 end

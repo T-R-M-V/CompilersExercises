@@ -23,11 +23,15 @@ public class SingleTest {
 
     public static void main(String args[]) throws FileNotFoundException {
 
+        String filename = args[0];
         FileReader reader = new FileReader(args[0]);
         Reader keyboard = new BufferedReader(reader);
         parser p = new parser(new Lexer(keyboard));
 
-        String outputCodeGenerationFile = "generatedCode.c";
+        int begin = filename.lastIndexOf('/');
+        int end = filename.lastIndexOf(".");
+        String outputCodeGenerationFile = "test_files/c_out/" + filename.substring(begin+1, end) + ".c";
+        System.out.println(outputCodeGenerationFile);
 
         try {
             Symbol symbol = p.debug_parse(); // l'uso di p.debug_parse() al posto di p.parse() produce tutte le azioni del parser durante il riconoscimento
@@ -58,8 +62,8 @@ public class SingleTest {
                 Files.write(Paths.get(outputCodeGenerationFile), generatedCLines);
 
                 // T: write also in the file for testing with Clang (START)
-                String outputForDebugWithClang = "C:\\Languages\\CLang\\LLVM\\bin\\main.c";
-                Files.write(Paths.get(outputForDebugWithClang), generatedCLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+//                String outputForDebugWithClang = "C:\\Languages\\CLang\\LLVM\\bin\\main.c";
+//                Files.write(Paths.get(outputForDebugWithClang), generatedCLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 // T: write also in the file for testing with Clang (END)
             }
         }

@@ -7,6 +7,8 @@ import org.example.tree.expr.UnaryOpNode;
 public class OperatorConverter {
 
     public static String plusStringOperator = "stringConcatenation_";
+    public static String eqStringOperator = "equalForString_";
+    public static String neStringOperator = "notEqualForString_";
     public static String integerToString = "fromIntegerToString_";
     public static String doubleToString = "fromDoubleToString_";
     public static String cloneString = "cloneString_";

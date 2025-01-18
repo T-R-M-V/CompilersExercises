@@ -79,6 +79,7 @@
                     <expectedConflicts>0</expectedConflicts>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

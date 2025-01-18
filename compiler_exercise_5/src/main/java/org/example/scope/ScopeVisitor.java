@@ -87,12 +87,6 @@ public class ScopeVisitor implements Visitor {
                     // launch error
                     Error.launchError("The identifier: " + node.identifierNode.identifier + "isn't defined yet", node.line, node.column);
                 }
-
-
-//                if(findForward(node.identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
-//                    // launch error
-//                    Error.launchError("The identifier: " + node.identifierNode.identifier + "isn't defined yet", node.line, node.column);
-//                }
             }
             else { // T: if we aren't in the global scope or we are in the global scope but in a VarDecl, we only search in the normal type enviroment
                 if(node.scope.findVar(node.identifierNode.identifier) == null) {
@@ -141,12 +135,6 @@ public class ScopeVisitor implements Visitor {
                     // T: launch error
                     Error.launchError("The identifier: " + identifierNode.identifier + "isn't defined yet", node.line, node.column);
                 }
-
-
-//                if(findForward(identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
-//                    // T: launch error
-//                    Error.launchError("The identifier: " + identifierNode.identifier + "isn't defined yet", node.line, node.column);
-//                }
             }
             else {
                 if(node.scope.findVar(identifierNode.identifier) == null) {
@@ -653,48 +641,6 @@ public class ScopeVisitor implements Visitor {
         }
 
         return forwardFunDecls.stream().filter((s) -> lexem.equals(s)).findAny().isPresent();
-    }
-
-
-    public boolean findForwardFun2(String lexem, ScopeEntry.Kind kind, Scope scope) {
-
-        if(kind == ScopeEntry.Kind.Var && scope.findVar(lexem) != null) {
-            return true;
-        }
-
-        if(kind == ScopeEntry.Kind.Proc && scope.findProc(lexem) != null) {
-            return true;
-        }
-
-        if(kind == ScopeEntry.Kind.Proc)
-            return forwardFunDecls.stream().findAny().isPresent();
-
-        return false;
-    }
-
-    public boolean findForward(String lexem, ScopeEntry.Kind kind, Scope scope) {
-
-        // T: search in type enviroment (START)
-        if(kind == ScopeEntry.Kind.Var && scope.findVar(lexem) != null) {
-            return true;
-        }
-
-        if(kind == ScopeEntry.Kind.Proc && scope.findProc(lexem) != null) {
-            return true;
-        }
-        // T: search in type enviroment (END)
-
-        // T: search in the forward declarations (START)
-        if(kind == ScopeEntry.Kind.Var)
-            return forwardVarDecls.stream().filter((s) -> lexem.equals(s)).findAny().isPresent();
-
-
-        if(kind == ScopeEntry.Kind.Proc)
-            return forwardFunDecls.stream().filter((s) -> lexem.equals(s)).findAny().isPresent();
-        // T: search in the forward declarations (END)
-
-        // T: probably useless
-        return false;
     }
     // T: These functions is used to search if an identifier is defined in the scope or in some forwards (END)
 }

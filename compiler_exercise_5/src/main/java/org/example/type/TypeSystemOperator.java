@@ -79,6 +79,9 @@ public class TypeSystemOperator {
         typeSystemBinaryOperator[BinaryOpNode.Type.Le.ordinal()][Type.Double.ordinal()][Type.Integer.ordinal()] = Type.Boolean;
         typeSystemBinaryOperator[BinaryOpNode.Type.Gt.ordinal()][Type.Double.ordinal()][Type.Integer.ordinal()] = Type.Boolean;
         typeSystemBinaryOperator[BinaryOpNode.Type.Ge.ordinal()][Type.Double.ordinal()][Type.Integer.ordinal()] = Type.Boolean;
+
+        typeSystemBinaryOperator[BinaryOpNode.Type.Eq.ordinal()][Type.String.ordinal()][Type.String.ordinal()] = Type.Boolean;
+        typeSystemBinaryOperator[BinaryOpNode.Type.Ne.ordinal()][Type.String.ordinal()][Type.String.ordinal()] = Type.Boolean;
         // T: type system for binary operators (END)
 
 

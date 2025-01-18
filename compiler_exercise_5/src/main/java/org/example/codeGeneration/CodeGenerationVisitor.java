@@ -64,6 +64,16 @@ public class CodeGenerationVisitor implements Visitor {
         if(node.op == BinaryOpNode.Type.Plus && resultType == Type.String) {
             return " (" + OperatorConverter.plusStringOperator + "(" + leftExpression + "," + rightExpression + ")" + " )";
         }
+
+        // T: In the case we had Equal or NotEqual operator and we are operating among strings, call the correct
+        // functions.
+        if(node.op == BinaryOpNode.Type.Eq && node.left.type == Type.String && node.right.type == Type.String ) {
+            return " (" + OperatorConverter.eqStringOperator + "(" + leftExpression + "," + rightExpression + ")" + " )";
+        }
+        if(node.op == BinaryOpNode.Type.Ne && node.left.type == Type.String && node.right.type == Type.String) {
+            return " (" + OperatorConverter.neStringOperator + "(" + leftExpression + "," + rightExpression + ")" + " )";
+        }
+
         // T: In the case we had Div operator we must ensure that the second parameter of division is casted
         // to double to ensure that the result is calculated as a double.
         else if(node.op == BinaryOpNode.Type.Div && resultType == Type.Double) {

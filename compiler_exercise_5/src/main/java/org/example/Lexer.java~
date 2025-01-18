@@ -990,7 +990,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 95: break;
           case 36:
-            { buffer.append('\"');
+            { buffer.append('\"'); System.out.println("Azzvegna");
             }
             // fall through
           case 96: break;
