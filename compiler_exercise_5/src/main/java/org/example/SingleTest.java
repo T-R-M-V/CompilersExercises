@@ -66,6 +66,9 @@ public class SingleTest {
         catch(Exception e) {
             System.out.println("Errors: ");
             System.out.println(e.getMessage());
+            Error.printErrors();
+
+            // e.printStackTrace();
 
             return;
         }

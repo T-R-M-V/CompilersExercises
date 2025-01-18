@@ -40,3 +40,4 @@ build/
 *.exe
 AST.xml
 generatedCode.c
+setupEnviromentForCLang.txt

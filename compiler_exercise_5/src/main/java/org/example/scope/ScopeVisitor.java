@@ -18,7 +18,8 @@ public class ScopeVisitor implements Visitor {
 
     private Scope currentScope;
 
-    // T: This variable is used for
+    // T: This variable is used to distinguish the body of a function
+    // from other bodies
     private boolean isCalledFromDefDecl;
 
     // T: These lists is used to mantain the forward declarations of VarDecl and DefDecl
@@ -32,6 +33,7 @@ public class ScopeVisitor implements Visitor {
     private boolean isInGlobal;
 
     // T: This enum is used to distinguish if i am in a VarDecl or in a DefDecl (START)
+    // T: This variable is useful during analysis of the global scope
     // T: WARNING this variable is correctly setted only when isInGlobal is true
     private TypeDecl typeOfDecl;
     public enum TypeDecl {
@@ -92,11 +94,19 @@ public class ScopeVisitor implements Visitor {
             currentScope = node.scope;
 
             // T: check if the identifier is defined (START)
-            if(isInGlobal && typeOfDecl == TypeDecl.DefDecl) {
-                if(findForward(node.identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
+            // T: In this case, we search only for variables, because we know that this identifier
+            // is reffered to a variable.
+            if(isInGlobal) {
+                if(findForwardVar(node.identifierNode.identifier, node.scope) == false) {
                     // launch error
                     Error.launchError("The identifier: " + node.identifierNode.identifier + "isn't defined yet", node.line, node.column);
                 }
+
+
+//                if(findForward(node.identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
+//                    // launch error
+//                    Error.launchError("The identifier: " + node.identifierNode.identifier + "isn't defined yet", node.line, node.column);
+//                }
             }
             else { // T: if we aren't in the global scope or we are in the global scope but in a VarDecl, we only search in the normal type enviroment
                 if(node.scope.findVar(node.identifierNode.identifier) == null) {
@@ -141,10 +151,16 @@ public class ScopeVisitor implements Visitor {
 
             // T: check if the identifier is defined (START)
             if(isInGlobal) {
-                if(findForward(identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
+                if(findForwardVar(identifierNode.identifier, node.scope) == false) {
                     // T: launch error
                     Error.launchError("The identifier: " + identifierNode.identifier + "isn't defined yet", node.line, node.column);
                 }
+
+
+//                if(findForward(identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
+//                    // T: launch error
+//                    Error.launchError("The identifier: " + identifierNode.identifier + "isn't defined yet", node.line, node.column);
+//                }
             }
             else {
                 if(node.scope.findVar(identifierNode.identifier) == null) {
@@ -173,7 +189,7 @@ public class ScopeVisitor implements Visitor {
 
         // T: check if the identifier of the function is defined (START)
         if(isInGlobal) {
-            if(findForwardFun(node.identifierNode.identifier, ScopeEntry.Kind.Proc, node.scope) == false) {
+            if(findForwardFun(node.identifierNode.identifier, node.scope) == false) {
                 // T: launch error
                 Error.launchError("The identifier: " + node.identifierNode.identifier + "isn't defined yet", node.line, node.column);
             }
@@ -238,7 +254,7 @@ public class ScopeVisitor implements Visitor {
 
             // T: check if the identifier is defined (START)
             if(isInGlobal) {
-                if(findForward(identifierNode.identifier, ScopeEntry.Kind.Var, node.scope) == false) {
+                if(findForwardVar(identifierNode.identifier, node.scope) == false) {
                     // T: launch error
                     Error.launchError("The identifier: " + identifierNode.identifier + "isn't defined yet", node.line, node.column);
                 }
@@ -646,7 +662,25 @@ public class ScopeVisitor implements Visitor {
 
 
     // T: These functions is used to search if an identifier is defined in the scope or in some forwards (START)
-    public boolean findForwardFun(String lexem, ScopeEntry.Kind kind, Scope scope) {
+    public boolean findForwardVar(String lexem, Scope scope) {
+
+        if(scope.findVar(lexem) != null) {
+            return true;
+        }
+
+        return forwardVarDecls.stream().filter((s) -> lexem.equals(s)).findAny().isPresent();
+    }
+
+    public boolean findForwardFun(String lexem, Scope scope) {
+        if(scope.findProc(lexem) != null) {
+            return true;
+        }
+
+        return forwardFunDecls.stream().filter((s) -> lexem.equals(s)).findAny().isPresent();
+    }
+
+
+    public boolean findForwardFun2(String lexem, ScopeEntry.Kind kind, Scope scope) {
 
         if(kind == ScopeEntry.Kind.Var && scope.findVar(lexem) != null) {
             return true;
