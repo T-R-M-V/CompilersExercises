@@ -1,7 +1,7 @@
 program
 
 
-a : 5;
+a : int;
 b = 10 : int;
 
 
@@ -9,21 +9,43 @@ b = 10 : int;
 def fun1() : int{
 	x1 = 3 | x2 = 5 : int;
 
-	x1 := b + x1 +c;
-	"1. Risultato atteso 14", "--Risultato ottenuto: ", x1 !>>;
+	x1 := b + x1  + a;
+	"1. Risultato atteso 13", " --Risultato ottenuto: ", x1 !>>;
 
 	return 5;
 }
 
+/*
 d = c + "" : string;
 c = 1 : int;
 e = e + " ": string;
+*/
+
+c : string;
+d = c + "1" : string;
 
 begin
 
-fun1();
-"2. Risultato atteso 0", "--Risultato ottenuto: ", d !>>;
+a | b : string;
+n1 | n2 = 1.0 : double;
+bool1 | bool2 : bool;
 
-"3. Risultato atteso ", "--Risultato ottenuto: ", e !>>;
+fun1();
+
+"2. Risultato atteso 1 ", " --Risultato ottenuto: ", d !>>;
+
+"3. Risultato atteso ", " --Risultato ottenuto: ", c !>>;
+
+"4. Risultato atteso 1 ", " --Risultato ottenuto: ", d !>>;
+
+"5. Risultato atteso 1.0 ", " --Risultato ottenuto: ", n1 + n2 + n1 * n2 !>>;
+
+b := b + a + 11;
+"6. Risultato atteso 11 ", " --Risultato ottenuto: ", b !>>;
+
+"7. Risultato atteso 0 ", " --Risultato ottenuto: ", bool1 !>>;
+
+
+
 
 end

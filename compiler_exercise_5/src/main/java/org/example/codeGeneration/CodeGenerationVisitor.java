@@ -676,7 +676,7 @@ public class CodeGenerationVisitor implements Visitor {
 //                    if(node.typeOrConstant.type == Type.String) {
 //                        definitions.append(varOptInitOpNodeString + " = (char**)malloc(sizeof(char*));");
 //                    }
-                    definitions.append(varOptInitOpNodeString + " = " + OperatorConverter.defaultValueForType(node.typeOrConstant.type));
+                    definitions.append(varOptInitOpNodeString + " = " + OperatorConverter.defaultValueForType(node.typeOrConstant.type) + ";");
                 }
 
                 declarations.append(comma + varOptInitOpNode.identifierNode.identifier);
