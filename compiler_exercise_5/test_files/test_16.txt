@@ -17,10 +17,13 @@ def fun1() : int{
 
 d = c + "" : string;
 c = 1 : int;
+e = e + " ": string;
 
 begin
 
 fun1();
+"2. Risultato atteso 0", "--Risultato ottenuto: ", d !>>;
 
+"3. Risultato atteso ", "--Risultato ottenuto: ", e !>>;
 
 end

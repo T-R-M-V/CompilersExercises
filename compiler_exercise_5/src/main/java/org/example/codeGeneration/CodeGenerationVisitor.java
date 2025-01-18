@@ -627,12 +627,13 @@ public class CodeGenerationVisitor implements Visitor {
                 if(node.typeOrConstant.constantNode != null) {
                     varOptInitOpNodeString = varOptInitOpNodeString + " = " + value;
                 }
-                // T: In the case no initial value is provided, allocate space to store
-                // the first pointer for string.
+                // T: In the case no initial value is provided, assign default values for the types
                 else if(varOptInitOpNode.exprOpNode == null) {
-                    if(node.typeOrConstant.type == Type.String) {
-                        varOptInitOpNodeString = varOptInitOpNodeString + " = (char**)malloc(sizeof(char*))";
-                    }
+//                    if(node.typeOrConstant.type == Type.String) {
+//                        varOptInitOpNodeString = varOptInitOpNodeString + " = (char**)malloc(sizeof(char*))";
+//                    }
+
+                    varOptInitOpNodeString = varOptInitOpNodeString + " = " + OperatorConverter.defaultValueForType(node.typeOrConstant.type);
                 }
 
                 varDeclOpNodeLine.append(comma + " " + varOptInitOpNodeString);
@@ -670,12 +671,12 @@ public class CodeGenerationVisitor implements Visitor {
                 else if(varOptInitOpNode.exprOpNode != null) {
                     definitions.append(varOptInitOpNodeString + ";");
                 }
-                // T: In the case no initial value is provided, allocate space to store
-                // the first pointer for string.
+                // T: In the case no initial value is provided, assign default values for the types
                 else {
-                    if(node.typeOrConstant.type == Type.String) {
-                        definitions.append(varOptInitOpNodeString + " = (char**)malloc(sizeof(char*));");
-                    }
+//                    if(node.typeOrConstant.type == Type.String) {
+//                        definitions.append(varOptInitOpNodeString + " = (char**)malloc(sizeof(char*));");
+//                    }
+                    definitions.append(varOptInitOpNodeString + " = " + OperatorConverter.defaultValueForType(node.typeOrConstant.type));
                 }
 
                 declarations.append(comma + varOptInitOpNode.identifierNode.identifier);

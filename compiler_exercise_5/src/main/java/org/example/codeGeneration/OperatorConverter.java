@@ -135,4 +135,32 @@ public class OperatorConverter {
             }
         }
     }
+
+    public static String defaultValueForType(Type type) {
+        switch (type) {
+            case Error -> {
+                return null;
+            }
+            case Integer -> {
+                return "0";
+            }
+            case Boolean -> {
+                return "0";
+            }
+            case Double -> {
+                return "0.0";
+            }
+            case String -> {
+                return OperatorConverter.fromConstantToHeap + "(" + "\"\"" + ")";
+            }
+            case Char -> {
+                return "'a'";
+            }
+            case Void -> {
+                return null;
+            }
+        }
+
+        return null;
+    }
 }
