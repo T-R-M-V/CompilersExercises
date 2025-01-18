@@ -18,6 +18,7 @@ public class OperatorConverter {
     public static String commentForFunctionDeclarationSection = "/* FUNCTION DECLARATIONS */";
     public static String commentForGlobVarDeclarationSection = "/* GLOBAL VARIABLES DECLARATION */";
     public static String commentForGlobVarDefinitionSection = "/* GLOBAL VARIABLES DEFINITION */";
+    public static String commentForGlobVarDefaultInitializationSection = "/* GLOBAL VARIABLES DEFAULT INITIALIZATIONS */";
 
     public static String convertInC(BinaryOpNode.Type op) {
         switch (op) {

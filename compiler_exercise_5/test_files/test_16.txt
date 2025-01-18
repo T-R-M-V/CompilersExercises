@@ -15,14 +15,13 @@ def fun1() : int{
 	return 5;
 }
 
-/*
-d = c + "" : string;
-c = 1 : int;
-e = e + " ": string;
-*/
 
 c : string;
 d = c + "1" : string;
+
+e = e + "12": string;
+
+
 
 begin
 
@@ -44,6 +43,11 @@ b := b + a + 11;
 "6. Risultato atteso 11 ", " --Risultato ottenuto: ", b !>>;
 
 "7. Risultato atteso 0 ", " --Risultato ottenuto: ", bool1 !>>;
+
+bool2 := true;
+"8. Risultato atteso 1 ", " --Risultato ottenuto: ", bool1 or bool2 !>>;
+
+"9. Risultato atteso 12 ", " --Risultato ottenuto: ", e !>>;
 
 
 

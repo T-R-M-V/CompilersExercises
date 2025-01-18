@@ -505,18 +505,19 @@ public class CodeGenerationVisitor implements Visitor {
         globVariableDeclarations.add(OperatorConverter.commentForGlobVarDeclarationSection);
         List<String> globVariablesDefinition = new ArrayList<>();
         globVariablesDefinition.add(OperatorConverter.commentForGlobVarDefinitionSection);
-        globVariablesDefinition.add("void " + globalVariableInitFunction);
-        globVariablesDefinition.add("{");
+        List<String> globVariablesDefaultInit = new ArrayList<>();
+        globVariablesDefaultInit.add(OperatorConverter.commentForGlobVarDefaultInitializationSection);
 
         for(var declNode : node.declsNodes) {
 
             if(declNode instanceof VarDeclOpNode) {
                 globalScope = true;
-                List<String> declAndDef = (List)declNode.accept(this);
+                List<String> declAndDefAndInit = (List)declNode.accept(this);
                 globalScope = false;
 
-                globVariableDeclarations.add(declAndDef.get(0));
-                globVariablesDefinition.add(declAndDef.get(1));
+                globVariableDeclarations.add(declAndDefAndInit.get(0));
+                globVariablesDefinition.add(declAndDefAndInit.get(1));
+                globVariablesDefaultInit.add(declAndDefAndInit.get(2));
             }
             else {
                 List<String> functionDefinitionLines = (List)declNode.accept(this);
@@ -528,12 +529,11 @@ public class CodeGenerationVisitor implements Visitor {
             }
         }
 
-        globVariablesDefinition.add("}");
-
         functionDeclarations.add(OperatorConverter.commentForFunctionDeclarationSection);
         functionDefinitions.add(OperatorConverter.commentForFunctionDefinitionSection);
         globVariableDeclarations.add(OperatorConverter.commentForGlobVarDeclarationSection);
         globVariablesDefinition.add(OperatorConverter.commentForGlobVarDefinitionSection);
+        globVariablesDefaultInit.add(OperatorConverter.commentForGlobVarDefaultInitializationSection);
         // T: Put in different collection declarations and definitions of functions and global variables (END)
 
 
@@ -542,7 +542,11 @@ public class CodeGenerationVisitor implements Visitor {
         lines.addAll(functionDeclarations);
         lines.addAll(globVariableDeclarations);
         lines.addAll(functionDefinitions);
+        lines.add("void " + globalVariableInitFunction);
+        lines.add("{");
+        lines.addAll(globVariablesDefaultInit);
         lines.addAll(globVariablesDefinition);
+        lines.add("}");
         // T: combine in the correct way definitions and declarations of function and global variables (END)
 
 
@@ -652,12 +656,15 @@ public class CodeGenerationVisitor implements Visitor {
 
         // T: In the case the definition is global (START)
         // T: In this case we store declarations and definitions like a
-        // list formed by two string(first string for declaration, second for definitions).
+        // list formed by two string(first string for declaration, second for definitions, third for the default value initialization).
+        // T: We need the third string to perform a default value initialization before the variable are initializiaed with the string
+        // that is contained in definitions. We need this to support the sparse order of declaration in global scope.
         else {
             List<String> lines = new ArrayList<>();
             StringBuilder declarations = new StringBuilder("");
             declarations.append(typeString + " ");
             StringBuilder definitions = new StringBuilder("");
+            StringBuilder defaultValueInitializations = new StringBuilder("");
 
             String comma = "";
             for(var varOptInitOpNode : node.varOptInitOpNodes) {
@@ -680,6 +687,7 @@ public class CodeGenerationVisitor implements Visitor {
                 }
 
                 declarations.append(comma + varOptInitOpNode.identifierNode.identifier);
+                defaultValueInitializations.append(varOptInitOpNode.identifierNode.identifier + " = " + OperatorConverter.defaultValueForType(node.typeOrConstant.type) + ";");
 
                 comma = ",";
                 if(type == Type.String) {
@@ -691,6 +699,8 @@ public class CodeGenerationVisitor implements Visitor {
 
             lines.add(declarations.toString());
             lines.add(definitions.toString());
+            lines.add(defaultValueInitializations.toString());
+
             return lines;
         }
         // T: In the case the definition is global (END)
