@@ -35,8 +35,8 @@ def tutteleoperazioni(input1: double; input2: double; ref res1: double; ref res2
 {
     somma(input1, input2, res1);
     sottrazione(input1, input2, res2);
-    res3 := divisione(input1, input2);
-    res4 := moltiplicazione(input1, input2);
+    res4 := divisione(input1, input2);
+    res3 := moltiplicazione(input1, input2);
 }
 
 def stampa(stringa: string): string

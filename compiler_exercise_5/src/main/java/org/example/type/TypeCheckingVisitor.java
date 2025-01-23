@@ -116,7 +116,7 @@ public class TypeCheckingVisitor implements Visitor {
             Type typeExprOpNode = (Type)exprOpNode.accept(this);
 
             // T: checking if there is a function call in the exprOpNode
-            // when there are multiple exprOpNode.
+            // when there are multiple exprOpNode. In that case, emit error
             if(node.exprOpNodes.size() > 1 && exprOpNode.withCallOp) {
                 // T: launch error
                 String errorMessage = "Can't use the return value of a function in multiple assignment";
@@ -128,6 +128,7 @@ public class TypeCheckingVisitor implements Visitor {
 
         node.type = Type.Void;
 
+        // T: Emit error in the case the two list aren't of the same size (START)
         if(node.exprOpNodes.size() != node.identifierNodes.size()) {
             // T: launch error
             String errorMessage = "The number of values and variables isn't equal";
@@ -135,6 +136,9 @@ public class TypeCheckingVisitor implements Visitor {
 
             node.type = Type.Error;
         }
+        // T: Emit error in the case the two list aren't of the same size (END)
+
+
 
         for(int i = 0;i < Math.min(node.exprOpNodes.size(), node.identifierNodes.size());i++) {
             var exprOpNode = node.exprOpNodes.get(i);
@@ -144,7 +148,10 @@ public class TypeCheckingVisitor implements Visitor {
             // T: WARNING: miss the control if the variable is defined
 
             // T: check if the variable and the expr has the same type
-            if(entry.varType != exprOpNode.type) {
+            // T: In this case we consider the special case in which we can assign an expression of type Integer to
+            // a variable of type Double
+            // T: This condition is written like "all the accepted case" but negated to give error
+            if(! (entry.varType == exprOpNode.type || (entry.varType == Type.Double && exprOpNode.type == Type.Integer))) {
                 // T: launch error
                 // T: Review: add the types
                 String errorMessage = "Type mismatch between the identifier: " + identifierNode.identifier + " and the expression at: (" + exprOpNode.line + "," + exprOpNode.column + ")";
@@ -186,15 +193,20 @@ public class TypeCheckingVisitor implements Visitor {
                 node.type = Type.Error;
             }
             else {
-                // T: return error if the type of expression is the same of the parameter (START)
-                if(typeExprOpNode != entry.parameters.get(index).type) {
+
+                ScopeEntry.TypeProcParameter par = entry.parameters.get(index);
+
+                // T: return error if the type of expression is not the same of the parameter (START)
+                // T: In this condition we consider the case in which we want to pass an expression of type Integer like a parameter
+                // of type Double. We must consider only the case in which we don't want a ref of type Double like parameter.
+                if( ! (typeExprOpNode == par.type || (! par.ref && typeExprOpNode == Type.Integer && par.type == Type.Double)) ) {
                     // T: launch error
                     String errorMessage = "Type mismatch between the value passed in the function call and the definition of the function";
                     Error.launchError(errorMessage, exprOpNode.line, exprOpNode.column);
 
                     node.type = Type.Error;
                 }
-                // T: return error if the type of expression is the same of the parameter (END)
+                // T: return error if the type of expression is not the same of the parameter (END)
 
                 // T: check if the parameter is a reference and the expression node is a variable (START)
                 if(entry.parameters.get(index).ref) {
@@ -209,7 +221,7 @@ public class TypeCheckingVisitor implements Visitor {
                         }
                     }
                 }
-                // T: check if the parameter is a reference and the expression node  is a variable(END)
+                // T: check if the parameter is a reference and the expression node  is a variable (END)
             }
 
             index++;
@@ -241,7 +253,7 @@ public class TypeCheckingVisitor implements Visitor {
 
         node.elseBodyOpNode.accept(this);
         if(node.elseBodyOpNode.type != Type.Void) {
-            // T: launche error
+            // T: launch error
             node.type = Type.Error;
         }
 
@@ -459,8 +471,9 @@ public class TypeCheckingVisitor implements Visitor {
             return node.type;
         }
 
+        // T: In the case is a function not a procedure
         if(returnType != Type.Void) {
-            // T: check if there is at least one return in this function
+            // T: check if there is at least one return in this function (START)
             if(returnOpNodesOfLastFunction.isEmpty()) {
                 // T: launch error
                 String errorMessage = "Must provide at least one return statement in a function";
@@ -468,10 +481,13 @@ public class TypeCheckingVisitor implements Visitor {
 
                 node.type = Type.Error;
             }
+            // T: check if there is at least one return in this function (END)
 
-            // T: check if the return type is coherent with the return type of the function (START)
+            // T: check if the return type is coherent with the return type specified for the function (START)
             for(var returnOpNode : returnOpNodesOfLastFunction) {
-                if(returnOpNode.type != returnType) {
+                // T: In this case we also consider the case in which the return type of the function is Double and
+                // the type of the return is Integer.
+                if( ! (returnOpNode.type == returnType || (returnOpNode.type == Type.Integer && returnType == Type.Double)) ) {
                     // T: launch error
                     String errorMessage = "Type mismatch between type of return statement and the type provided in the declaration of function";
                     Error.launchError(errorMessage, returnOpNode.line, returnOpNode.column);
@@ -479,8 +495,9 @@ public class TypeCheckingVisitor implements Visitor {
                     node.type = Type.Error;
                 }
             }
-            // T: check if the return type is coherent with the return type of the function (END)
+            // T: check if the return type is coherent with the return type specified for the function (END)
         }
+        // T: In the case is a procedure not a function
         else {
             // T: return error if there is any return in a procedure
             if(! returnOpNodesOfLastFunction.isEmpty()) {
@@ -599,13 +616,21 @@ public class TypeCheckingVisitor implements Visitor {
         }
         // T: visit the VarOptInitiOpNodes (END)
 
-        // T: To review
+
+
+        // T: Case where constantNode is not null (START)
+        // T: In this case we can't declare multiple variables, so we consider to have
+        // a single variable in varOptInitOpNodes.
         if(node.typeOrConstant.constantNode != null) {
             if (node.varOptInitOpNodes.get(0).type == Type.Void) {
                 node.varOptInitOpNodes.get(0).type = node.typeOrConstant.type;
             }
         }
+        // T: Case where constantNode is not null (END)
 
+
+
+        // T: Case where typeNode is not null (START)
         if(node.typeOrConstant.typeNode != null) {
             Type type = node.typeOrConstant.type;
             for(var varOptInitOpNode : node.varOptInitOpNodes) {
@@ -617,7 +642,12 @@ public class TypeCheckingVisitor implements Visitor {
                     continue;
                 }
 
-                if(varOptInitOpNode.type != type) {
+                // T: we put the type of expression to varOptInitOpNode when we provide an expression to initialize
+                // varOptInitOpNode.
+                // T: note that the condition is a negation of what is accepted by the rule
+                // T: The second part of the condition is needed for the case in which we assign an expression of type
+                // Integer to a variable of type Double
+                if( ! (varOptInitOpNode.type == type || (type == Type.Double && varOptInitOpNode.type == Type.Integer)) ) {
                     // T: Launch error
                     String errorMessage = "Type mismatch between the identifier: " + varOptInitOpNode.identifierNode.identifier + " and the expression at: (" + varOptInitOpNode.exprOpNode.line + "," + varOptInitOpNode.exprOpNode.column + ")";
                     Error.launchError(errorMessage, varOptInitOpNode.identifierNode.line, varOptInitOpNode.identifierNode.column);
@@ -626,6 +656,7 @@ public class TypeCheckingVisitor implements Visitor {
                 }
             }
         }
+        // T: Case where typeNode is not null (END)
 
         return node.type;
     }

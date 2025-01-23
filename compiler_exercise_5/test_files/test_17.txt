@@ -1,0 +1,47 @@
+program
+
+d = 3 : double;
+
+def fun(d1 : double; ref d2 : double) : double {
+    n : 2;
+    d : 2.2;
+
+    if(d2 == 0) then{
+        d2 := 1;
+        fun(d1, d2);
+    }
+
+    d1 := 3;
+    d2 := n + d + d1;
+
+    return n;
+
+     return "d";                                                //Error: returnType not match with Type of Def
+}
+
+
+begin
+
+n1 = 4 | n2 : int;
+d1 = 3.4 | d2 = 2 : double;
+"1. Risultato atteso 3.4000   2.0000", " --Risultato ottenuto: ", d1, "   ", d2 !>>;
+
+d1 | d2 := 2 , 4.5;
+"2. Risultato atteso 2.0000   4.5000", " --Risultato ottenuto: ", d1, "   ", d2 !>>;
+
+ n1 := fun(d1, d2);                                             //Error: n1 is a Intager and the returnType of fun is Double
+
+d := fun(d1, d2);
+"3. Risultato atteso  4   7.2000", " --Risultato ottenuto: ", n1, "   ", d2 !>>;
+
+ fun(d1, n1);                                                   //Error: n1 is a Intager not a Double
+
+d := fun(3, d2);
+"4. Risultato atteso  2   4.2000", " --Risultato ottenuto: ", d, "   ", d2 !>>;
+
+d2 := 0;
+d := fun(n1, d2);
+"5. Risultato atteso  2   7.2000", " --Risultato ottenuto: ", d, "   ", d2 !>>;
+
+
+end
